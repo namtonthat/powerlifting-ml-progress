@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "powerlifting-ml-progress"
+version = "0.1.0"
+description = ""
+authors = ["Nam Tonthat <n.nam.tonthat@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.1"
+polars = "^0.16.14"
+scikit-learn = "^0.24.0"
+xgboost = "^1.7.4"
+requests = "^2.29.0"
+
+[tool.poetry.group.dev.dependencies]
+jupyter = "^1.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
