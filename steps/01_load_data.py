@@ -10,6 +10,7 @@ import shutil
 logging.basicConfig(level=logging.INFO)
 
 ZIP_URL = "https://openpowerlifting.gitlab.io/opl-csv/files/openpowerlifting-latest.zip"
+ZIP_URL = "https://openpowerlifting.gitlab.io/opl-csv/files/openipf-latest.zip"
 ROOT_DATA_FOLDER = "data"
 
 EXTRACT_PATH = f"{ROOT_DATA_FOLDER}/raw"

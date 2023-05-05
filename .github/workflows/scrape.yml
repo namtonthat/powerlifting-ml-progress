@@ -23,11 +23,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Configure Git
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -35,6 +30,16 @@ jobs:
 
     - name: install poetry
       uses: snok/install-poetry@v1
+
+      #----------------------------------------------
+      #       load cached venv if cache exists
+      #----------------------------------------------
+    - name: load cached venv
+      id: cached-poetry-dependencies
+      uses: actions/cache@v3
+      with:
+        path: .venv
+        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
     - name: install dependencies
       run: poetry install --no-interaction --no-root --without dev
@@ -47,11 +52,9 @@ jobs:
     - name: Load data
       run: poetry run python steps/01_load_data.py
 
-    - name: Commit and push changes
+    - name: Commit files
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add -A
-        git commit -m "Download, unzip, and convert OpenIPF data to Parquet"
-        git push
-
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git diff-index --quiet HEAD || (git commit -a -m "updated data/*" --allow-empty)
