@@ -23,11 +23,15 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Configure Git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: 3.11.1
-
 
     - name: install poetry
       uses: snok/install-poetry@v1
