@@ -1,3 +1,5 @@
+[![scrape](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/scrape.yml/badge.svg)](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/scrape.yml)
+ec3e48e605927ecf86c0895d7d8ac275e7fa04e1
 # Powerlifting ML Progress
 **Last Updated:** {{ last_updated }}
 
