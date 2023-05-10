@@ -1,29 +1,34 @@
-import requests
-import io
-import zipfile
-import polars as pl
-import logging
-import datetime
-import shutil
-import re
 import boto3
 import conf
+import datetime
+import io
+import logging
+import requests
+import shutil
+import zipfile
 
-# Configure logging
+import polars as pl
+from jinja2 import Environment, FileSystemLoader
+
+
 logging.basicConfig(level=logging.INFO)
 
-def update_readme_date():
-    with open("README.md", "r") as readme_file:
-        contents = readme_file.read()
-
+def update_readme():
     current_date = datetime.datetime.now().strftime("%Y-%m-%d")
-    updated_contents = re.sub(r"Last updated: \d{4}-\d{2}-\d{2}", f"Last updated: {current_date}", contents)
 
+    # Set up the Jinja2 environment
+    env = Environment(loader=FileSystemLoader("."))
+    template = env.get_template("templates/README.md")
+
+    # Render the template with the variables
+    updated_contents = template.render(last_updated=current_date, bucket_name=conf.bucket_name,s3_key = conf.parquet_file)
+
+    # Save the rendered contents to README.md
     with open("README.md", "w") as readme_file:
         readme_file.write(updated_contents)
 
-    logging.info("README.md updated with the current date")
-
+    logging.info("README.md updated")
+    return
 
 def load_data(url) -> str:
     """
@@ -74,4 +79,4 @@ if __name__ == "__main__":
         shutil.rmtree(conf.root_data_folder)
         logging.info(f"Files from '{conf.root_data_folder}' removed")
 
-        update_readme_date()
+        update_readme()

@@ -1,5 +1,5 @@
 # Powerlifting ML Progress
-**Last Updated:** 2023-05-10
+**Last Updated:** {{ last_updated }}
 
 This repository analyzes publicly available data from the `OpenPowerlifting` database to estimate how much progress a powerlifter could make over time.
 
@@ -9,7 +9,7 @@ To use this repository, you will need to first download the required data from t
 
 ## Data
 
-The data used in this repository is sourced from the `OpenPowerlifting` database, which contains information on powerlifting competitions, lifters, and their performances. You can download the necessary data from `s3://powerlifting-ml-progress/openpowerlifting-latest.parquet` file.
+The data used in this repository is sourced from the `OpenPowerlifting` database, which contains information on powerlifting competitions, lifters, and their performances. You can download the necessary data from `s3://{{ bucket_name }}/{{ s3_key }}` file.
 
 ## Methodology
 
