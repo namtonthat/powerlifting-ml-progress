@@ -1,8 +1,8 @@
 import streamlit as st
-import time
 import numpy as np
 import polars as pl
 import sys
+import altair as alt
 
 # Add the parent directory to the path so we can import the steps module
 from pathlib import Path
@@ -14,45 +14,55 @@ st.set_page_config(page_title="User Data", page_icon="📈")
 df = pl.read_parquet(f"s3://{conf.bucket_name}/{conf.parquet_file}")
 
 df = df.select(conf.op_cols)
-users = df.select("Name").unique().to_list()
+users = df["Name"].unique().to_list()
+countries = df["MeetCountry"].unique().to_list()
 
-st.write("# User Data")
-st.write(users)
 
 with st.sidebar:
     st.header("filters")
     st.markdown("""---""")
+    # st.subheader("🌎 country")
+    # country = st.multiselect(
+    #     label="Select a country",
+    #     options=countries,
+    #     default="Australia"
+    # )
+
     st.subheader("👱‍♀️ user")
     user = st.multiselect(
-        "Select a user",
-        users
+        label="Select a user",
+        options=users,
+        default="Taylor Atwood"
     )
 
 
-# st.markdown("# Plotting Demo")
-# st.sidebar.header("Plotting Demo")
-# st.write(
-#     """This demo illustrates a combination of plotting and animation with
-# Streamlit. We're generating a bunch of random numbers in a loop for around
-# 5 seconds. Enjoy!"""
-# )
+st.write("# Single Lifter Data")
 
-# progress_bar = st.sidebar.progress(0)
-# status_text = st.sidebar.empty()
-# last_rows = np.random.randn(1, 1)
-# chart = st.line_chart(last_rows)
+user_df = df.select(
+    pl.col(["Date", "Name", "TotalKg", "Event", "Best3SquatKg", "Best3BenchKg", "Best3DeadliftKg"])
+).filter(
+    pl.col("Name").is_in(user)
+).sort(by="Date").drop_nulls()
 
-# for i in range(1, 101):
-#     new_rows = last_rows[-1, :] + np.random.randn(5, 1).cumsum(axis=0)
-#     status_text.text("%i%% Complete" % i)
-#     chart.add_rows(new_rows)
-#     progress_bar.progress(i)
-#     last_rows = new_rows
-#     time.sleep(0.05)
 
-# progress_bar.empty()
+# unpivot data for graphing
+user_df = user_df.melt(
+    id_vars= ["Date", "Name", "Event"],
+    variable_name="Lift",
+    value_vars=["Best3SquatKg", "Best3BenchKg", "Best3DeadliftKg"],
+    value_name="Weight"
+).to_pandas()
 
-# Streamlit widgets automatically run the script from top to bottom. Since
-# this button is not connected to any other logic, it just causes a plain
-# rerun.
-# st.button("Re-run")
+st.write(user_df)
+
+user_chart = alt.Chart(user_df).mark_line(point=True).encode(
+    x="Date:T",
+    y="Weight:Q",
+    color=alt.Color("Lift:N", legend=alt.Legend(title="SBD")),
+    tooltip=["Name", "Date", "Event"]
+).properties(
+    width=800,
+    height=600
+)
+
+st.altair_chart(user_chart, use_container_width=True)
