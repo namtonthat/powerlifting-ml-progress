@@ -6,7 +6,7 @@ authors = ["Nam Tonthat <n.nam.tonthat@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.11.1"
+python = "^3.11.1"
 polars = "^0.16.14"
 scikit-learn = "^0.24.0"
 xgboost = "^1.7.4"
