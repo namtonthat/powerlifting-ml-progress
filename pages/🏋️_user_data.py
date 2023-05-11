@@ -13,7 +13,7 @@ from steps import conf
 
 s3_file_path = f"https://{conf.bucket_name}.s3.ap-southeast-2.amazonaws.com/{conf.parquet_file}"
 
-@st.cache_resource
+@st.cache_data
 def load_data(url):
     df = pl.read_parquet(s3_file_path)
     df = df.select(conf.op_cols).unique()
