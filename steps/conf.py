@@ -21,5 +21,6 @@ op_cols = [
     "TotalKg",
     "Wilks",
     "Tested",
-    "Federation"
+    "Federation",
+    "MeetName"
 ]

@@ -9,14 +9,21 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from steps import conf
 
-st.set_page_config(page_title="User Data", page_icon="📈")
+s3_file_path = f"https://{conf.bucket_name}.s3.ap-southeast-2.amazonaws.com/{conf.parquet_file}"
 
-df = pl.read_parquet(f"s3://{conf.bucket_name}/{conf.parquet_file}")
+@st.cache_data(persist=True)
+def load_data(url):
+    df = pl.read_parquet(s3_file_path)
+    df = df.select(conf.op_cols)
 
-df = df.select(conf.op_cols)
+    return df
+
+st.set_page_config(page_title="User Data", page_icon="🏋️")
+df = load_data(url=s3_file_path)
+
+
 users = df["Name"].unique().to_list()
 countries = df["MeetCountry"].unique().to_list()
-
 
 with st.sidebar:
     st.header("filters")
@@ -38,24 +45,48 @@ with st.sidebar:
 
 st.write("# Single Lifter Data")
 
-user_df = df.select(
-    pl.col(["Date", "Name", "TotalKg", "Event", "Best3SquatKg", "Best3BenchKg", "Best3DeadliftKg"])
-).filter(
+user_df = df.filter(
     pl.col("Name").is_in(user)
 ).sort(by="Date").drop_nulls()
 
+# related events
+events = user_df["Event"].unique().to_list()
+with st.sidebar:
+    st.subheader("🏋️ event")
+    event = st.multiselect(
+        label="Select an event",
+        options=events,
+        default=events
+    )
+
+
+wilks_df = user_df.select(
+    pl.col(["Date", "Name", "Wilks"])
+).to_pandas()
+
+wilks_chart = alt.Chart(wilks_df).mark_line(point=True).encode(
+    x="Date:T",
+    y="Wilks:Q",
+    color=alt.Color("Name:N", legend=alt.Legend(title="Lifter")),
+).properties(
+    width = 1200,
+    height = 800
+)
+
+st.altair_chart(wilks_chart, use_container_width=True)
+
+with st.expander("Show breakdown"):
+    st.write(wilks_df)
 
 # unpivot data for graphing
-user_df = user_df.melt(
+sbd_df = user_df.melt(
     id_vars= ["Date", "Name", "Event"],
     variable_name="Lift",
     value_vars=["Best3SquatKg", "Best3BenchKg", "Best3DeadliftKg"],
     value_name="Weight"
 ).to_pandas()
 
-st.write(user_df)
-
-user_chart = alt.Chart(user_df).mark_line(point=True).encode(
+sbd_chart = alt.Chart(sbd_df).mark_line(point=True).encode(
     x="Date:T",
     y="Weight:Q",
     color=alt.Color("Lift:N", legend=alt.Legend(title="SBD")),
@@ -65,4 +96,6 @@ user_chart = alt.Chart(user_df).mark_line(point=True).encode(
     height=600
 )
 
-st.altair_chart(user_chart, use_container_width=True)
+st.altair_chart(sbd_chart, use_container_width=True)
+with st.expander("Show breakdown"):
+    st.write(sbd_df)

@@ -71,7 +71,7 @@ if __name__ == "__main__":
         df.write_parquet(conf.output_path)
 
         s3_client = boto3.client('s3')
-        s3_client.upload_file(conf.output_path, conf.bucket_name, s3_key)
+        s3_client.upload_file(conf.output_path, conf.bucket_name, s3_key, ExtraArgs={'ACL':'public-read'})
         logging.info("Parquet file uploaded to S3 successfully")
 
         # Clean up
