@@ -13,6 +13,7 @@ boto3 = "^1.26.131"
 streamlit = "^1.22.0"
 watchdog = "^3.0.0"
 jinja2 = "^3.1.2"
+seaborn = "^0.12.2"
 
 [tool.poetry.group.dev.dependencies]
 jupyter = "^1.0.0"
