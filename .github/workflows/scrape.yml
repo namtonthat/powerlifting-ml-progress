@@ -2,8 +2,8 @@ name: scrape
 
 on:
   schedule:
-  # cron schedule every Tuesday and Friday at 14:15 UTC (random time to avoid overloading the Github action servers)
-  - cron: "15 14 * * 2,5"
+    # Cron schedule every Tuesday and Friday at 14:15 UTC (random time to avoid overloading the Github action servers)
+    - cron: "15 14 * * 2,5"
   workflow_dispatch:
     inputs:
       logLevel:
@@ -21,43 +21,77 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.11.1
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11.1
 
-    - name: install poetry
-      uses: snok/install-poetry@v1
+      - name: Install poetry
+        uses: snok/install-poetry@v1
 
-      #----------------------------------------------
-      #       load cached venv if cache exists
-      #----------------------------------------------
-    - name: load cached venv
-      id: cached-poetry-dependencies
-      uses: actions/cache@v3
-      with:
-        path: .venv
-        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
 
-    - name: install dependencies
-      run: poetry install --no-interaction --no-root --without dev
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root --without dev
 
-    - name: Load data
-      run: poetry run python steps/01_load.py
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Load data
+        run: poetry run python steps/01_load.py
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    - name: Convert Notebook to HTML
-      run: |
-        jupyter nbconvert --to markdown notebooks/etl.ipynb
+  convert_notebook:
+    needs: download_and_unzip_data
+    runs-on: ubuntu-latest
 
-    - name: Commit files
-      run: |
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11.1
+
+      - name: Install poetry
+        uses: snok/install-poetry@v1
+
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root --without dev
+
+      - name: Convert Notebook to HTML
+        run: |
+          jupyter nbconvert --to markdown notebooks/etl.ipynb
+
+  commit_files:
+    needs: convert_notebook
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Git
+        run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+
+      - name: Commit files
+        run: |
           git add -A
           git diff-index --quiet HEAD || (git commit -a -m "updated data/*" --allow-empty)
