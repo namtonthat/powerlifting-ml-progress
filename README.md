@@ -1,5 +1,6 @@
+[![scrape](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/scrape.yml/badge.svg)](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/scrape.yml)
 # Powerlifting ML Progress
-**Last Updated:** 2023-05-10
+**Last Updated:** 2023-05-23
 
 This repository analyzes publicly available data from the `OpenPowerlifting` database to estimate how much progress a powerlifter could make over time.
 
