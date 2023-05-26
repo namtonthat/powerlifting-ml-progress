@@ -53,9 +53,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Commit files
-      run: |
-        git add -A
-        git diff-index --quiet HEAD || (git commit -a -m "updated data/*" --allow-empty)
+        run: |
+          git add -A
+          git diff-index --quiet HEAD || (git commit -a -m "updated data/*" --allow-empty)
 
   convert_notebook:
     needs: download_and_unzip_data
@@ -96,5 +96,5 @@ jobs:
       - name: Commit files
       run: |
         git add -A
-        git diff-index --quiet HEAD || (git commit -a -m "updated data/*" --allow-empty)
+        git diff-index --quiet HEAD || (git commit -a -m "converted etl.md/*" --allow-empty)
         git push
