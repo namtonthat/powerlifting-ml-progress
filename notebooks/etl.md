@@ -1,556 +1,416 @@
-## ETL on `OpenPowerlifting` Data
-
-
-```python
-from IPython.display import display, Markdown
-import polars as pl 
-from datetime import datetime as dt
-
-# read configs 
-import sys
-from pathlib import Path
-sys.path.append(str(Path().resolve().parent))
-from steps import conf
-```
-
-### Loading Data
-
-
-```python
-s3_file_path = f"https://{conf.bucket_name}.s3.ap-southeast-2.amazonaws.com/{conf.parquet_file}"
-
-df = pl.read_parquet(s3_file_path)
-df.head(5)
-```
-
-
-
-
-<div><style>
-.dataframe > thead > tr > th,
-.dataframe > tbody > tr > td {
-  text-align: right;
-}
-</style>
-<small>shape: (5, 41)</small><table border="1" class="dataframe"><thead><tr><th>Name</th><th>Sex</th><th>Event</th><th>Equipment</th><th>Age</th><th>AgeClass</th><th>BirthYearClass</th><th>Division</th><th>BodyweightKg</th><th>WeightClassKg</th><th>Squat1Kg</th><th>Squat2Kg</th><th>Squat3Kg</th><th>Squat4Kg</th><th>Best3SquatKg</th><th>Bench1Kg</th><th>Bench2Kg</th><th>Bench3Kg</th><th>Bench4Kg</th><th>Best3BenchKg</th><th>Deadlift1Kg</th><th>Deadlift2Kg</th><th>Deadlift3Kg</th><th>Deadlift4Kg</th><th>Best3DeadliftKg</th><th>TotalKg</th><th>Place</th><th>Dots</th><th>Wilks</th><th>Glossbrenner</th><th>Goodlift</th><th>Tested</th><th>Country</th><th>State</th><th>Federation</th><th>ParentFederation</th><th>Date</th><th>MeetCountry</th><th>MeetState</th><th>MeetTown</th><th>MeetName</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>&quot;Alona Vladi&quot;</td><td>&quot;F&quot;</td><td>&quot;SBD&quot;</td><td>&quot;Raw&quot;</td><td>33.0</td><td>&quot;24-34&quot;</td><td>&quot;24-39&quot;</td><td>&quot;O&quot;</td><td>58.3</td><td>&quot;60&quot;</td><td>75.0</td><td>80.0</td><td>-90.0</td><td>null</td><td>80.0</td><td>50.0</td><td>55.0</td><td>60.0</td><td>null</td><td>60.0</td><td>95.0</td><td>105.0</td><td>107.5</td><td>null</td><td>107.5</td><td>247.5</td><td>&quot;1&quot;</td><td>279.44</td><td>282.18</td><td>249.42</td><td>57.1</td><td>&quot;Yes&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;GFP&quot;</td><td>null</td><td>&quot;2019-05-11&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;Bryansk&quot;</td><td>&quot;Open Tournamen…</td></tr><tr><td>&quot;Galina Solovya…</td><td>&quot;F&quot;</td><td>&quot;SBD&quot;</td><td>&quot;Raw&quot;</td><td>43.0</td><td>&quot;40-44&quot;</td><td>&quot;40-49&quot;</td><td>&quot;M1&quot;</td><td>73.1</td><td>&quot;75&quot;</td><td>95.0</td><td>100.0</td><td>105.0</td><td>null</td><td>105.0</td><td>62.5</td><td>67.5</td><td>-72.5</td><td>null</td><td>67.5</td><td>100.0</td><td>110.0</td><td>-120.0</td><td>null</td><td>110.0</td><td>282.5</td><td>&quot;1&quot;</td><td>278.95</td><td>272.99</td><td>240.35</td><td>56.76</td><td>&quot;Yes&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;GFP&quot;</td><td>null</td><td>&quot;2019-05-11&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;Bryansk&quot;</td><td>&quot;Open Tournamen…</td></tr><tr><td>&quot;Daniil Voronin…</td><td>&quot;M&quot;</td><td>&quot;SBD&quot;</td><td>&quot;Raw&quot;</td><td>15.5</td><td>&quot;16-17&quot;</td><td>&quot;14-18&quot;</td><td>&quot;T&quot;</td><td>67.4</td><td>&quot;75&quot;</td><td>85.0</td><td>90.0</td><td>100.0</td><td>null</td><td>100.0</td><td>55.0</td><td>62.5</td><td>-65.0</td><td>null</td><td>62.5</td><td>90.0</td><td>100.0</td><td>105.0</td><td>null</td><td>105.0</td><td>267.5</td><td>&quot;1&quot;</td><td>206.4</td><td>206.49</td><td>200.45</td><td>41.24</td><td>&quot;Yes&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;GFP&quot;</td><td>null</td><td>&quot;2019-05-11&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;Bryansk&quot;</td><td>&quot;Open Tournamen…</td></tr><tr><td>&quot;Aleksey Krasov…</td><td>&quot;M&quot;</td><td>&quot;SBD&quot;</td><td>&quot;Raw&quot;</td><td>35.0</td><td>&quot;35-39&quot;</td><td>&quot;24-39&quot;</td><td>&quot;O&quot;</td><td>66.65</td><td>&quot;75&quot;</td><td>125.0</td><td>132.0</td><td>137.5</td><td>null</td><td>137.5</td><td>115.0</td><td>122.5</td><td>-127.5</td><td>null</td><td>122.5</td><td>150.0</td><td>165.0</td><td>170.0</td><td>null</td><td>170.0</td><td>430.0</td><td>&quot;1&quot;</td><td>334.49</td><td>334.94</td><td>325.32</td><td>66.68</td><td>&quot;Yes&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;GFP&quot;</td><td>null</td><td>&quot;2019-05-11&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;Bryansk&quot;</td><td>&quot;Open Tournamen…</td></tr><tr><td>&quot;Margarita Ples…</td><td>&quot;M&quot;</td><td>&quot;SBD&quot;</td><td>&quot;Raw&quot;</td><td>26.5</td><td>&quot;24-34&quot;</td><td>&quot;24-39&quot;</td><td>&quot;O&quot;</td><td>72.45</td><td>&quot;75&quot;</td><td>80.0</td><td>85.0</td><td>90.0</td><td>null</td><td>90.0</td><td>40.0</td><td>50.0</td><td>-60.0</td><td>null</td><td>50.0</td><td>112.5</td><td>120.0</td><td>125.0</td><td>null</td><td>125.0</td><td>265.0</td><td>&quot;1&quot;</td><td>194.46</td><td>193.55</td><td>187.29</td><td>39.34</td><td>&quot;Yes&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;GFP&quot;</td><td>null</td><td>&quot;2019-05-11&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;Bryansk&quot;</td><td>&quot;Open Tournamen…</td></tr></tbody></table></div>
-
-
-
-
-```python
-cleansing_data_md = f"""
-## Cleansing data
-- Filter for only particular columns from {conf.op_cols}
-    - Select events that are IPF / Tested federations only (i.e. `Tested` = "Yes")
-    - Remove anyone who has been disqualified (i.e. `Place` = "DQ")
-    - `raw` equipment events only (i.e. `equipment` = `Raw`, single ply and wraps have 'competitive' advantage and are typically only for advanced lifters)
-- Drop any rows that have missing values in the columns above.
-- Drop any duplicates based on all columns.
-"""
-
-display(Markdown(cleansing_data_md))
-```
-
-
-
-## Cleansing data
-- Filter for only particular columns from ['Date', 'Name', 'Sex', 'Place', 'Age', 'AgeClass', 'BodyweightKg', 'Event', 'MeetCountry', 'Equipment', 'Best3SquatKg', 'Best3BenchKg', 'Best3DeadliftKg', 'TotalKg', 'Wilks', 'Tested', 'Federation', 'MeetName']
-    - Select events that are IPF / Tested federations only (i.e. `Tested` = "Yes")
-    - Remove anyone who has been disqualified (i.e. `Place` = "DQ")
-    - `raw` equipment events only (i.e. `equipment` = `Raw`, single ply and wraps have 'competitive' advantage and are typically only for advanced lifters)
-- Drop any rows that have missing values in the columns above.
-- Drop any duplicates based on all columns.
-
-
-
-
-```python
-base_df = df.select(conf.op_cols)
-print(base_df.shape)
-base_df.head(5)
-```
-
-    (2903147, 18)
-
-
-
-
-
-<div><style>
-.dataframe > thead > tr > th,
-.dataframe > tbody > tr > td {
-  text-align: right;
-}
-</style>
-<small>shape: (5, 18)</small><table border="1" class="dataframe"><thead><tr><th>Date</th><th>Name</th><th>Sex</th><th>Place</th><th>Age</th><th>AgeClass</th><th>BodyweightKg</th><th>Event</th><th>MeetCountry</th><th>Equipment</th><th>Best3SquatKg</th><th>Best3BenchKg</th><th>Best3DeadliftKg</th><th>TotalKg</th><th>Wilks</th><th>Tested</th><th>Federation</th><th>MeetName</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>&quot;2019-05-11&quot;</td><td>&quot;Alona Vladi&quot;</td><td>&quot;F&quot;</td><td>&quot;1&quot;</td><td>33.0</td><td>&quot;24-34&quot;</td><td>58.3</td><td>&quot;SBD&quot;</td><td>&quot;Russia&quot;</td><td>&quot;Raw&quot;</td><td>80.0</td><td>60.0</td><td>107.5</td><td>247.5</td><td>282.18</td><td>&quot;Yes&quot;</td><td>&quot;GFP&quot;</td><td>&quot;Open Tournamen…</td></tr><tr><td>&quot;2019-05-11&quot;</td><td>&quot;Galina Solovya…</td><td>&quot;F&quot;</td><td>&quot;1&quot;</td><td>43.0</td><td>&quot;40-44&quot;</td><td>73.1</td><td>&quot;SBD&quot;</td><td>&quot;Russia&quot;</td><td>&quot;Raw&quot;</td><td>105.0</td><td>67.5</td><td>110.0</td><td>282.5</td><td>272.99</td><td>&quot;Yes&quot;</td><td>&quot;GFP&quot;</td><td>&quot;Open Tournamen…</td></tr><tr><td>&quot;2019-05-11&quot;</td><td>&quot;Daniil Voronin…</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>15.5</td><td>&quot;16-17&quot;</td><td>67.4</td><td>&quot;SBD&quot;</td><td>&quot;Russia&quot;</td><td>&quot;Raw&quot;</td><td>100.0</td><td>62.5</td><td>105.0</td><td>267.5</td><td>206.49</td><td>&quot;Yes&quot;</td><td>&quot;GFP&quot;</td><td>&quot;Open Tournamen…</td></tr><tr><td>&quot;2019-05-11&quot;</td><td>&quot;Aleksey Krasov…</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>35.0</td><td>&quot;35-39&quot;</td><td>66.65</td><td>&quot;SBD&quot;</td><td>&quot;Russia&quot;</td><td>&quot;Raw&quot;</td><td>137.5</td><td>122.5</td><td>170.0</td><td>430.0</td><td>334.94</td><td>&quot;Yes&quot;</td><td>&quot;GFP&quot;</td><td>&quot;Open Tournamen…</td></tr><tr><td>&quot;2019-05-11&quot;</td><td>&quot;Margarita Ples…</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>26.5</td><td>&quot;24-34&quot;</td><td>72.45</td><td>&quot;SBD&quot;</td><td>&quot;Russia&quot;</td><td>&quot;Raw&quot;</td><td>90.0</td><td>50.0</td><td>125.0</td><td>265.0</td><td>193.55</td><td>&quot;Yes&quot;</td><td>&quot;GFP&quot;</td><td>&quot;Open Tournamen…</td></tr></tbody></table></div>
-
-
-
-
-```python
-cleansed_df = base_df.filter(
-    (pl.col("Event") == "SBD") & 
-    (pl.col("Tested") == "Yes") & 
-    (pl.col('Place').apply(lambda x: x.isnumeric(), return_dtype = pl.Boolean)) & 
-    (pl.col("Equipment") == "Raw")
-).drop_nulls().unique().sort("Date", descending=True).drop(["Tested", "Federation", "Event"])
-print(cleansed_df.shape)
-cleansed_df.head(5)
-```
-
-    (427224, 15)
-
-
-
-
-
-<div><style>
-.dataframe > thead > tr > th,
-.dataframe > tbody > tr > td {
-  text-align: right;
-}
-</style>
-<small>shape: (5, 15)</small><table border="1" class="dataframe"><thead><tr><th>Date</th><th>Name</th><th>Sex</th><th>Place</th><th>Age</th><th>AgeClass</th><th>BodyweightKg</th><th>MeetCountry</th><th>Equipment</th><th>Best3SquatKg</th><th>Best3BenchKg</th><th>Best3DeadliftKg</th><th>TotalKg</th><th>Wilks</th><th>MeetName</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>&quot;2023-04-30&quot;</td><td>&quot;Matyas Kovach&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>41.0</td><td>&quot;40-44&quot;</td><td>73.85</td><td>&quot;USA&quot;</td><td>&quot;Raw&quot;</td><td>180.0</td><td>132.5</td><td>185.0</td><td>497.5</td><td>358.37</td><td>&quot;Tri-State Cham…</td></tr><tr><td>&quot;2023-04-30&quot;</td><td>&quot;Amanda Lairmor…</td><td>&quot;F&quot;</td><td>&quot;1&quot;</td><td>23.5</td><td>&quot;24-34&quot;</td><td>50.4</td><td>&quot;USA&quot;</td><td>&quot;Raw&quot;</td><td>160.0</td><td>77.5</td><td>120.0</td><td>357.5</td><td>456.49</td><td>&quot;MetroEast Rook…</td></tr><tr><td>&quot;2023-04-30&quot;</td><td>&quot;Wendolyn Reyes…</td><td>&quot;F&quot;</td><td>&quot;2&quot;</td><td>21.5</td><td>&quot;20-23&quot;</td><td>103.1</td><td>&quot;USA&quot;</td><td>&quot;Raw&quot;</td><td>150.0</td><td>75.0</td><td>175.0</td><td>400.0</td><td>330.22</td><td>&quot;MetroEast Rook…</td></tr><tr><td>&quot;2023-04-30&quot;</td><td>&quot;Mikaela Inskee…</td><td>&quot;F&quot;</td><td>&quot;3&quot;</td><td>19.5</td><td>&quot;20-23&quot;</td><td>59.2</td><td>&quot;USA&quot;</td><td>&quot;Raw&quot;</td><td>92.5</td><td>65.0</td><td>125.0</td><td>282.5</td><td>318.26</td><td>&quot;MetroEast Rook…</td></tr><tr><td>&quot;2023-04-30&quot;</td><td>&quot;Alexis Novak&quot;</td><td>&quot;F&quot;</td><td>&quot;4&quot;</td><td>21.5</td><td>&quot;20-23&quot;</td><td>62.8</td><td>&quot;USA&quot;</td><td>&quot;Raw&quot;</td><td>90.0</td><td>55.0</td><td>102.5</td><td>247.5</td><td>266.45</td><td>&quot;MetroEast Rook…</td></tr></tbody></table></div>
-
-
-
-
-```python
-cleansed_df.filter(pl.col("Name") == "John Paul Cauchi").sort("Date", descending=True).head(5)
-```
-
-
-
-
-<div><style>
-.dataframe > thead > tr > th,
-.dataframe > tbody > tr > td {
-  text-align: right;
-}
-</style>
-<small>shape: (5, 15)</small><table border="1" class="dataframe"><thead><tr><th>Date</th><th>Name</th><th>Sex</th><th>Place</th><th>Age</th><th>AgeClass</th><th>BodyweightKg</th><th>MeetCountry</th><th>Equipment</th><th>Best3SquatKg</th><th>Best3BenchKg</th><th>Best3DeadliftKg</th><th>TotalKg</th><th>Wilks</th><th>MeetName</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>&quot;2022-11-05&quot;</td><td>&quot;John Paul Cauc…</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>29.5</td><td>&quot;24-34&quot;</td><td>82.35</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>265.0</td><td>137.5</td><td>290.0</td><td>692.5</td><td>464.42</td><td>&quot;Ballarat Open&quot;</td></tr><tr><td>&quot;2021-04-11&quot;</td><td>&quot;John Paul Cauc…</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>28.0</td><td>&quot;24-34&quot;</td><td>76.75</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>260.0</td><td>138.0</td><td>290.0</td><td>688.0</td><td>482.56</td><td>&quot;JPS Open VII&quot;</td></tr><tr><td>&quot;2020-09-26&quot;</td><td>&quot;John Paul Cauc…</td><td>&quot;M&quot;</td><td>&quot;2&quot;</td><td>27.5</td><td>&quot;24-34&quot;</td><td>76.95</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>256.0</td><td>133.0</td><td>306.0</td><td>695.0</td><td>486.62</td><td>&quot;Australian Pow…</td></tr><tr><td>&quot;2019-08-22&quot;</td><td>&quot;John Paul Cauc…</td><td>&quot;M&quot;</td><td>&quot;2&quot;</td><td>26.5</td><td>&quot;24-34&quot;</td><td>76.9</td><td>&quot;China&quot;</td><td>&quot;Raw&quot;</td><td>248.0</td><td>135.0</td><td>273.0</td><td>656.0</td><td>459.52</td><td>&quot;Asia Pacific O…</td></tr><tr><td>&quot;2019-06-28&quot;</td><td>&quot;John Paul Cauc…</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>26.5</td><td>&quot;24-34&quot;</td><td>76.85</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>253.0</td><td>134.0</td><td>286.0</td><td>673.0</td><td>471.63</td><td>&quot;Australian Pow…</td></tr></tbody></table></div>
-
-
-
-## Data Preparation
-- Drop the `Tested`, `Federation` and `Event` columns as they are no longer needed.
-- Update column types: 
-    - `Date` to `Date`
-    - `Place` to `Int64`
-- Collect data from 2000-01-01 onwards. 
-- Rename columns from camel to snake case 
-- Assume that a powerlifter's country is from the first country that compete in. 
-
-
-```python
-# find the first country that the powerlifter competed in and assume that is their country of origin
-lifter_country_df = cleansed_df.groupby(["Name", "Sex"]).agg(pl.first("MeetCountry").alias("OriginCountry"))
-```
-
-
-```python
-data_prep_df = cleansed_df.sort(["Name", "Date"], descending=[False, True]).join(lifter_country_df, on=["Name", "Sex"]).filter(pl.col("Date").gt("2000-01-01")).with_columns(
-    pl.col("Date").str.strptime(pl.Date, fmt="%Y-%m-%d").alias("Date"),
-    pl.col("Place").cast(pl.Int32).alias("Place"),
-).rename(
-    mapping=conf.op_cols_rename
-).select(
-    pl.all().map_alias(lambda col_name: conf.camel_to_snake(col_name))
-)
-
-
-print(data_prep_df.shape)
-data_prep_df.head(5)
-```
-
-    (426396, 16)
-
-
-
-
-
-<div><style>
-.dataframe > thead > tr > th,
-.dataframe > tbody > tr > td {
-  text-align: right;
-}
-</style>
-<small>shape: (5, 16)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>name</th><th>sex</th><th>place</th><th>age</th><th>age_class</th><th>bodyweight</th><th>meet_country</th><th>equipment</th><th>squat</th><th>bench</th><th>deadlift</th><th>total</th><th>wilks</th><th>meet_name</th><th>origin_country</th></tr><tr><td>date</td><td>str</td><td>str</td><td>i32</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>2017-12-04</td><td>&quot;A Ajeesha&quot;</td><td>&quot;F&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>71.1</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>112.5</td><td>55.0</td><td>132.5</td><td>300.0</td><td>295.29</td><td>&quot;Asian Classic …</td><td>&quot;India&quot;</td></tr><tr><td>2012-12-10</td><td>&quot;A Ashwin&quot;</td><td>&quot;M&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>82.55</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>170.0</td><td>95.0</td><td>220.0</td><td>485.0</td><td>324.79</td><td>&quot;Asian Classic …</td><td>&quot;India&quot;</td></tr><tr><td>2019-10-01</td><td>&quot;A Belousov&quot;</td><td>&quot;M&quot;</td><td>8</td><td>17.5</td><td>&quot;18-19&quot;</td><td>73.6</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Raw&quot;</td><td>75.0</td><td>75.0</td><td>100.0</td><td>250.0</td><td>180.52</td><td>&quot;Kazakhstan Cla…</td><td>&quot;Kazakhstan&quot;</td></tr><tr><td>2019-09-26</td><td>&quot;A K S Shri Ram…</td><td>&quot;M&quot;</td><td>13</td><td>16.0</td><td>&quot;16-17&quot;</td><td>78.2</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>117.5</td><td>50.0</td><td>150.0</td><td>317.5</td><td>219.95</td><td>&quot;Indian Classic…</td><td>&quot;India&quot;</td></tr><tr><td>2019-09-26</td><td>&quot;A Pradeep&quot;</td><td>&quot;M&quot;</td><td>6</td><td>17.0</td><td>&quot;16-17&quot;</td><td>80.7</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>150.0</td><td>97.5</td><td>170.0</td><td>417.5</td><td>283.48</td><td>&quot;Indian Classic…</td><td>&quot;India&quot;</td></tr></tbody></table></div>
-
-
-
-### Feature Engineering
-- Create a `pot_*` (progress over time) columns for `wilks` and `total`
-- Adds columns:
-  - `time_since_last_comp`: identify how long it has been since their last competition (in days)
-  - `home_country`: 1 if `meet_country` == `origin_country` else 0 
-  - `bodyweight_change`: change in bodyweight since the last comp (in kg)
-  - `cumulative_comps`: running total of the number of comopetitions completed
-- Switches `Date` 
-
-
-```python
-fe_df = data_prep_df.with_columns(
-     (pl.col('date') - pl.col('date').shift(-1)).over('name').alias('time_since_last_comp').apply(lambda x: x.days).cast(pl.Int32),
-     (pl.col('bodyweight') - pl.col('bodyweight').shift(-1)).over('name').alias('bodyweight_change').cast(pl.Float64),
-).sort(
-    ["name", "date"], descending=[False, False]
-).with_columns(
-    (pl.col('time_since_last_comp') / 365.25).alias('years_since_last_comp'),
-    (pl.col("meet_country") == pl.col("origin_country")).alias("is_origin_country"),
-    pl.col('date').apply(lambda x: x.toordinal()).alias('date_as_ordinal'),
-    pl.col('name').cumcount().over('name').alias('cumulative_comps'),
-    pl.when(
-        pl.col("meet_name").str.contains('national')
-    ).then("national").otherwise(
-    pl.when(
-        pl.col('meet_name').str.contains('International|World|Commonwealth')
-    ).then("international").otherwise("local")).alias('meet_type')
-)
-
-
-fe_df_with_progress = fe_df.with_columns(
-    ((pl.col('squat') - pl.col('squat').shift(1)) / pl.col('years_since_last_comp')).over('name').alias(f'squat_progress'),
-    ((pl.col('bench') - pl.col('bench').shift(1)) / pl.col('years_since_last_comp')).over('name').alias(f'bench_progress'),
-    ((pl.col('deadlift') - pl.col('deadlift').shift(1)) / pl.col('years_since_last_comp')).over('name').alias(f'deadlift_progress'),
-    ((pl.col('total') - pl.col('total').shift(1)) / pl.col('years_since_last_comp')).over('name').alias(f'total_progress'),
-    ((pl.col('wilks') - pl.col('wilks').shift(1)) / pl.col('years_since_last_comp')).over('name').alias(f'wilks_progress')
-).drop_nulls()
-
-```
-
-
-```python
-jp_df = fe_df_with_progress.filter(pl.col('name').is_in(["Nam Tonthat"]))
-jp_df.to_pandas().to_markdown
-```
-
-
-
-
-    <bound method DataFrame.to_markdown of         date         name sex  place   age age_class  bodyweight meet_country   
-    0 2022-09-17  Nam Tonthat   M      1  28.5     24-34        69.9    Australia  \
-    1 2022-12-03  Nam Tonthat   M      4  28.5     24-34        66.6    Australia   
-    
-      equipment  squat  ...  years_since_last_comp  is_origin_country   
-    0       Raw  140.0  ...               1.434634               True  \
-    1       Raw  147.5  ...               0.210815               True   
-    
-       date_as_ordinal  cumulative_comps meet_type squat_progress  bench_progress   
-    0           738415                 1     local       0.000000        1.394084  \
-    1           738492                 2  national      35.576299       11.858766   
-    
-       deadlift_progress  total_progress  wilks_progress  
-    0           6.970420        8.364504       -0.285787  
-    1          35.576299       83.011364      126.367013  
-    
-    [2 rows x 28 columns]>
-
-
-
-## Modelling
-
-
-```python
-from sklearn.model_selection import GridSearchCV, train_test_split
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_squared_error
-from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder, StandardScaler
-from sklearn.pipeline import Pipeline
-from sklearn.compose import ColumnTransformer
-```
-
-
-```python
-param_grid = {
-    'regressor__bootstrap': [True],
-    'regressor__max_depth': [80, 90, 100, 110],
-    'regressor__max_features': [2, 3],
-    'regressor__min_samples_leaf': [3, 4, 5],
-    'regressor__min_samples_split': [8, 10, 12],
-    'regressor__n_estimators': [100, 200, 300, 1000]
-}
-
-```
-
-
-```python
-fe_df.schema
-```
-
-
-
-
-    {'date': Date,
-     'name': Utf8,
-     'sex': Utf8,
-     'place': Int32,
-     'age': Float64,
-     'age_class': Utf8,
-     'bodyweight': Float64,
-     'meet_country': Utf8,
-     'equipment': Utf8,
-     'squat': Float64,
-     'bench': Float64,
-     'deadlift': Float64,
-     'total': Float64,
-     'wilks': Float64,
-     'meet_name': Utf8,
-     'origin_country': Utf8,
-     'days_since_last_competition': Int32,
-     'squat_progress_per_day': Float64,
-     'bench_progress_per_day': Float64,
-     'deadlift_progress_per_day': Float64,
-     'total_progress_per_day': Float64,
-     'wilks_progress_per_day': Float64,
-     'is_origin_country': Boolean,
-     'date_as_ordinal': Int64}
-
-
-
-
-```python
-features = [
-    "date_as_ordinal", "name", "sex", "age", "age_class", "bodyweight", "equipment", "total", "place", "time_since_last_comp", "squat_progress", "bench_progress", "deadlift_progress", "total_progress", "wilks_progress", "origin_country", "is_origin_country"
-]
-target = [
-    "total"
-]
-
-
-# Preprocessing steps for numeric features
-numeric_transformer = Pipeline([
-    ('scaler', StandardScaler())
-])
-
-# Preprocessing steps for categorical features
-categorical_transformer = Pipeline([
-    ('encoder', OneHotEncoder())
-])
-
-
-# Preprocessing steps for label encoded features
-ordinal_transformer = Pipeline([
-    ('encoder', OrdinalEncoder())
-])
-
-# Combine preprocessing steps for all features
-preprocessor = ColumnTransformer([
-    ('numeric', numeric_transformer, ['age', 'bodyweight','time_since_last_comp', "squat_progress", "bench_progress", "deadlift_progress", "total_progress", "wilks_progress", 'date_as_ordinal', 'total']),
-    ('categorical', categorical_transformer, ['sex', 'is_origin_country']),
-    ('ordinal', ordinal_transformer, ['place', 'name', 'age_class', 'origin_country'])
-])
-
-# Create the pipeline with preprocessing steps and the regressor
-pipeline = Pipeline([
-    ('preprocessor', preprocessor),
-    ('regressor', RandomForestRegressor())
-])
-```
-
-
-```python
-fe_df = data_prep_df.with_columns(
-     (pl.col('date') - pl.col('date').shift(-1)).over('name').alias('time_since_last_comp').apply(lambda x: x.days).cast(pl.Int32)
-).filter(pl.col("name") == "A. Belevskiy")
-```
-
-
-```python
-fe_df.tail(2).to_dict(as_series=True)
-```
-
-
-
-
-    {'date': shape: (2,)
-     Series: 'date' [date]
-     [
-     	2015-10-05
-     	2015-10-05
-     ],
-     'name': shape: (2,)
-     Series: 'name' [str]
-     [
-     	"A. Belevskiy"
-     	"A. Belevskiy"
-     ],
-     'sex': shape: (2,)
-     Series: 'sex' [str]
-     [
-     	"M"
-     	"M"
-     ],
-     'place': shape: (2,)
-     Series: 'place' [i32]
-     [
-     	1
-     	4
-     ],
-     'age': shape: (2,)
-     Series: 'age' [f64]
-     [
-     	16.5
-     	16.5
-     ],
-     'age_class': shape: (2,)
-     Series: 'age_class' [str]
-     [
-     	"16-17"
-     	"16-17"
-     ],
-     'bodyweight': shape: (2,)
-     Series: 'bodyweight' [f64]
-     [
-     	94.35
-     	96.0
-     ],
-     'meet_country': shape: (2,)
-     Series: 'meet_country' [str]
-     [
-     	"Kazakhstan"
-     	"Kazakhstan"
-     ],
-     'equipment': shape: (2,)
-     Series: 'equipment' [str]
-     [
-     	"Raw"
-     	"Single-ply"
-     ],
-     'squat': shape: (2,)
-     Series: 'squat' [f64]
-     [
-     	200.0
-     	250.0
-     ],
-     'bench': shape: (2,)
-     Series: 'bench' [f64]
-     [
-     	142.5
-     	150.0
-     ],
-     'deadlift': shape: (2,)
-     Series: 'deadlift' [f64]
-     [
-     	210.0
-     	240.0
-     ],
-     'total': shape: (2,)
-     Series: 'total' [f64]
-     [
-     	552.5
-     	640.0
-     ],
-     'wilks': shape: (2,)
-     Series: 'wilks' [f64]
-     [
-     	344.75
-     	396.24
-     ],
-     'meet_name': shape: (2,)
-     Series: 'meet_name' [str]
-     [
-     	"Kazakhstan Pow…
-     	"Kazakhstan Pow…
-     ],
-     'origin_country': shape: (2,)
-     Series: 'origin_country' [str]
-     [
-     	"Kazakhstan"
-     	"Kazakhstan"
-     ],
-     'time_since_last_comp': shape: (2,)
-     Series: 'time_since_last_comp' [i32]
-     [
-     	0
-     	null
-     ]}
-
-
-
-
-```python
-fe_df.filter(pl.col("name") == 'A. Belevskiy')
-```
-
-
-
-
-<div><style>
-.dataframe > thead > tr > th,
-.dataframe > tbody > tr > td {
-  text-align: right;
-}
-</style>
-<small>shape: (4, 24)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>name</th><th>sex</th><th>place</th><th>age</th><th>age_class</th><th>bodyweight</th><th>meet_country</th><th>equipment</th><th>squat</th><th>bench</th><th>deadlift</th><th>total</th><th>wilks</th><th>meet_name</th><th>origin_country</th><th>time_since_last_comp</th><th>squat_progress</th><th>bench_progress</th><th>deadlift_progress</th><th>total_progress</th><th>wilks_progress</th><th>is_origin_country</th><th>date_as_ordinal</th></tr><tr><td>date</td><td>str</td><td>str</td><td>i32</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td><td>i32</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>bool</td><td>i64</td></tr></thead><tbody><tr><td>2016-07-04</td><td>&quot;A. Belevskiy&quot;</td><td>&quot;M&quot;</td><td>1</td><td>17.5</td><td>&quot;18-19&quot;</td><td>97.2</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Single-ply&quot;</td><td>235.0</td><td>172.5</td><td>235.0</td><td>642.5</td><td>395.64</td><td>&quot;Kazakhstan Sub…</td><td>&quot;Kazakhstan&quot;</td><td>93</td><td>4.455852</td><td>5.092402</td><td>1.909651</td><td>11.457906</td><td>5.135688</td><td>true</td><td>736149</td></tr><tr><td>2016-04-02</td><td>&quot;A. Belevskiy&quot;</td><td>&quot;M&quot;</td><td>1</td><td>17.5</td><td>&quot;18-19&quot;</td><td>98.65</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Raw&quot;</td><td>212.5</td><td>147.5</td><td>215.0</td><td>575.0</td><td>351.88</td><td>&quot;Kazakhstan Cla…</td><td>&quot;Kazakhstan&quot;</td><td>31</td><td>1.909651</td><td>2.121834</td><td>1.697467</td><td>5.728953</td><td>3.714059</td><td>true</td><td>736056</td></tr><tr><td>2016-03-02</td><td>&quot;A. Belevskiy&quot;</td><td>&quot;M&quot;</td><td>1</td><td>17.5</td><td>&quot;18-19&quot;</td><td>97.45</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Single-ply&quot;</td><td>235.0</td><td>160.0</td><td>230.0</td><td>625.0</td><td>384.45</td><td>&quot;Kazakhstan Pow…</td><td>&quot;Kazakhstan&quot;</td><td>149</td><td>-9.178645</td><td>-5.099247</td><td>-6.119097</td><td>-20.396988</td><td>-13.286598</td><td>true</td><td>736025</td></tr><tr><td>2015-10-05</td><td>&quot;A. Belevskiy&quot;</td><td>&quot;M&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>94.35</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Raw&quot;</td><td>200.0</td><td>142.5</td><td>210.0</td><td>552.5</td><td>344.75</td><td>&quot;Kazakhstan Pow…</td><td>&quot;Kazakhstan&quot;</td><td>0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>true</td><td>735876</td></tr></tbody></table></div>
-
-
-
-
-```python
-X_train, X_test, y_train, y_test = train_test_split(fe_df[features], fe_df[target], test_size=0.2, random_state=42)
-```
-
-
-```python
-pipeline.fit(X_train.to_pandas(), y_train.to_pandas())
-```
-
-    /Users/namtonthat/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/sklearn/pipeline.py:346: DataConversionWarning: A column-vector y was passed when a 1d array was expected. Please change the shape of y to (n_samples,), for example using ravel().
-      self._final_estimator.fit(Xt, y, **fit_params_last_step)
-
-
-
-
-
-    Pipeline(steps=[('preprocessor',
-                     ColumnTransformer(transformers=[('numeric',
-                                                      Pipeline(steps=[('scaler',
-                                                                       StandardScaler())]),
-                                                      ['age', 'bodyweight',
-                                                       'time_since_last_comp',
-                                                       'squat_progress',
-                                                       'bench_progress',
-                                                       'deadlift_progress',
-                                                       'total_progress',
-                                                       'wilks_progress',
-                                                       'date_as_ordinal',
-                                                       'total']),
-                                                     ('categorical',
-                                                      Pipeline(steps=[('encoder',
-                                                                       OneHotEncoder())]),
-                                                      ['sex', 'is_origin_country']),
-                                                     ('ordinal',
-                                                      Pipeline(steps=[('encoder',
-                                                                       OrdinalEncoder())]),
-                                                      ['place', 'name', 'age_class',
-                                                       'origin_country'])])),
-                    ('regressor', RandomForestRegressor())])
-
-
-
-
-```python
-# Initialize the grid search model
-grid_search = GridSearchCV(estimator = pipeline, param_grid = param_grid, 
-                           cv = 3, n_jobs = -1, verbose = 2)
-
-# Fit the grid search model
-grid_search.fit(X_train.to_pandas(), y_train.to_pandas())
-
-# Get the best parameters
-best_params = grid_search.best_params_
-
-# Train the model using the best parameters
-best_model = RandomForestRegressor(**best_params)
-best_model.fit(X_train.to_pandas(), y_train.to_pandas())
-
-# Make predictions
-y_pred = best_model.predict(X_test.to_pandas())
-
-```
-
-
-```python
-print(f"Mean Squared Error: {mse}")
-```
+\\# ETL on \\OpenPowerlifting\\ Data \\\\\\python from IPython.display
+import display, Markdown import polars as pl from datetime import
+datetime as dt \\ read configs import sys from pathlib import Path
+sys.path.append(str(Path().resolve().parent)) from steps import conf
+\\\\\\ \\## Loading Data \\\\\\python s3\\file\\path =
+f"https://{conf.bucket\\name}.s3.ap-southeast-2.amazonaws.com/{conf.parquet\\file}"
+df = pl.read\\parquet(s3\\file\\path) df.head(5) \\\\\\
+<span class="small">shape: (5, 41)</span>
+
+| Name             | Sex | Event | Equipment | Age  | AgeClass | BirthYearClass | Division | BodyweightKg | WeightClassKg | Squat1Kg | Squat2Kg | Squat3Kg | Squat4Kg | Best3SquatKg | Bench1Kg | Bench2Kg | Bench3Kg | Bench4Kg | Best3BenchKg | Deadlift1Kg | Deadlift2Kg | Deadlift3Kg | Deadlift4Kg | Best3DeadliftKg | TotalKg | Place | Dots   | Wilks  | Glossbrenner | Goodlift | Tested | Country  | State | Federation | ParentFederation | Date         | MeetCountry | MeetState | MeetTown  | MeetName         |
+|------------------|-----|-------|-----------|------|----------|----------------|----------|--------------|---------------|----------|----------|----------|----------|--------------|----------|----------|----------|----------|--------------|-------------|-------------|-------------|-------------|-----------------|---------|-------|--------|--------|--------------|----------|--------|----------|-------|------------|------------------|--------------|-------------|-----------|-----------|------------------|
+| str              | str | str   | str       | f64  | str      | str            | str      | f64          | str           | f64      | f64      | f64      | f64      | f64          | f64      | f64      | f64      | f64      | f64          | f64         | f64         | f64         | f64         | f64             | f64     | str   | f64    | f64    | f64          | f64      | str    | str      | str   | str        | str              | str          | str         | str       | str       | str              |
+| "Alona Vladi"    | "F" | "SBD" | "Raw"     | 33.0 | "24-34"  | "24-39"        | "O"      | 58.3         | "60"          | 75.0     | 80.0     | -90.0    | null     | 80.0         | 50.0     | 55.0     | 60.0     | null     | 60.0         | 95.0        | 105.0       | 107.5       | null        | 107.5           | 247.5   | "1"   | 279.44 | 282.18 | 249.42       | 57.1     | "Yes"  | "Russia" | null  | "GFP"      | null             | "2019-05-11" | "Russia"    | null      | "Bryansk" | "Open Tournamen… |
+| "Galina Solovya… | "F" | "SBD" | "Raw"     | 43.0 | "40-44"  | "40-49"        | "M1"     | 73.1         | "75"          | 95.0     | 100.0    | 105.0    | null     | 105.0        | 62.5     | 67.5     | -72.5    | null     | 67.5         | 100.0       | 110.0       | -120.0      | null        | 110.0           | 282.5   | "1"   | 278.95 | 272.99 | 240.35       | 56.76    | "Yes"  | "Russia" | null  | "GFP"      | null             | "2019-05-11" | "Russia"    | null      | "Bryansk" | "Open Tournamen… |
+| "Daniil Voronin… | "M" | "SBD" | "Raw"     | 15.5 | "16-17"  | "14-18"        | "T"      | 67.4         | "75"          | 85.0     | 90.0     | 100.0    | null     | 100.0        | 55.0     | 62.5     | -65.0    | null     | 62.5         | 90.0        | 100.0       | 105.0       | null        | 105.0           | 267.5   | "1"   | 206.4  | 206.49 | 200.45       | 41.24    | "Yes"  | "Russia" | null  | "GFP"      | null             | "2019-05-11" | "Russia"    | null      | "Bryansk" | "Open Tournamen… |
+| "Aleksey Krasov… | "M" | "SBD" | "Raw"     | 35.0 | "35-39"  | "24-39"        | "O"      | 66.65        | "75"          | 125.0    | 132.0    | 137.5    | null     | 137.5        | 115.0    | 122.5    | -127.5   | null     | 122.5        | 150.0       | 165.0       | 170.0       | null        | 170.0           | 430.0   | "1"   | 334.49 | 334.94 | 325.32       | 66.68    | "Yes"  | "Russia" | null  | "GFP"      | null             | "2019-05-11" | "Russia"    | null      | "Bryansk" | "Open Tournamen… |
+| "Margarita Ples… | "M" | "SBD" | "Raw"     | 26.5 | "24-34"  | "24-39"        | "O"      | 72.45        | "75"          | 80.0     | 85.0     | 90.0     | null     | 90.0         | 40.0     | 50.0     | -60.0    | null     | 50.0         | 112.5       | 120.0       | 125.0       | null        | 125.0           | 265.0   | "1"   | 194.46 | 193.55 | 187.29       | 39.34    | "Yes"  | "Russia" | null  | "GFP"      | null             | "2019-05-11" | "Russia"    | null      | "Bryansk" | "Open Tournamen… |
+
+\\\\\\python cleansing\\data\\md = f""" \\# Cleansing data - Filter for
+only particular columns from {conf.op\\cols} - Select events that are
+IPF / Tested federations only (i.e. \\Tested\\ = "Yes") - Remove anyone
+who has been disqualified (i.e. \\Place\\ = "DQ") - \\raw\\ equipment
+events only (i.e. \\equipment\\ = \\Raw\\, single ply and wraps have
+'competitive' advantage and are typically only for advanced lifters) -
+Drop any rows that have missing values in the columns above. - Drop any
+duplicates based on all columns. """
+display(Markdown(cleansing\\data\\md)) \\\\\\ \\# Cleansing data -
+Filter for only particular columns from \\'Date', 'Name', 'Sex',
+'Place', 'Age', 'AgeClass', 'BodyweightKg', 'Event', 'MeetCountry',
+'Equipment', 'Best3SquatKg', 'Best3BenchKg', 'Best3DeadliftKg',
+'TotalKg', 'Wilks', 'Tested', 'Federation', 'MeetName'\\ - Select events
+that are IPF / Tested federations only (i.e. \\Tested\\ = "Yes") -
+Remove anyone who has been disqualified (i.e. \\Place\\ = "DQ") -
+\\raw\\ equipment events only (i.e. \\equipment\\ = \\Raw\\, single ply
+and wraps have 'competitive' advantage and are typically only for
+advanced lifters) - Drop any rows that have missing values in the
+columns above. - Drop any duplicates based on all columns. \\\\\\python
+base\\df = df.select(conf.op\\cols) print(base\\df.shape)
+base\\df.head(5) \\\\\\ (2907777, 18) <span class="small">shape: (5,
+18)</span>
+
+| Date         | Name             | Sex | Place | Age  | AgeClass | BodyweightKg | Event | MeetCountry | Equipment | Best3SquatKg | Best3BenchKg | Best3DeadliftKg | TotalKg | Wilks  | Tested | Federation | MeetName         |
+|--------------|------------------|-----|-------|------|----------|--------------|-------|-------------|-----------|--------------|--------------|-----------------|---------|--------|--------|------------|------------------|
+| str          | str              | str | str   | f64  | str      | f64          | str   | str         | str       | f64          | f64          | f64             | f64     | f64    | str    | str        | str              |
+| "2019-05-11" | "Alona Vladi"    | "F" | "1"   | 33.0 | "24-34"  | 58.3         | "SBD" | "Russia"    | "Raw"     | 80.0         | 60.0         | 107.5           | 247.5   | 282.18 | "Yes"  | "GFP"      | "Open Tournamen… |
+| "2019-05-11" | "Galina Solovya… | "F" | "1"   | 43.0 | "40-44"  | 73.1         | "SBD" | "Russia"    | "Raw"     | 105.0        | 67.5         | 110.0           | 282.5   | 272.99 | "Yes"  | "GFP"      | "Open Tournamen… |
+| "2019-05-11" | "Daniil Voronin… | "M" | "1"   | 15.5 | "16-17"  | 67.4         | "SBD" | "Russia"    | "Raw"     | 100.0        | 62.5         | 105.0           | 267.5   | 206.49 | "Yes"  | "GFP"      | "Open Tournamen… |
+| "2019-05-11" | "Aleksey Krasov… | "M" | "1"   | 35.0 | "35-39"  | 66.65        | "SBD" | "Russia"    | "Raw"     | 137.5        | 122.5        | 170.0           | 430.0   | 334.94 | "Yes"  | "GFP"      | "Open Tournamen… |
+| "2019-05-11" | "Margarita Ples… | "M" | "1"   | 26.5 | "24-34"  | 72.45        | "SBD" | "Russia"    | "Raw"     | 90.0         | 50.0         | 125.0           | 265.0   | 193.55 | "Yes"  | "GFP"      | "Open Tournamen… |
+
+\\\\\\python cleansed\\df = base\\df.filter( (pl.col("Event") == "SBD")
+& (pl.col("Tested") == "Yes") & (pl.col('Place').apply(lambda x:
+x.isnumeric(), return\\dtype = pl.Boolean)) & (pl.col("Equipment") ==
+"Raw") ).drop\\nulls().unique().sort("Date",
+descending=True).drop(\\"Tested", "Federation", "Event"\\)
+print(cleansed\\df.shape) cleansed\\df.head(5) \\\\\\ (429429, 15)
+<span class="small">shape: (5, 15)</span>
+
+| Date         | Name             | Sex | Place | Age  | AgeClass | BodyweightKg | MeetCountry   | Equipment | Best3SquatKg | Best3BenchKg | Best3DeadliftKg | TotalKg | Wilks  | MeetName         |
+|--------------|------------------|-----|-------|------|----------|--------------|---------------|-----------|--------------|--------------|-----------------|---------|--------|------------------|
+| str          | str              | str | str   | f64  | str      | f64          | str           | str       | f64          | f64          | f64             | f64     | f64    | str              |
+| "2023-05-07" | "Sandrine Genou… | "F" | "1"   | 35.0 | "35-39"  | 48.5         | "Switzerland" | "Raw"     | 100.0        | 50.0         | 117.5           | 267.5   | 351.58 | "Championnat Su… |
+| "2023-05-07" | "Laura Delay"    | "F" | "2"   | 25.0 | "24-34"  | 50.3         | "Switzerland" | "Raw"     | 95.0         | 55.0         | 110.0           | 260.0   | 332.49 | "Championnat Su… |
+| "2023-05-07" | "Selin Tabak"    | "F" | "1"   | 25.0 | "24-34"  | 56.4         | "Switzerland" | "Raw"     | 120.0        | 70.0         | 130.0           | 320.0   | 374.42 | "Championnat Su… |
+| "2023-05-07" | "Célestine Nguy… | "F" | "1"   | 29.0 | "24-34"  | 62.0         | "Switzerland" | "Raw"     | 110.0        | 42.5         | 132.5           | 285.0   | 309.82 | "Championnat Su… |
+| "2023-05-07" | "Daniela Niklau… | "F" | "1"   | 37.0 | "35-39"  | 66.5         | "Switzerland" | "Raw"     | 112.5        | 82.5         | 165.0           | 360.0   | 371.4  | "Championnat Su… |
+
+\\\\\\python cleansed\\df.filter(pl.col("Name") == "John Paul
+Cauchi").sort("Date", descending=True).head(5) \\\\\\
+<span class="small">shape: (5, 15)</span>
+
+| Date         | Name             | Sex | Place | Age  | AgeClass | BodyweightKg | MeetCountry | Equipment | Best3SquatKg | Best3BenchKg | Best3DeadliftKg | TotalKg | Wilks  | MeetName         |
+|--------------|------------------|-----|-------|------|----------|--------------|-------------|-----------|--------------|--------------|-----------------|---------|--------|------------------|
+| str          | str              | str | str   | f64  | str      | f64          | str         | str       | f64          | f64          | f64             | f64     | f64    | str              |
+| "2022-11-05" | "John Paul Cauc… | "M" | "1"   | 29.5 | "24-34"  | 82.35        | "Australia" | "Raw"     | 265.0        | 137.5        | 290.0           | 692.5   | 464.42 | "Ballarat Open"  |
+| "2021-04-11" | "John Paul Cauc… | "M" | "1"   | 28.0 | "24-34"  | 76.75        | "Australia" | "Raw"     | 260.0        | 138.0        | 290.0           | 688.0   | 482.56 | "JPS Open VII"   |
+| "2020-09-26" | "John Paul Cauc… | "M" | "2"   | 27.5 | "24-34"  | 76.95        | "Australia" | "Raw"     | 256.0        | 133.0        | 306.0           | 695.0   | 486.62 | "Australian Pow… |
+| "2019-08-22" | "John Paul Cauc… | "M" | "2"   | 26.5 | "24-34"  | 76.9         | "China"     | "Raw"     | 248.0        | 135.0        | 273.0           | 656.0   | 459.52 | "Asia Pacific O… |
+| "2019-06-28" | "John Paul Cauc… | "M" | "1"   | 26.5 | "24-34"  | 76.85        | "Australia" | "Raw"     | 253.0        | 134.0        | 286.0           | 673.0   | 471.63 | "Australian Pow… |
+
+\\# Data Preparation - Drop the \\Tested\\, \\Federation\\ and \\Event\\
+columns as they are no longer needed. - Update column types: - \\Date\\
+to \\Date\\ - \\Place\\ to \\Int64\\ - Collect data from 2000-01-01
+onwards. - Rename columns from camel to snake case - Assume that a
+powerlifter's country is from the first country that compete in.
+\\\\\\python \\ find the first country that the powerlifter competed in
+and assume that is their country of origin lifter\\country\\df =
+cleansed\\df.groupby(\\"Name",
+"Sex"\\).agg(pl.first("MeetCountry").alias("OriginCountry")) \\\\\\
+\\\\\\python data\\prep\\df = cleansed\\df.sort(\\"Name", "Date"\\,
+descending=\\False, True\\).join(lifter\\country\\df, on=\\"Name",
+"Sex"\\).filter(pl.col("Date").gt("2000-01-01")).with\\columns(
+pl.col("Date").str.strptime(pl.Date, fmt="%Y-%m-%d").alias("Date"),
+pl.col("Place").cast(pl.Int32).alias("Place"), ).rename(
+mapping=conf.op\\cols\\rename ).select( pl.all().map\\alias(lambda
+col\\name: conf.camel\\to\\snake(col\\name)) )
+print(data\\prep\\df.shape) data\\prep\\df.head(5) \\\\\\ (428601, 16)
+<span class="small">shape: (5, 16)</span>
+
+| date       | name             | sex | place | age  | age_class | bodyweight | meet_country | equipment | squat | bench | deadlift | total | wilks  | meet_name        | origin_country |
+|------------|------------------|-----|-------|------|-----------|------------|--------------|-----------|-------|-------|----------|-------|--------|------------------|----------------|
+| date       | str              | str | i32   | f64  | str       | f64        | str          | str       | f64   | f64   | f64      | f64   | f64    | str              | str            |
+| 2017-12-04 | "A Ajeesha"      | "F" | 1     | 16.5 | "16-17"   | 71.1       | "India"      | "Raw"     | 112.5 | 55.0  | 132.5    | 300.0 | 295.29 | "Asian Classic … | "India"        |
+| 2012-12-10 | "A Ashwin"       | "M" | 1     | 16.5 | "16-17"   | 82.55      | "India"      | "Raw"     | 170.0 | 95.0  | 220.0    | 485.0 | 324.79 | "Asian Classic … | "India"        |
+| 2019-10-01 | "A Belousov"     | "M" | 8     | 17.5 | "18-19"   | 73.6       | "Kazakhstan" | "Raw"     | 75.0  | 75.0  | 100.0    | 250.0 | 180.52 | "Kazakhstan Cla… | "Kazakhstan"   |
+| 2019-09-26 | "A K S Shri Ram… | "M" | 13    | 16.0 | "16-17"   | 78.2       | "India"      | "Raw"     | 117.5 | 50.0  | 150.0    | 317.5 | 219.95 | "Indian Classic… | "India"        |
+| 2019-09-26 | "A Pradeep"      | "M" | 6     | 17.0 | "16-17"   | 80.7       | "India"      | "Raw"     | 150.0 | 97.5  | 170.0    | 417.5 | 283.48 | "Indian Classic… | "India"        |
+
+\\## Feature Engineering \\### Creating a Primary Key - As we require to
+track a lifter's progress over time, the problem we'll encounter is that
+there is no primary key to define the dataset without a lifter's birth
+date. - This could have been resolved if we had their birth date but in
+lieu of this, we can derive their age assuming that everyone's birthday
+is the start of each year. - The only problem that this would result in
+is that we have two lifters of the same name with the same age (actually
+likely) but not as like as the first scenario. A new dataframe is
+created called \\primary\\key\\df\\ to generate this \\primary\\key\\
+column \\### Columns added - Create a \\pot\\\\\\ (progress over time)
+columns for \\wilks\\ and \\total\\ - Adds columns: -
+\\time\\since\\last\\comp\\: identify how long it has been since their
+last competition (in days) - \\home\\country\\: 1 if \\meet\\country\\
+== \\origin\\country\\ else 0 - \\bodyweight\\change\\: change in
+bodyweight since the last comp (in kg) - \\cumulative\\comps\\: running
+total of the number of comopetitions completed - \\meet\\type\\:
+categories each meet in \\local\\, \\national\\ or \\international\\ -
+\\starting lifts\\: defines their starting lifts - Switches \\Date\\ to
+ordinal as a new column \\date\\ass\\ordinal\\ \\\\\\python
+primary\\key\\df = data\\prep\\df.with\\columns(
+(pl.col("date").dt.strftime('%Y').cast(pl.Int32) -
+pl.col("age")).cast(pl.Int32).cast(pl.Utf8).alias("year\\of\\birth")).with\\columns(
+pl.concat\\str(\\pl.col('year\\of\\birth'), pl.lit("01-01")\\,
+separator="-").str.strptime(pl.Date,
+fmt="%Y-%m-%d").alias("date\\of\\birth")).with\\columns(
+pl.concat\\str(\\pl.col('name').str.to\\lowercase().str.replace(' ',
+pl.lit('-')), pl.col("date\\of\\birth")\\,
+separator="-").alias('primary\\key')).unique(subset=\\"primary\\key",
+"date", "meet\\name"\\).drop(\\"date\\of\\birth"\\)
+primary\\key\\df.head(2) \\\\\\ <span class="small">shape: (2,
+18)</span>
+
+| date       | name        | sex | place | age  | age_class | bodyweight | meet_country | equipment | squat | bench | deadlift | total | wilks  | meet_name        | origin_country | year_of_birth | primary_key      |
+|------------|-------------|-----|-------|------|-----------|------------|--------------|-----------|-------|-------|----------|-------|--------|------------------|----------------|---------------|------------------|
+| date       | str         | str | i32   | f64  | str       | f64        | str          | str       | f64   | f64   | f64      | f64   | f64    | str              | str            | str           | str              |
+| 2017-12-04 | "A Ajeesha" | "F" | 1     | 16.5 | "16-17"   | 71.1       | "India"      | "Raw"     | 112.5 | 55.0  | 132.5    | 300.0 | 295.29 | "Asian Classic … | "India"        | "2000"        | "a-ajeesha-2000… |
+| 2012-12-10 | "A Ashwin"  | "M" | 1     | 16.5 | "16-17"   | 82.55      | "India"      | "Raw"     | 170.0 | 95.0  | 220.0    | 485.0 | 324.79 | "Asian Classic … | "India"        | "1995"        | "a-ashwin-1995-… |
+
+\\\\\\python fe\\df = primary\\key\\df.with\\columns( (pl.col('date') -
+pl.col('date').shift(-1)).over('primary\\key').alias('time\\since\\last\\comp').apply(lambda
+x: x.days).cast(pl.Int32), (pl.col('bodyweight') -
+pl.col('bodyweight').shift(-1)).over('primary\\key').alias('bodyweight\\change').cast(pl.Float64),
+).sort( \\"name", "date"\\, descending=\\False, False\\ ).with\\columns(
+(pl.col('time\\since\\last\\comp') /
+365.25).alias('years\\since\\last\\comp'), (pl.col("meet\\country") ==
+pl.col("origin\\country")).alias("is\\origin\\country"),
+pl.col('date').apply(lambda x:
+x.toordinal()).alias('date\\as\\ordinal'),
+pl.col('name').cumcount().over('primary\\key').alias('cumulative\\comps'),
+pl.when( pl.col("meet\\name").str.contains('national')
+).then("national").otherwise( pl.when(
+pl.col('meet\\name').str.contains('International\|World\|Commonwealth')
+).then("international").otherwise("local")).alias('meet\\type'),
+).filter( pl.col('time\\since\\last\\comp') != 0 ) \\ have to filter out
+the time\\since\\last\\comp since there might be data entry handling
+error fe\\df = fe\\df.with\\columns( ((pl.col('squat') -
+pl.col('squat').shift(1)) /
+pl.col('years\\since\\last\\comp')).over('primary\\key').alias(f'squat\\progress'),
+((pl.col('bench') - pl.col('bench').shift(1)) /
+pl.col('years\\since\\last\\comp')).over('primary\\key').alias(f'bench\\progress'),
+((pl.col('deadlift') - pl.col('deadlift').shift(1)) /
+pl.col('years\\since\\last\\comp')).over('primary\\key').alias(f'deadlift\\progress'),
+((pl.col('total') - pl.col('total').shift(1)) /
+pl.col('years\\since\\last\\comp')).over('primary\\key').alias(f'total\\progress'),
+((pl.col('wilks') - pl.col('wilks').shift(1)) /
+pl.col('years\\since\\last\\comp')).over('primary\\key').alias(f'wilks\\progress')
+).drop\\nulls() \\\\\\ \\\\\\python
+fe\\df.filter(pl.col("name").str.starts\\with('Dmitriy
+Markov')).sort("date", descending=True).select(fe\\df.columns\\:25\\)
+\\\\\\ <span class="small">shape: (4, 25)</span>
+
+| date       | name             | sex | place | age  | age_class | bodyweight | meet_country | equipment | squat | bench | deadlift | total | wilks  | meet_name        | origin_country | year_of_birth | primary_key      | time_since_last_comp | bodyweight_change | years_since_last_comp | is_origin_country | date_as_ordinal | cumulative_comps | meet_type |
+|------------|------------------|-----|-------|------|-----------|------------|--------------|-----------|-------|-------|----------|-------|--------|------------------|----------------|---------------|------------------|----------------------|-------------------|-----------------------|-------------------|-----------------|------------------|-----------|
+| date       | str              | str | i32   | f64  | str       | f64        | str          | str       | f64   | f64   | f64      | f64   | f64    | str              | str            | str           | str              | i32                  | f64               | f64                   | bool              | i64             | u32              | str       |
+| 2021-02-19 | "Dmitriy Markov… | "M" | 8     | 16.5 | "16-17"   | 78.3       | "Russia"     | "Raw"     | 127.5 | 77.5  | 147.5    | 352.5 | 243.99 | "Nizhny Novgoro… | "Russia"       | "2004"        | "dmitriy-markov… | 370                  | 8.95              | 1.013005              | true              | 737840          | 3                | "local"   |
+| 2020-02-15 | "Dmitriy Markov… | "M" | 8     | 15.5 | "16-17"   | 69.35      | "Russia"     | "Raw"     | 120.0 | 65.0  | 137.5    | 322.5 | 243.42 | "Nizhny Novgoro… | "Russia"       | "2004"        | "dmitriy-markov… | 161                  | 3.7               | 0.440794              | true              | 737470          | 2                | "local"   |
+| 2019-09-07 | "Dmitriy Markov… | "M" | 5     | 14.5 | "13-15"   | 65.65      | "Russia"     | "Raw"     | 105.0 | 55.0  | 120.0    | 280.0 | 220.82 | "Nizhny Novgoro… | "Russia"       | "2004"        | "dmitriy-markov… | 127                  | 0.65              | 0.347707              | true              | 737309          | 1                | "local"   |
+| 2016-04-20 | "Dmitriy Markov… | "M" | 13    | 18.5 | "18-19"   | 79.9       | "Belarus"    | "Raw"     | 155.0 | 107.5 | 210.0    | 472.5 | 322.83 | "Belarus Studen… | "Belarus"      | "1997"        | "dmitriy-markov… | 468                  | -1.16             | 1.281314              | true              | 736074          | 1                | "local"   |
+
+\\\\\\python fe\\df.sort(by=\\'bench\\progress'\\,
+reverse=True).select(fe\\df.columns\\:30\\) \\\\\\
+/var/folders/n1/f6ysz\\js0qg8xpr\\dzb94mjh0000gn/T/ipykernel\\83249/3986157213.py:1:
+DeprecationWarning: \\reverse\\ is deprecated as an argument to
+\\sort\\; use \\descending\\ instead.
+fe\\df.sort(by=\\'bench\\progress'\\,
+reverse=True).select(fe\\df.columns\\:30\\) <span class="small">shape:
+(213364, 30)</span>
+
+| date       | name             | sex | place | age  | age_class | bodyweight | meet_country | equipment | squat | bench | deadlift | total | wilks  | meet_name        | origin_country | year_of_birth | primary_key      | time_since_last_comp | bodyweight_change | years_since_last_comp | is_origin_country | date_as_ordinal | cumulative_comps | meet_type | squat_progress | bench_progress | deadlift_progress | total_progress | wilks_progress |
+|------------|------------------|-----|-------|------|-----------|------------|--------------|-----------|-------|-------|----------|-------|--------|------------------|----------------|---------------|------------------|----------------------|-------------------|-----------------------|-------------------|-----------------|------------------|-----------|----------------|----------------|-------------------|----------------|----------------|
+| date       | str              | str | i32   | f64  | str       | f64        | str          | str       | f64   | f64   | f64      | f64   | f64    | str              | str            | str           | str              | i32                  | f64               | f64                   | bool              | i64             | u32              | str       | f64            | f64            | f64               | f64            | f64            |
+| 2022-03-05 | "Anna Kubek"     | "F" | 1     | 26.0 | "24-34"   | 65.15      | "USA"        | "Raw"     | 132.5 | 80.0  | 165.0    | 377.5 | 395.36 | "Utah State Cha… | "USA"          | "1996"        | "anna-kubek-199… | 1                    | -0.65             | 0.002738              | true              | 738219          | 1                | "local"   | 18262.5        | 9131.25        | 22828.125         | 50221.875      | 53268.06       |
+| 2022-08-28 | "Matyas Gruszka… | "M" | 1     | 17.5 | "18-19"   | 64.8       | "Czechia"    | "Raw"     | 162.5 | 115.0 | 180.0    | 457.5 | 364.74 | "Mistrovství Mo… | "Poland"       | "2004"        | "matyas-gruszka… | 1                    | -1.2              | 0.002738              | false             | 738395          | 1                | "local"   | 11870.625      | 6391.875       | 5478.75           | 23741.25       | 20654.8875     |
+| 2022-10-16 | "Jan Gazur"      | "M" | 1     | 17.5 | "18-19"   | 64.65      | "Czechia"    | "Raw"     | 160.0 | 105.0 | 200.0    | 465.0 | 371.45 | "Mistrovství Če… | "Czechia"      | "2004"        | "jan-gazur-2004… | 1                    | -0.3              | 0.002738              | true              | 738444          | 3                | "local"   | 18262.5        | 5478.75        | 25567.5           | 49308.75       | 39761.115      |
+| 2022-10-16 | "Matyas Gruszka… | "M" | 2     | 17.5 | "18-19"   | 65.5       | "Czechia"    | "Raw"     | 150.0 | 112.5 | 195.0    | 457.5 | 361.49 | "Mistrovství Če… | "Poland"       | "2004"        | "matyas-gruszka… | 1                    | -0.25             | 0.002738              | false             | 738444          | 4                | "local"   | 7305.0         | 4565.625       | 23741.25          | 35611.875      | 28463.9325     |
+| 2019-06-27 | "Piotr Jabłonsk… | "M" | 6     | 27.5 | "24-34"   | 79.25      | "Sweden"     | "Raw"     | 235.0 | 182.5 | 240.0    | 657.5 | 451.57 | "SM Klassisk St… | "Sweden"       | "1991"        | "piotr-jabłonsk… | 4                    | 6.0               | 0.010951              | true              | 737237          | 7                | "local"   | 5022.1875      | 4337.34375     | 456.5625          | 9816.09375     | 4845.04125     |
+| 2022-03-23 | "Mason Mitchell… | "M" | 1     | 17.5 | "18-19"   | 92.71      | "USA"        | "Raw"     | 227.5 | 170.0 | 260.0    | 657.5 | 413.65 | "Teen Nationals… | "USA"          | "2004"        | "mason-mitchell… | 1                    | 3.37              | 0.002738              | true              | 738237          | 6                | "local"   | -2739.375      | 3652.5         | -2739.375         | -1826.25       | -3973.92       |
+| 2022-10-16 | "Simon Barčiš"   | "M" | 1     | 17.5 | "18-19"   | 58.35      | "Czechia"    | "Raw"     | 105.0 | 80.0  | 162.5    | 347.5 | 304.13 | "Mistrovství Če… | "Czechia"      | "2004"        | "simon-barčiš-2… | 1                    | 0.3               | 0.002738              | true              | 738444          | 4                | "local"   | 5478.75        | 3652.5         | 15523.125         | 24654.375      | 21144.3225     |
+| 2022-03-23 | "Clark Whitefie… | "M" | 2     | 17.0 | "16-17"   | 73.07      | "USA"        | "Raw"     | 220.0 | 150.0 | 225.0    | 595.0 | 431.88 | "Teen Nationals… | "Turkey"       | "2005"        | "clark-whitefie… | 1                    | -0.77             | 0.002738              | false             | 738237          | 2                | "local"   | 1826.25        | 2739.375       | 913.125           | 5478.75        | 5128.11        |
+| 2015-05-22 | "Artur Zheltukh… | "M" | 3     | 23.5 | "24-34"   | 100.6      | "Russia"     | "Raw"     | 227.5 | 162.5 | 220.0    | 610.0 | 370.36 | "Irkutsk Powerl… | "Russia"       | "1991"        | "artur-zheltukh… | 5                    | 10.4              | 0.013689              | true              | 735740          | 2                | "local"   | 4565.625       | 2556.75        | 4017.75           | 11140.125      | 5743.191       |
+| 2020-03-07 | "Aleksandr Skvo… | "M" | 1     | 16.0 | "16-17"   | 66.4       | "Russia"     | "Raw"     | 120.0 | 90.0  | 170.0    | 380.0 | 296.9  | "Central Distri… | "Russia"       | "2004"        | "aleksandr-skvo… | 8                    | 22.6              | 0.021903              | true              | 737491          | 1                | "local"   | 2511.09375     | 1940.390625    | 3081.796875       | 7533.28125     | 1863.231563    |
+| 2017-10-12 | "Peter Schmidt"  | "M" | 1     | 42.5 | "40-44"   | 81.6       | "Germany"    | "Raw"     | 237.5 | 156.0 | 247.5    | 641.0 | 432.27 | "DM KDK Classic… | "Germany"      | "1974"        | "peter-schmidt-… | 5                    | 0.1               | 0.013689              | true              | 736614          | 7                | "local"   | 2739.375       | 1899.3         | 3469.875          | 8108.55        | 5448.7995      |
+| 2017-08-05 | "Thomas Moviel"  | "M" | 1     | 39.5 | "35-39"   | 92.06      | "USA"        | "Raw"     | 225.0 | 162.5 | 247.5    | 635.0 | 400.85 | "Southeast Regi… | "USA"          | "1977"        | "thomas-moviel-… | 27                   | -5.24             | 0.073922              | true              | 736546          | 1                | "local"   | 2705.555556    | 1860.069444    | 2468.819444       | 7034.444444    | 4465.113611    |
+| …          | …                | …   | …     | …    | …         | …          | …            | …         | …     | …     | …        | …     | …      | …                | …              | …             | …                | …                    | …                 | …                     | …                 | …               | …                | …         | …              | …              | …                 | …              | …              |
+| 2014-04-24 | "Aleksey Pesilo… | "M" | 4     | 20.5 | "20-23"   | 88.15      | "Russia"     | "Raw"     | 190.0 | 122.5 | 205.0    | 517.5 | 333.95 | "Southern & Nor… | "Russia"       | "1993"        | "aleksey-pesilo… | 1                    | 5.8               | 0.002738              | true              | 735347          | 1                | "local"   | -9131.25       | -5478.75       | -7305.0           | -21915.0       | -19482.435     |
+| 2017-05-20 | "Nikolay Kosare… | "M" | 2     | 15.5 | "16-17"   | 56.34      | "Russia"     | "Raw"     | 100.0 | 57.5  | 140.0    | 297.5 | 269.24 | "Irkutsk Oblast… | "Russia"       | "2001"        | "nikolay-kosare… | 1                    | -2.66             | 0.002738              | true              | 736469          | 2                | "local"   | -3652.5        | -5478.75       | -7305.0           | -16436.25      | -10015.155     |
+| 2014-04-24 | "Svetlana Korol… | "F" | 1     | 20.5 | "20-23"   | 41.55      | "Russia"     | "Raw"     | 65.0  | 30.0  | 67.5     | 162.5 | 237.35 | "Southern & Nor… | "Russia"       | "1993"        | "svetlana-korol… | 1                    | -2.0              | 0.002738              | true              | 735347          | 2                | "local"   | -9131.25       | -5478.75       | -8218.125         | -22828.125     | -29815.3575    |
+| 2017-05-20 | "Vadim Akhmetov… | "M" | 1     | 12.5 | "13-15"   | 53.0       | "Russia"     | "Raw"     | 95.0  | 55.0  | 117.5    | 267.5 | 257.35 | "Irkutsk Oblast… | "Russia"       | "2004"        | "vadim-akhmetov… | 1                    | -8.1              | 0.002738              | true              | 736469          | 4                | "local"   | -8218.125      | -5478.75       | -8218.125         | -21915.0       | -6362.655      |
+| 2017-01-28 | "Nathaniel Marg… | "M" | 1     | 24.5 | "24-34"   | 51.15      | "USA"        | "Raw"     | 85.0  | 42.5  | 130.0    | 257.5 | 257.11 | "Northeast Iron… | "USA"          | "1992"        | "nathaniel-marg… | 6                    | -43.21            | 0.016427              | true              | 736357          | 3                | "local"   | -5935.3125     | -6239.6875     | -6391.875         | -18566.875     | -5713.7275     |
+| 2014-04-24 | "Anastasiya Che… | "F" | 1     | 13.5 | "13-15"   | 41.35      | "Russia"     | "Raw"     | 45.0  | 35.0  | 65.0     | 145.0 | 212.41 | "Southern & Nor… | "Russia"       | "2000"        | "anastasiya-che… | 1                    | -4.85             | 0.002738              | true              | 735347          | 2                | "local"   | -6391.875      | -6391.875      | -4565.625         | -17349.375     | -18145.62      |
+| 2017-05-20 | "Vitaliy Berezi… | "M" | 3     | 12.5 | "13-15"   | 61.15      | "Russia"     | "Raw"     | 80.0  | 60.0  | 92.5     | 232.5 | 194.92 | "Irkutsk Oblast… | "Russia"       | "2004"        | "vitaliy-berezi… | 1                    | -4.75             | 0.002738              | true              | 736469          | 1                | "local"   | -7305.0        | -6391.875      | -10044.375        | -23741.25      | -14233.7925    |
+| 2014-04-24 | "Nikita Shushpa… | "M" | 6     | 17.5 | "18-19"   | 74.1       | "Russia"     | "Raw"     | 130.0 | 90.0  | 155.0    | 375.0 | 269.48 | "Southern & Nor… | "Russia"       | "1996"        | "nikita-shushpa… | 1                    | -3.95             | 0.002738              | true              | 735347          | 1                | "local"   | -7305.0        | -7305.0        | -5478.75          | -20088.75      | -10511.895     |
+| 2014-04-24 | "Veronika Nikol… | "F" | 1     | 16.5 | "16-17"   | 58.85      | "Russia"     | "Raw"     | 95.0  | 50.0  | 105.0    | 250.0 | 282.95 | "Southern & Nor… | "Russia"       | "1997"        | "veronika-nikol… | 1                    | -0.8              | 0.002738              | true              | 735347          | 3                | "local"   | -9131.25       | -7305.0        | -4565.625         | -21001.875     | -22440.96      |
+| 2014-04-24 | "Aleksandr Cher… | "M" | 3     | 22.5 | "20-23"   | 80.35      | "Russia"     | "Raw"     | 180.0 | 145.0 | 222.5    | 547.5 | 372.75 | "Southern & Nor… | "Russia"       | "1991"        | "aleksandr-cher… | 1                    | -6.45             | 0.002738              | true              | 735347          | 2                | "local"   | -18262.5       | -8218.125      | -14610.0          | -41090.625     | -20713.3275    |
+| 2014-04-24 | "Yuliya Ivanova… | "F" | 1     | 15.5 | "16-17"   | 51.3       | "Russia"     | "Raw"     | 70.0  | 45.0  | 75.0     | 190.0 | 239.35 | "Southern & Nor… | "Russia"       | "1998"        | "yuliya-ivanova… | 1                    | -3.95             | 0.002738              | true              | 735347          | 2                | "local"   | -5478.75       | -8218.125      | -7305.0           | -21001.875     | -20070.4875    |
+| 2014-04-24 | "Aleksey Blagod… | "M" | 7     | 22.0 | "20-23"   | 81.5       | "Russia"     | "Raw"     | 160.0 | 120.0 | 170.0    | 450.0 | 303.69 | "Southern & Nor… | "Russia"       | "1992"        | "aleksey-blagod… | 1                    | -1.5              | 0.002738              | true              | 735347          | 1                | "local"   | -17349.375     | -10044.375     | -29220.0          | -56613.75      | -36579.7875    |
+
+\\# Visualisation \\\\\\python import altair as alt import seaborn as
+sns numerical\\cols = \\ "age", "bodyweight", "bodyweight\\change",
+"time\\since\\last\\comp", "cumulative\\comps", "total" \\
+fe\\df\\numerical =
+fe\\df.select(pl.col(numerical\\cols)).sample(5000).to\\pandas()
+correlation\\df = fe\\df\\numerical.corr() \\\\\\ \\\\\\python
+sns.heatmap(correlation\\df, annot=True) \\\\\\
+\\\[png\\(etl\\files/etl\\18\\1.png) \\\\\\python \\ Create a scatter
+plot for each feature against 'total' plots = \\
+alt.Chart(fe\\df\\numerical).mark\\circle().encode(
+x=alt.X(f'{feature}:Q', title=feature), y=alt.Y('total:Q',
+title='Total'), tooltip=\\feature, 'total'\\ ).properties( width=200,
+height=200, title=f'Total vs {feature}' ) for feature in numerical\\cols
+\\ \\\\\\ \\\\\\python alt.hconcat(\\plots) \\\\\\ \\# Modelling
+\\\\\\python from sklearn.model\\selection import GridSearchCV,
+train\\test\\split from sklearn.metrics import mean\\squared\\error from
+sklearn.preprocessing import OrdinalEncoder, OneHotEncoder,
+StandardScaler from sklearn.pipeline import Pipeline from
+sklearn.compose import ColumnTransformer from sklearn.linear\\model
+import Ridge, LinearRegression \\\\\\ \\\\\\python param\\grid = {
+'regressor\\\\bootstrap': \\True\\, 'regressor\\\\max\\depth': \\80, 90,
+100, 110\\, 'regressor\\\\max\\features': \\2, 3\\,
+'regressor\\\\min\\samples\\leaf': \\3, 4, 5\\,
+'regressor\\\\min\\samples\\split': \\8, 10, 12\\,
+'regressor\\\\n\\estimators': \\100, 200, 300, 1000\\ } \\\\\\
+\\\\\\python features = \\ "date\\as\\ordinal", "sex", "age",
+"age\\class", "bodyweight", "equipment", "place",
+"time\\since\\last\\comp", "squat\\progress", "bench\\progress",
+"deadlift\\progress", "total\\progress", "wilks\\progress",
+"origin\\country", "is\\origin\\country", "meet\\type",
+"cumulative\\comps","bodyweight\\change" \\ target = \\ "total" \\ \\
+Preprocessing steps for numeric features numeric\\transformer =
+Pipeline(\\ ('scaler', StandardScaler()) \\) \\ Preprocessing steps for
+categorical features categorical\\transformer = Pipeline(\\ ('encoder',
+OneHotEncoder()) \\) \\ Preprocessing steps for label encoded features
+ordinal\\transformer = Pipeline(\\ ('encoder',
+OrdinalEncoder(handle\\unknown='use\\encoded\\value',
+unknown\\value=-1)) \\) \\ Combine preprocessing steps for all features
+preprocessor = ColumnTransformer(\\ ('numeric', numeric\\transformer,
+\\'age', 'bodyweight','time\\since\\last\\comp', "squat\\progress",
+"bench\\progress", "deadlift\\progress", "total\\progress",
+"wilks\\progress", 'date\\as\\ordinal', 'bodyweight\\change',
+'cumulative\\comps'\\), ('categorical', categorical\\transformer,
+\\'is\\origin\\country'\\), ('ordinal', ordinal\\transformer, \\'place',
+'age\\class', 'origin\\country', 'meet\\type', 'sex'\\) \\) \\ Create
+the pipeline with preprocessing steps and the regressor pipeline =
+Pipeline(\\ ('preprocessor', preprocessor), ('regressor', Ridge()) \\)
+\\\\\\ \\## Basic Linear Regression \\\\\\python X\\train, X\\test,
+y\\train, y\\test = train\\test\\split(fe\\df\\features\\,
+fe\\df\\target\\, test\\size=0.2, random\\state=42) \\ standard pipeline
+prediction pipeline.fit(X\\train.to\\pandas(),
+y\\train.to\\pandas().values.ravel()) y\\pred =
+pipeline.predict(X\\test.to\\pandas()) mse =
+mean\\squared\\error(y\\test.to\\pandas(), y\\pred) print(f"mse: {mse}")
+\\\\\\ mse: 6979.037040358594 \\### Bayesian Optimization \\\\\\python
+\\ Initialize the grid search model grid\\search =
+GridSearchCV(estimator = pipeline, param\\grid = param\\grid, cv = 3,
+scoring="neg\\mean\\squared\\error", verbose = 2) \\ Fit the grid search
+model grid\\search.fit(X\\train.to\\pandas(),
+y\\train.to\\pandas().values.ravel()) \\ Get the best parameters
+best\\params = grid\\search.best\\params\\ \\ Train the model using the
+best parameters best\\model = Ridge(\\\\best\\params)
+best\\model.fit(X\\train.to\\pandas(),
+y\\train.to\\pandas().values.ravel()) \\ Make predictions y\\pred =
+best\\model.predict(X\\test.to\\pandas()) \\\\\\ Fitting 3 folds for
+each of 288 candidates, totalling 864 fits
+---------------------------------------------------------------------------
+ValueError Traceback (most recent call last) Cell In\\257\\, line 6 2
+grid\\search = GridSearchCV(estimator = pipeline, param\\grid =
+param\\grid, 3 cv = 3, scoring="neg\\mean\\squared\\error", verbose = 2)
+5 \\ Fit the grid search model ----\> 6
+grid\\search.fit(X\\train.to\\pandas(),
+y\\train.to\\pandas().values.ravel()) 8 \\ Get the best parameters 9
+best\\params = grid\\search.best\\params\\ File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/sklearn/utils/validation.py:63,
+in
+\\deprecate\\positional\\args..\\inner\\deprecate\\positional\\args..inner\\f(\\args,
+\\\\kwargs) 61 extra\\args = len(args) - len(all\\args) 62 if
+extra\\args \<= 0: ---\> 63 return f(\\args, \\\\kwargs) 65 \\
+extra\\args \> 0 66 args\\msg = \\'{}={}'.format(name, arg) 67 for name,
+arg in zip(kwonly\\args\\:extra\\args\\, 68 args\\-extra\\args:\\)\\
+File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/sklearn/model\\selection/\\search.py:841,
+in BaseSearchCV.fit(self, X, y, groups, \\\\fit\\params) 835 results =
+self.\\format\\results( 836 all\\candidate\\params, n\\splits, all\\out,
+837 all\\more\\results) 839 return results --\> 841
+self.\\run\\search(evaluate\\candidates) 843 \\ multimetric is
+determined here because in the case of a callable 844 \\ self.scoring
+the return type is only known after calling 845 first\\test\\score =
+all\\out\\0\\\\'test\\scores'\\ File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/sklearn/model\\selection/\\search.py:1296,
+in GridSearchCV.\\run\\search(self, evaluate\\candidates) 1294 def
+\\run\\search(self, evaluate\\candidates): 1295 """Search all candidates
+in param\\grid""" -\> 1296
+evaluate\\candidates(ParameterGrid(self.param\\grid)) File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/sklearn/model\\selection/\\search.py:795,
+in BaseSearchCV.fit..evaluate\\candidates(candidate\\params, cv,
+more\\results) 790 if self.verbose \> 0: 791 print("Fitting {0} folds
+for each of {1} candidates," 792 " totalling {2} fits".format( 793
+n\\splits, n\\candidates, n\\candidates \\ n\\splits)) --\> 795 out =
+parallel(delayed(\\fit\\and\\score)(clone(base\\estimator), 796 X, y,
+797 train=train, test=test, 798 parameters=parameters, 799
+split\\progress=( 800 split\\idx, 801 n\\splits), 802
+candidate\\progress=( 803 cand\\idx, 804 n\\candidates), 805
+\\\\fit\\and\\score\\kwargs) 806 for (cand\\idx, parameters), 807
+(split\\idx, (train, test)) in product( 808
+enumerate(candidate\\params), 809 enumerate(cv.split(X, y, groups))))
+811 if len(out) \< 1: 812 raise ValueError('No fits were performed. '
+813 'Was the CV iterator empty? ' 814 'Were there no candidates?') File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/joblib/parallel.py:1085,
+in Parallel.\\\\call\\\\(self, iterable) 1076 try: 1077 \\ Only set
+self.\\iterating to True if at least a batch 1078 \\ was dispatched. In
+particular this covers the edge (...) 1082 \\ was very quick and its
+callback already dispatched all the 1083 \\ remaining jobs. 1084
+self.\\iterating = False -\> 1085 if
+self.dispatch\\one\\batch(iterator): 1086 self.\\iterating =
+self.\\original\\iterator is not None 1088 while
+self.dispatch\\one\\batch(iterator): File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/joblib/parallel.py:901,
+in Parallel.dispatch\\one\\batch(self, iterator) 899 return False 900
+else: --\> 901 self.\\dispatch(tasks) 902 return True File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/joblib/parallel.py:819,
+in Parallel.\\dispatch(self, batch) 817 with self.\\lock: 818 job\\idx =
+len(self.\\jobs) --\> 819 job = self.\\backend.apply\\async(batch,
+callback=cb) 820 \\ A job can complete so quickly than its callback is
+821 \\ called before we get here, causing self.\\jobs to 822 \\ grow. To
+ensure correct results ordering, .insert is 823 \\ used (rather than
+.append) in the following line 824 self.\\jobs.insert(job\\idx, job)
+File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/joblib/\\parallel\\backends.py:208,
+in SequentialBackend.apply\\async(self, func, callback) 206 def
+apply\\async(self, func, callback=None): 207 """Schedule a func to be
+run""" --\> 208 result = ImmediateResult(func) 209 if callback: 210
+callback(result) File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/joblib/\\parallel\\backends.py:597,
+in ImmediateResult.\\\\init\\\\(self, batch) 594 def \\\\init\\\\(self,
+batch): 595 \\ Don't delay the application, to avoid keeping the input
+596 \\ arguments in memory --\> 597 self.results = batch() File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/joblib/parallel.py:288,
+in BatchedCalls.\\\\call\\\\(self) 284 def \\\\call\\\\(self): 285 \\
+Set the default nested backend to self.\\backend but do not set the 286
+\\ change the default number of processes to -1 287 with
+parallel\\backend(self.\\backend, n\\jobs=self.\\n\\jobs): --\> 288
+return \\func(\\args, \\\\kwargs) 289 for func, args, kwargs in
+self.items\\ File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/joblib/parallel.py:288,
+in (.0) 284 def \\\\call\\\\(self): 285 \\ Set the default nested
+backend to self.\\backend but do not set the 286 \\ change the default
+number of processes to -1 287 with parallel\\backend(self.\\backend,
+n\\jobs=self.\\n\\jobs): --\> 288 return \\func(\\args, \\\\kwargs) 289
+for func, args, kwargs in self.items\\ File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/sklearn/utils/fixes.py:222,
+in \\FuncWrapper.\\\\call\\\\(self, \\args, \\\\kwargs) 220 def
+\\\\call\\\\(self, \\args, \\\\kwargs): 221 with
+config\\context(\\\\self.config): --\> 222 return self.function(\\args,
+\\\\kwargs) File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/sklearn/model\\selection/\\validation.py:586,
+in \\fit\\and\\score(estimator, X, y, scorer, train, test, verbose,
+parameters, fit\\params, return\\train\\score, return\\parameters,
+return\\n\\test\\samples, return\\times, return\\estimator,
+split\\progress, candidate\\progress, error\\score) 583 for k, v in
+parameters.items(): 584 cloned\\parameters\\k\\ = clone(v, safe=False)
+--\> 586 estimator = estimator.set\\params(\\\\cloned\\parameters) 588
+start\\time = time.time() 590 X\\train, y\\train =
+\\safe\\split(estimator, X, y, train) File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/sklearn/pipeline.py:150,
+in Pipeline.set\\params(self, \\\\kwargs) 139 def set\\params(self,
+\\\\kwargs): 140 """Set the parameters of this estimator. 141 142 Valid
+parameter keys can be listed with \\\\get\\params()\\\\. Note that (...)
+148 self 149 """ --\> 150 self.\\set\\params('steps', \\\\kwargs) 151
+return self File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/sklearn/utils/metaestimators.py:54,
+in \\BaseComposition.\\set\\params(self, attr, \\\\params) 52
+self.\\replace\\estimator(attr, name, params.pop(name)) 53 \\ 3. Step
+parameters and other initialisation arguments ---\> 54
+super().set\\params(\\\\params) 55 return self File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/sklearn/base.py:242,
+in BaseEstimator.set\\params(self, \\\\params) 239 valid\\params\\key\\
+= value 241 for key, sub\\params in nested\\params.items(): --\> 242
+valid\\params\\key\\.set\\params(\\\\sub\\params) 244 return self File
+~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/sklearn/base.py:230,
+in BaseEstimator.set\\params(self, \\\\params) 228 key, delim, sub\\key
+= key.partition('\\\\') 229 if key not in valid\\params: --\> 230 raise
+ValueError('Invalid parameter %s for estimator %s. ' 231 'Check the list
+of available parameters ' 232 'with \\estimator.get\\params().keys()\\.'
+% 233 (key, self)) 235 if delim: 236 nested\\params\\key\\\\sub\\key\\ =
+value ValueError: Invalid parameter bootstrap for estimator Ridge().
+Check the list of available parameters with
+\\estimator.get\\params().keys()\\. \\\\\\python \\ Evaluate the model
+mse = mean\\squared\\error(y\\test.to\\pandas(), y\\pred.to\\pandas())
+print(f"Mean Squared Error: {mse}") \\\\\\
