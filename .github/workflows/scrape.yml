@@ -105,4 +105,4 @@ jobs:
         run: |
           git add -A
           git diff-index --quiet HEAD || (git commit -a -m "updated data/*" --allow-empty)
-          git push --no-ff origin HEAD
+          git push
