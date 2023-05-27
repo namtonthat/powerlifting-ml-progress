@@ -94,7 +94,7 @@ jobs:
           jupyter nbconvert --to markdown notebooks/etl.ipynb
 
       - name: Commit files
-      run: |
-        git add -A
-        git diff-index --quiet HEAD || (git commit -a -m "converted etl.md/*" --allow-empty)
-        git push
+        run: |
+          git add -A
+          git diff-index --quiet HEAD || (git commit -a -m "converted etl.md/*" --allow-empty)
+          git push
