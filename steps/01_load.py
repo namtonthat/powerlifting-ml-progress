@@ -14,7 +14,7 @@ from jinja2 import Environment, FileSystemLoader
 logging.basicConfig(level=logging.INFO)
 
 def update_readme():
-    current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+    current_date = datetime.datetime.now().strftime("%Y-%m-%d").replace('-', '--')
 
     # Set up the Jinja2 environment
     env = Environment(loader=FileSystemLoader("."))
