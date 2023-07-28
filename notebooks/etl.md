@@ -70,7 +70,7 @@ print(base_df.shape)
 base_df.head(5)
 ```
 
-    (2937804, 18)
+    (2943010, 18)
 
 
 
@@ -93,12 +93,12 @@ cleansed_df = base_df.filter(
     (pl.col("Tested") == "Yes") & 
     (pl.col('Place').apply(lambda x: x.isnumeric(), return_dtype = pl.Boolean)) & 
     (pl.col("Equipment") == "Raw")
-).drop_nulls().unique().sort("Date", descending=True).drop(["Tested", "Federation", "Event"])
+).drop_nulls().unique().sort("Date", descending=True).drop(["Tested", "Event"])
 print(cleansed_df.shape)
 cleansed_df.head(5)
 ```
 
-    (442399, 15)
+    (444331, 16)
 
 
 
@@ -110,7 +110,7 @@ cleansed_df.head(5)
   text-align: right;
 }
 </style>
-<small>shape: (5, 15)</small><table border="1" class="dataframe"><thead><tr><th>Date</th><th>Name</th><th>Sex</th><th>Place</th><th>Age</th><th>AgeClass</th><th>BodyweightKg</th><th>MeetCountry</th><th>Equipment</th><th>Best3SquatKg</th><th>Best3BenchKg</th><th>Best3DeadliftKg</th><th>TotalKg</th><th>Wilks</th><th>MeetName</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>&quot;2023-07-02&quot;</td><td>&quot;Olivia Arnaud&quot;</td><td>&quot;F&quot;</td><td>&quot;1&quot;</td><td>15.5</td><td>&quot;16-17&quot;</td><td>52.44</td><td>&quot;France&quot;</td><td>&quot;Raw&quot;</td><td>72.5</td><td>45.0</td><td>85.0</td><td>202.5</td><td>250.8</td><td>&quot;Open de La Gar…</td></tr><tr><td>&quot;2023-07-02&quot;</td><td>&quot;Lya Martel&quot;</td><td>&quot;F&quot;</td><td>&quot;1&quot;</td><td>19.5</td><td>&quot;20-23&quot;</td><td>51.88</td><td>&quot;France&quot;</td><td>&quot;Raw&quot;</td><td>125.0</td><td>65.0</td><td>150.0</td><td>340.0</td><td>424.61</td><td>&quot;Open de La Gar…</td></tr><tr><td>&quot;2023-07-02&quot;</td><td>&quot;Lisa Goll&quot;</td><td>&quot;F&quot;</td><td>&quot;1&quot;</td><td>21.5</td><td>&quot;20-23&quot;</td><td>56.64</td><td>&quot;France&quot;</td><td>&quot;Raw&quot;</td><td>115.0</td><td>67.5</td><td>147.5</td><td>330.0</td><td>384.84</td><td>&quot;Open de La Gar…</td></tr><tr><td>&quot;2023-07-02&quot;</td><td>&quot;Amélie Beruti&quot;</td><td>&quot;F&quot;</td><td>&quot;1&quot;</td><td>31.5</td><td>&quot;24-34&quot;</td><td>51.46</td><td>&quot;France&quot;</td><td>&quot;Raw&quot;</td><td>105.0</td><td>50.0</td><td>140.0</td><td>295.0</td><td>370.73</td><td>&quot;Open de La Gar…</td></tr><tr><td>&quot;2023-07-02&quot;</td><td>&quot;Emilie Clavier…</td><td>&quot;F&quot;</td><td>&quot;1&quot;</td><td>43.5</td><td>&quot;40-44&quot;</td><td>68.8</td><td>&quot;France&quot;</td><td>&quot;Raw&quot;</td><td>140.0</td><td>90.0</td><td>165.0</td><td>395.0</td><td>397.72</td><td>&quot;Open de La Gar…</td></tr></tbody></table></div>
+<small>shape: (5, 16)</small><table border="1" class="dataframe"><thead><tr><th>Date</th><th>Name</th><th>Sex</th><th>Place</th><th>Age</th><th>AgeClass</th><th>BodyweightKg</th><th>MeetCountry</th><th>Equipment</th><th>Best3SquatKg</th><th>Best3BenchKg</th><th>Best3DeadliftKg</th><th>TotalKg</th><th>Wilks</th><th>Federation</th><th>MeetName</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>&quot;2023-07-08&quot;</td><td>&quot;Laura Toso&quot;</td><td>&quot;F&quot;</td><td>&quot;6&quot;</td><td>25.0</td><td>&quot;24-34&quot;</td><td>50.9</td><td>&quot;Switzerland&quot;</td><td>&quot;Raw&quot;</td><td>90.0</td><td>50.0</td><td>120.0</td><td>260.0</td><td>329.5</td><td>&quot;KDKS&quot;</td><td>&quot;ORS Cup&quot;</td></tr><tr><td>&quot;2023-07-08&quot;</td><td>&quot;Anna Henzi&quot;</td><td>&quot;F&quot;</td><td>&quot;1&quot;</td><td>30.0</td><td>&quot;24-34&quot;</td><td>56.8</td><td>&quot;Switzerland&quot;</td><td>&quot;Raw&quot;</td><td>135.0</td><td>95.0</td><td>157.5</td><td>387.5</td><td>450.89</td><td>&quot;KDKS&quot;</td><td>&quot;ORS Cup&quot;</td></tr><tr><td>&quot;2023-07-08&quot;</td><td>&quot;Yelyzaveta Tim…</td><td>&quot;F&quot;</td><td>&quot;5&quot;</td><td>21.0</td><td>&quot;20-23&quot;</td><td>56.8</td><td>&quot;Switzerland&quot;</td><td>&quot;Raw&quot;</td><td>100.0</td><td>52.5</td><td>135.0</td><td>287.5</td><td>334.53</td><td>&quot;KDKS&quot;</td><td>&quot;ORS Cup&quot;</td></tr><tr><td>&quot;2023-07-08&quot;</td><td>&quot;Tamara Thoma&quot;</td><td>&quot;F&quot;</td><td>&quot;2&quot;</td><td>29.0</td><td>&quot;24-34&quot;</td><td>68.1</td><td>&quot;Switzerland&quot;</td><td>&quot;Raw&quot;</td><td>130.0</td><td>82.5</td><td>170.0</td><td>382.5</td><td>387.93</td><td>&quot;KDKS&quot;</td><td>&quot;ORS Cup&quot;</td></tr><tr><td>&quot;2023-07-08&quot;</td><td>&quot;Lou Malika Der…</td><td>&quot;F&quot;</td><td>&quot;7&quot;</td><td>25.0</td><td>&quot;24-34&quot;</td><td>68.9</td><td>&quot;Switzerland&quot;</td><td>&quot;Raw&quot;</td><td>100.0</td><td>70.0</td><td>110.0</td><td>280.0</td><td>281.64</td><td>&quot;KDKS&quot;</td><td>&quot;ORS Cup&quot;</td></tr></tbody></table></div>
 
 
 
@@ -128,7 +128,7 @@ cleansed_df.filter(pl.col("Name") == "Joshua Luu").sort("Date", descending=True)
   text-align: right;
 }
 </style>
-<small>shape: (5, 15)</small><table border="1" class="dataframe"><thead><tr><th>Date</th><th>Name</th><th>Sex</th><th>Place</th><th>Age</th><th>AgeClass</th><th>BodyweightKg</th><th>MeetCountry</th><th>Equipment</th><th>Best3SquatKg</th><th>Best3BenchKg</th><th>Best3DeadliftKg</th><th>TotalKg</th><th>Wilks</th><th>MeetName</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>&quot;2023-04-22&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>25.5</td><td>&quot;24-34&quot;</td><td>74.15</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>220.0</td><td>130.0</td><td>270.0</td><td>620.0</td><td>445.34</td><td>&quot;Bens Army Serv…</td></tr><tr><td>&quot;2022-07-16&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>24.5</td><td>&quot;24-34&quot;</td><td>74.5</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>205.0</td><td>127.5</td><td>262.5</td><td>595.0</td><td>425.96</td><td>&quot;Gold Coast Cla…</td></tr><tr><td>&quot;2021-06-19&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>23.5</td><td>&quot;24-34&quot;</td><td>76.4</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>205.0</td><td>120.0</td><td>255.0</td><td>580.0</td><td>408.07</td><td>&quot;TSF Birthday B…</td></tr><tr><td>&quot;2019-10-03&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>22.0</td><td>&quot;20-23&quot;</td><td>68.75</td><td>&quot;Canada&quot;</td><td>&quot;Raw&quot;</td><td>200.0</td><td>122.0</td><td>245.0</td><td>567.0</td><td>430.87</td><td>&quot;World Champion…</td></tr><tr><td>&quot;2019-04-26&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>21.5</td><td>&quot;20-23&quot;</td><td>68.65</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>193.0</td><td>116.0</td><td>226.0</td><td>535.0</td><td>407.01</td><td>&quot;Australian Jun…</td></tr></tbody></table></div>
+<small>shape: (5, 16)</small><table border="1" class="dataframe"><thead><tr><th>Date</th><th>Name</th><th>Sex</th><th>Place</th><th>Age</th><th>AgeClass</th><th>BodyweightKg</th><th>MeetCountry</th><th>Equipment</th><th>Best3SquatKg</th><th>Best3BenchKg</th><th>Best3DeadliftKg</th><th>TotalKg</th><th>Wilks</th><th>Federation</th><th>MeetName</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>&quot;2023-04-22&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>25.5</td><td>&quot;24-34&quot;</td><td>74.15</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>220.0</td><td>130.0</td><td>270.0</td><td>620.0</td><td>445.34</td><td>&quot;USAPL&quot;</td><td>&quot;Bens Army Serv…</td></tr><tr><td>&quot;2022-07-16&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>24.5</td><td>&quot;24-34&quot;</td><td>74.5</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>205.0</td><td>127.5</td><td>262.5</td><td>595.0</td><td>425.96</td><td>&quot;USAPL&quot;</td><td>&quot;Gold Coast Cla…</td></tr><tr><td>&quot;2021-06-19&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>23.5</td><td>&quot;24-34&quot;</td><td>76.4</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>205.0</td><td>120.0</td><td>255.0</td><td>580.0</td><td>408.07</td><td>&quot;PA&quot;</td><td>&quot;TSF Birthday B…</td></tr><tr><td>&quot;2019-10-03&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>22.0</td><td>&quot;20-23&quot;</td><td>68.75</td><td>&quot;Canada&quot;</td><td>&quot;Raw&quot;</td><td>200.0</td><td>122.0</td><td>245.0</td><td>567.0</td><td>430.87</td><td>&quot;WP&quot;</td><td>&quot;World Champion…</td></tr><tr><td>&quot;2019-04-26&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>21.5</td><td>&quot;20-23&quot;</td><td>68.65</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>193.0</td><td>116.0</td><td>226.0</td><td>535.0</td><td>407.01</td><td>&quot;PA&quot;</td><td>&quot;Australian Jun…</td></tr></tbody></table></div>
 
 
 
@@ -163,7 +163,7 @@ print(data_prep_df.shape)
 data_prep_df.head(5)
 ```
 
-    (441571, 16)
+    (443502, 17)
 
 
 
@@ -175,7 +175,7 @@ data_prep_df.head(5)
   text-align: right;
 }
 </style>
-<small>shape: (5, 16)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>name</th><th>sex</th><th>place</th><th>age</th><th>age_class</th><th>bodyweight</th><th>meet_country</th><th>equipment</th><th>squat</th><th>bench</th><th>deadlift</th><th>total</th><th>wilks</th><th>meet_name</th><th>origin_country</th></tr><tr><td>date</td><td>str</td><td>str</td><td>i32</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>2017-12-04</td><td>&quot;A Ajeesha&quot;</td><td>&quot;F&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>71.1</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>112.5</td><td>55.0</td><td>132.5</td><td>300.0</td><td>295.29</td><td>&quot;Asian Classic …</td><td>&quot;India&quot;</td></tr><tr><td>2012-12-10</td><td>&quot;A Ashwin&quot;</td><td>&quot;M&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>82.55</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>170.0</td><td>95.0</td><td>220.0</td><td>485.0</td><td>324.79</td><td>&quot;Asian Classic …</td><td>&quot;India&quot;</td></tr><tr><td>2019-10-01</td><td>&quot;A Belousov&quot;</td><td>&quot;M&quot;</td><td>8</td><td>17.5</td><td>&quot;18-19&quot;</td><td>73.6</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Raw&quot;</td><td>75.0</td><td>75.0</td><td>100.0</td><td>250.0</td><td>180.52</td><td>&quot;Kazakhstan Cla…</td><td>&quot;Kazakhstan&quot;</td></tr><tr><td>2019-09-26</td><td>&quot;A K S Shri Ram…</td><td>&quot;M&quot;</td><td>13</td><td>16.0</td><td>&quot;16-17&quot;</td><td>78.2</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>117.5</td><td>50.0</td><td>150.0</td><td>317.5</td><td>219.95</td><td>&quot;Indian Classic…</td><td>&quot;India&quot;</td></tr><tr><td>2019-09-26</td><td>&quot;A Pradeep&quot;</td><td>&quot;M&quot;</td><td>6</td><td>17.0</td><td>&quot;16-17&quot;</td><td>80.7</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>150.0</td><td>97.5</td><td>170.0</td><td>417.5</td><td>283.48</td><td>&quot;Indian Classic…</td><td>&quot;India&quot;</td></tr></tbody></table></div>
+<small>shape: (5, 17)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>name</th><th>sex</th><th>place</th><th>age</th><th>age_class</th><th>bodyweight</th><th>meet_country</th><th>equipment</th><th>squat</th><th>bench</th><th>deadlift</th><th>total</th><th>wilks</th><th>federation</th><th>meet_name</th><th>origin_country</th></tr><tr><td>date</td><td>str</td><td>str</td><td>i32</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>2017-12-04</td><td>&quot;A Ajeesha&quot;</td><td>&quot;F&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>71.1</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>112.5</td><td>55.0</td><td>132.5</td><td>300.0</td><td>295.29</td><td>&quot;AsianPF&quot;</td><td>&quot;Asian Classic …</td><td>&quot;India&quot;</td></tr><tr><td>2012-12-10</td><td>&quot;A Ashwin&quot;</td><td>&quot;M&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>82.55</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>170.0</td><td>95.0</td><td>220.0</td><td>485.0</td><td>324.79</td><td>&quot;AsianPF&quot;</td><td>&quot;Asian Classic …</td><td>&quot;India&quot;</td></tr><tr><td>2019-10-01</td><td>&quot;A Belousov&quot;</td><td>&quot;M&quot;</td><td>8</td><td>17.5</td><td>&quot;18-19&quot;</td><td>73.6</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Raw&quot;</td><td>75.0</td><td>75.0</td><td>100.0</td><td>250.0</td><td>180.52</td><td>&quot;KPF&quot;</td><td>&quot;Kazakhstan Cla…</td><td>&quot;Kazakhstan&quot;</td></tr><tr><td>2019-09-26</td><td>&quot;A K S Shri Ram…</td><td>&quot;M&quot;</td><td>13</td><td>16.0</td><td>&quot;16-17&quot;</td><td>78.2</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>117.5</td><td>50.0</td><td>150.0</td><td>317.5</td><td>219.95</td><td>&quot;PI&quot;</td><td>&quot;Indian Classic…</td><td>&quot;India&quot;</td></tr><tr><td>2019-09-26</td><td>&quot;A Pradeep&quot;</td><td>&quot;M&quot;</td><td>6</td><td>17.0</td><td>&quot;16-17&quot;</td><td>80.7</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>150.0</td><td>97.5</td><td>170.0</td><td>417.5</td><td>283.48</td><td>&quot;PI&quot;</td><td>&quot;Indian Classic…</td><td>&quot;India&quot;</td></tr></tbody></table></div>
 
 
 
@@ -217,7 +217,7 @@ primary_key_df.head(2)
   text-align: right;
 }
 </style>
-<small>shape: (2, 18)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>name</th><th>sex</th><th>place</th><th>age</th><th>age_class</th><th>bodyweight</th><th>meet_country</th><th>equipment</th><th>squat</th><th>bench</th><th>deadlift</th><th>total</th><th>wilks</th><th>meet_name</th><th>origin_country</th><th>year_of_birth</th><th>primary_key</th></tr><tr><td>date</td><td>str</td><td>str</td><td>i32</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>2017-12-04</td><td>&quot;A Ajeesha&quot;</td><td>&quot;F&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>71.1</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>112.5</td><td>55.0</td><td>132.5</td><td>300.0</td><td>295.29</td><td>&quot;Asian Classic …</td><td>&quot;India&quot;</td><td>&quot;2000&quot;</td><td>&quot;a-ajeesha-2000…</td></tr><tr><td>2012-12-10</td><td>&quot;A Ashwin&quot;</td><td>&quot;M&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>82.55</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>170.0</td><td>95.0</td><td>220.0</td><td>485.0</td><td>324.79</td><td>&quot;Asian Classic …</td><td>&quot;India&quot;</td><td>&quot;1995&quot;</td><td>&quot;a-ashwin-1995-…</td></tr></tbody></table></div>
+<small>shape: (2, 19)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>name</th><th>sex</th><th>place</th><th>age</th><th>age_class</th><th>bodyweight</th><th>meet_country</th><th>equipment</th><th>squat</th><th>bench</th><th>deadlift</th><th>total</th><th>wilks</th><th>federation</th><th>meet_name</th><th>origin_country</th><th>year_of_birth</th><th>primary_key</th></tr><tr><td>date</td><td>str</td><td>str</td><td>i32</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>2017-12-04</td><td>&quot;A Ajeesha&quot;</td><td>&quot;F&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>71.1</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>112.5</td><td>55.0</td><td>132.5</td><td>300.0</td><td>295.29</td><td>&quot;AsianPF&quot;</td><td>&quot;Asian Classic …</td><td>&quot;India&quot;</td><td>&quot;2000&quot;</td><td>&quot;a-ajeesha-2000…</td></tr><tr><td>2012-12-10</td><td>&quot;A Ashwin&quot;</td><td>&quot;M&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>82.55</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>170.0</td><td>95.0</td><td>220.0</td><td>485.0</td><td>324.79</td><td>&quot;AsianPF&quot;</td><td>&quot;Asian Classic …</td><td>&quot;India&quot;</td><td>&quot;1995&quot;</td><td>&quot;a-ashwin-1995-…</td></tr></tbody></table></div>
 
 
 
@@ -239,7 +239,8 @@ fe_df = primary_key_df.with_columns(
     pl.when(
         pl.col('meet_name').str.contains('International|World|Commonwealth')
     ).then("international").otherwise("local")).alias('meet_type'),
-    pl.col('bodyweight').cast(pl.Float64).alias('bodyweight_class'),
+    pl.col('bodyweight').cast(pl.Float64).alias("weight_limit"),
+    pl.col('federation').str.to_lowercase()
 ).filter(
     pl.col('time_since_last_comp') !=  0
 )
@@ -256,26 +257,148 @@ fe_df = fe_df.with_columns(
 
 
 ```python
-
-def assign_weight_class(weight, class_dict):
-    for key in sorted(class_dict):
-        if weight < key:
-            return class_dict[key]
-    return None
+from dataclasses import dataclass
+from datetime import datetime
 
 mens_ipf_class = {59: "<59", 66: "59-66", 74: "66-74", 83: "74-83", 93: "83-93", 105: "93-105", 120: "105-120", 999: "120+"}
+mens_usapl_class = {52: "<52", 56: "52-56", 60: "56-60", 67.5: "60-67.5", 75: "67.5-75", 82.5: "82.5-90", 90: "90-100", 100: "100-110", 110: "110-125", 125: "125-140", 999: "140+"}
+mens_wp_class = {62: "<62", 69: "62-69", 77: "69-77", 85: "77-85", 94: "85-94", 105: "94-105", 120: "105-120", 999: "120+"}
+womens_usapl_class = {44: "<44", 48: "44-48", 52: "48-52", 56: "52-56", 60: "56-60", 67.5: "60-67.5", 75: "67.5-75", 82.5: "75-82.5", 90: "82.5-90", 999: "90+"}
 womens_ipf_class = {47: "<47", 52: "47-52", 57: "52-57", 63: "57-63", 72: "63-72", 84: "72-84", 999: "84+"}
+womens_wp_class = {48: "<48", 53: "48-53", 58: "53-58", 63: "58-63", 69: "63-69", 76: "69-76", 84: "76-84", 100: "84-100", 999: "100+"}
 
-fe_df = fe_df.with_columns(
-    pl.when(
-        pl.col('sex') == "F"
-    ).then(
-        pl.col('bodyweight_class').apply(lambda x: assign_weight_class(x, womens_ipf_class))
-    ).otherwise(
-        pl.col('bodyweight_class').apply(lambda x: assign_weight_class(x, mens_ipf_class))
-    ).alias('ipf_weight_class')
-).drop(["bodyweight_class"])
+WEIGHT_CLASSES = {
+    "ipf": {
+        "M": mens_ipf_class,
+        "F": womens_ipf_class
+    },
+    "usapl": {
+        "M": mens_usapl_class,
+        "F": womens_usapl_class
+    },
+    "wp": { 
+        "M": mens_wp_class,
+        "F": womens_wp_class
+    }
+}
+
+
+@dataclass
+class WeightClassFederation:
+    federation: str
+    weight: float
+    sex: str
+    date_of_comp: datetime
+    weight_class_federation: str = None
+    weight_class: str = None
+
+    def __post_init__(self):
+        self.weight_class_federation = self._weight_class_federation()
+        print(self.weight_class_federation)
+        self.weight_class = self.assign_weight_class(self.weight, self.weight_class_federation, self.sex)
+        self.date_of_comp = self.date_of_comp.strftime("%Y-%m-%d")
+    
+
+    def _weight_class_federation(self) -> str:
+        print(self.date_of_comp)
+        if (self.federation == "usapl") & (self.date_of_comp >= datetime(2021,11,7).date()):
+            return "usapl"
+        elif (self.federation == "pa") & (self.date_of_comp >= datetime(2018,1,1).date()):
+            return "wp"
+        else: 
+            return "ipf"
+
+    @staticmethod
+    def assign_weight_class(weight, weight_class_federation, sex) -> str:
+        class_dict = WEIGHT_CLASSES.get(weight_class_federation).get(sex)
+        for key in sorted(class_dict):
+            if weight <= key:
+                return class_dict[key]
+        return None
+
+
 ```
+
+
+```python
+test_df = fe_df.select(
+    pl.col("federation"),
+    pl.col("weight"),
+    pl.col("sex"),
+    pl.col("date_of_comp")
+)
+
+federation_weight_classes = []
+
+for row in test_df.iter_rows():
+    federation_weight_classes.append(WeightClassFederation(*row[-4:]))
+```
+
+
+    ---------------------------------------------------------------------------
+
+    ColumnNotFoundError                       Traceback (most recent call last)
+
+    Cell In[218], line 1
+    ----> 1 test_df = fe_df.select(
+          2     pl.col("federation"),
+          3     pl.col("weight"),
+          4     pl.col("sex"),
+          5     pl.col("date_of_comp")
+          6 )
+          8 federation_weight_classes = []
+         10 for row in test_df.iter_rows():
+
+
+    File ~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/polars/dataframe/frame.py:6643, in DataFrame.select(self, exprs, *more_exprs, **named_exprs)
+       6533 def select(
+       6534     self,
+       6535     exprs: IntoExpr | Iterable[IntoExpr] | None = None,
+       6536     *more_exprs: IntoExpr,
+       6537     **named_exprs: IntoExpr,
+       6538 ) -> Self:
+       6539     """
+       6540     Select columns from this DataFrame.
+       6541 
+       (...)
+       6638 
+       6639     """
+       6640     return self._from_pydf(
+       6641         self.lazy()
+       6642         .select(exprs, *more_exprs, **named_exprs)
+    -> 6643         .collect(no_optimization=True)
+       6644         ._df
+       6645     )
+
+
+    File ~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-4gf5U7T4-py3.11/lib/python3.11/site-packages/polars/lazyframe/frame.py:1475, in LazyFrame.collect(self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, no_optimization, slice_pushdown, common_subplan_elimination, streaming)
+       1464     common_subplan_elimination = False
+       1466 ldf = self._ldf.optimization_toggle(
+       1467     type_coercion,
+       1468     predicate_pushdown,
+       (...)
+       1473     streaming,
+       1474 )
+    -> 1475 return wrap_df(ldf.collect())
+
+
+    ColumnNotFoundError: weight
+    
+    Error originated just after this operation:
+    DF ["date", "name", "sex", "place"]; PROJECT */32 COLUMNS; SELECTION: "None"
+
+
+
+```python
+federation_weight_classes[0:1][0
+```
+
+
+
+
+    'asianpf'
+
+
 
 
 ```python
@@ -291,7 +414,7 @@ fe_df.filter(pl.col("name") == "Joshua Luu").sort("date", descending=True)
   text-align: right;
 }
 </style>
-<small>shape: (14, 31)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>name</th><th>sex</th><th>place</th><th>age</th><th>age_class</th><th>bodyweight</th><th>meet_country</th><th>equipment</th><th>squat</th><th>bench</th><th>deadlift</th><th>total</th><th>wilks</th><th>meet_name</th><th>origin_country</th><th>year_of_birth</th><th>primary_key</th><th>time_since_last_comp</th><th>bodyweight_change</th><th>years_since_last_comp</th><th>is_origin_country</th><th>date_as_ordinal</th><th>cumulative_comps</th><th>meet_type</th><th>squat_progress</th><th>bench_progress</th><th>deadlift_progress</th><th>total_progress</th><th>wilks_progress</th><th>ipf_weight_class</th></tr><tr><td>date</td><td>str</td><td>str</td><td>i32</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td><td>str</td><td>str</td><td>i32</td><td>f64</td><td>f64</td><td>bool</td><td>i64</td><td>u32</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td></tr></thead><tbody><tr><td>2023-04-22</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>1</td><td>25.5</td><td>&quot;24-34&quot;</td><td>74.15</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>220.0</td><td>130.0</td><td>270.0</td><td>620.0</td><td>445.34</td><td>&quot;Bens Army Serv…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>280</td><td>-0.35</td><td>0.766598</td><td>true</td><td>738632</td><td>13</td><td>&quot;local&quot;</td><td>19.566964</td><td>3.261161</td><td>9.783482</td><td>32.611607</td><td>25.280518</td><td>&quot;74-83&quot;</td></tr><tr><td>2022-07-16</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>1</td><td>24.5</td><td>&quot;24-34&quot;</td><td>74.5</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>205.0</td><td>127.5</td><td>262.5</td><td>595.0</td><td>425.96</td><td>&quot;Gold Coast Cla…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>392</td><td>-1.9</td><td>1.073238</td><td>true</td><td>738352</td><td>12</td><td>&quot;local&quot;</td><td>0.0</td><td>6.988202</td><td>6.988202</td><td>13.976403</td><td>16.66919</td><td>&quot;74-83&quot;</td></tr><tr><td>2021-06-19</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>1</td><td>23.5</td><td>&quot;24-34&quot;</td><td>76.4</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>205.0</td><td>120.0</td><td>255.0</td><td>580.0</td><td>408.07</td><td>&quot;TSF Birthday B…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>625</td><td>7.65</td><td>1.711157</td><td>true</td><td>737960</td><td>11</td><td>&quot;local&quot;</td><td>2.922</td><td>-1.1688</td><td>5.844</td><td>7.5972</td><td>-13.32432</td><td>&quot;74-83&quot;</td></tr><tr><td>2019-10-03</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>1</td><td>22.0</td><td>&quot;20-23&quot;</td><td>68.75</td><td>&quot;Canada&quot;</td><td>&quot;Raw&quot;</td><td>200.0</td><td>122.0</td><td>245.0</td><td>567.0</td><td>430.87</td><td>&quot;World Champion…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>160</td><td>0.1</td><td>0.438056</td><td>false</td><td>737335</td><td>10</td><td>&quot;international&quot;</td><td>15.979688</td><td>13.696875</td><td>43.373438</td><td>73.05</td><td>54.467906</td><td>&quot;66-74&quot;</td></tr><tr><td>2019-04-26</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>1</td><td>21.5</td><td>&quot;20-23&quot;</td><td>68.65</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>193.0</td><td>116.0</td><td>226.0</td><td>535.0</td><td>407.01</td><td>&quot;Australian Jun…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>139</td><td>-0.1</td><td>0.380561</td><td>true</td><td>737175</td><td>9</td><td>&quot;local&quot;</td><td>21.021583</td><td>2.627698</td><td>-23.649281</td><td>0.0</td><td>1.208741</td><td>&quot;66-74&quot;</td></tr><tr><td>2018-12-08</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>1</td><td>21.0</td><td>&quot;20-23&quot;</td><td>68.75</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>185.0</td><td>115.0</td><td>235.0</td><td>535.0</td><td>406.55</td><td>&quot;THJE Strength …</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>56</td><td>0.5</td><td>0.15332</td><td>true</td><td>737036</td><td>8</td><td>&quot;local&quot;</td><td>-48.917411</td><td>-16.305804</td><td>16.305804</td><td>-48.917411</td><td>-52.635134</td><td>&quot;66-74&quot;</td></tr><tr><td>2018-10-13</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>4</td><td>21.0</td><td>&quot;20-23&quot;</td><td>68.25</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>192.5</td><td>117.5</td><td>232.5</td><td>542.5</td><td>414.62</td><td>&quot;Australian Nat…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>71</td><td>2.2</td><td>0.194387</td><td>true</td><td>736980</td><td>7</td><td>&quot;local&quot;</td><td>12.860915</td><td>12.860915</td><td>-51.443662</td><td>-25.721831</td><td>-77.216937</td><td>&quot;66-74&quot;</td></tr><tr><td>2018-08-03</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>2</td><td>20.5</td><td>&quot;20-23&quot;</td><td>66.05</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>190.0</td><td>115.0</td><td>242.5</td><td>547.5</td><td>429.63</td><td>&quot;Melbourne Open…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>105</td><td>0.4</td><td>0.287474</td><td>true</td><td>736909</td><td>6</td><td>&quot;local&quot;</td><td>17.392857</td><td>8.696429</td><td>60.875</td><td>86.964286</td><td>61.083714</td><td>&quot;66-74&quot;</td></tr><tr><td>2018-04-20</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>2</td><td>20.5</td><td>&quot;20-23&quot;</td><td>65.65</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>185.0</td><td>112.5</td><td>225.0</td><td>522.5</td><td>412.07</td><td>&quot;Asia Pacific C…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>132</td><td>6.85</td><td>0.361396</td><td>true</td><td>736804</td><td>5</td><td>&quot;local&quot;</td><td>5.534091</td><td>13.835227</td><td>-44.272727</td><td>-24.903409</td><td>-137.688182</td><td>&quot;59-66&quot;</td></tr><tr><td>2017-12-09</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>1</td><td>20.0</td><td>&quot;20-23&quot;</td><td>58.8</td><td>&quot;Singapore&quot;</td><td>&quot;Raw&quot;</td><td>183.0</td><td>107.5</td><td>241.0</td><td>531.5</td><td>461.83</td><td>&quot;Oceania Champi…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>57</td><td>-0.1</td><td>0.156057</td><td>false</td><td>736672</td><td>4</td><td>&quot;local&quot;</td><td>3.203947</td><td>16.019737</td><td>54.467105</td><td>73.690789</td><td>68.628553</td><td>&quot;&lt;59&quot;</td></tr><tr><td>2017-10-13</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>3</td><td>20.0</td><td>&quot;20-23&quot;</td><td>58.9</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>182.5</td><td>105.0</td><td>232.5</td><td>520.0</td><td>451.12</td><td>&quot;Australia Nati…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>70</td><td>-0.1</td><td>0.19165</td><td>true</td><td>736615</td><td>3</td><td>&quot;local&quot;</td><td>26.089286</td><td>26.089286</td><td>-23.480357</td><td>28.698214</td><td>28.541679</td><td>&quot;&lt;59&quot;</td></tr><tr><td>2017-08-04</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>1</td><td>19.5</td><td>&quot;20-23&quot;</td><td>59.0</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>177.5</td><td>100.0</td><td>237.0</td><td>514.5</td><td>445.65</td><td>&quot;Australian Jun…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>75</td><td>0.5</td><td>0.205339</td><td>true</td><td>736545</td><td>2</td><td>&quot;local&quot;</td><td>-12.175</td><td>0.0</td><td>131.49</td><td>119.315</td><td>86.8808</td><td>&quot;59-66&quot;</td></tr><tr><td>2017-05-21</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>2</td><td>19.5</td><td>&quot;20-23&quot;</td><td>58.5</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>180.0</td><td>100.0</td><td>210.0</td><td>490.0</td><td>427.81</td><td>&quot;Obsidian Showd…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>63</td><td>-0.2</td><td>0.172485</td><td>true</td><td>736470</td><td>1</td><td>&quot;local&quot;</td><td>43.482143</td><td>86.964286</td><td>-57.97619</td><td>72.470238</td><td>70.962857</td><td>&quot;&lt;59&quot;</td></tr><tr><td>2017-03-19</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>2</td><td>19.5</td><td>&quot;20-23&quot;</td><td>58.7</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>172.5</td><td>85.0</td><td>220.0</td><td>477.5</td><td>415.57</td><td>&quot;Obsidian Showd…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>null</td><td>null</td><td>null</td><td>true</td><td>736407</td><td>0</td><td>&quot;local&quot;</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td><td>&quot;&lt;59&quot;</td></tr></tbody></table></div>
+<small>shape: (14, 32)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>name</th><th>sex</th><th>place</th><th>age</th><th>age_class</th><th>bodyweight</th><th>meet_country</th><th>equipment</th><th>squat</th><th>bench</th><th>deadlift</th><th>total</th><th>wilks</th><th>federation</th><th>meet_name</th><th>origin_country</th><th>year_of_birth</th><th>primary_key</th><th>time_since_last_comp</th><th>bodyweight_change</th><th>years_since_last_comp</th><th>is_origin_country</th><th>date_as_ordinal</th><th>cumulative_comps</th><th>meet_type</th><th>weight_limit</th><th>squat_progress</th><th>bench_progress</th><th>deadlift_progress</th><th>total_progress</th><th>wilks_progress</th></tr><tr><td>date</td><td>str</td><td>str</td><td>i32</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>i32</td><td>f64</td><td>f64</td><td>bool</td><td>i64</td><td>u32</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td></tr></thead><tbody><tr><td>2023-04-22</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>1</td><td>25.5</td><td>&quot;24-34&quot;</td><td>74.15</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>220.0</td><td>130.0</td><td>270.0</td><td>620.0</td><td>445.34</td><td>&quot;usapl&quot;</td><td>&quot;Bens Army Serv…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>280</td><td>-0.35</td><td>0.766598</td><td>true</td><td>738632</td><td>13</td><td>&quot;local&quot;</td><td>74.15</td><td>19.566964</td><td>3.261161</td><td>9.783482</td><td>32.611607</td><td>25.280518</td></tr><tr><td>2022-07-16</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>1</td><td>24.5</td><td>&quot;24-34&quot;</td><td>74.5</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>205.0</td><td>127.5</td><td>262.5</td><td>595.0</td><td>425.96</td><td>&quot;usapl&quot;</td><td>&quot;Gold Coast Cla…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>392</td><td>-1.9</td><td>1.073238</td><td>true</td><td>738352</td><td>12</td><td>&quot;local&quot;</td><td>74.5</td><td>0.0</td><td>6.988202</td><td>6.988202</td><td>13.976403</td><td>16.66919</td></tr><tr><td>2021-06-19</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>1</td><td>23.5</td><td>&quot;24-34&quot;</td><td>76.4</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>205.0</td><td>120.0</td><td>255.0</td><td>580.0</td><td>408.07</td><td>&quot;pa&quot;</td><td>&quot;TSF Birthday B…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>625</td><td>7.65</td><td>1.711157</td><td>true</td><td>737960</td><td>11</td><td>&quot;local&quot;</td><td>76.4</td><td>2.922</td><td>-1.1688</td><td>5.844</td><td>7.5972</td><td>-13.32432</td></tr><tr><td>2019-10-03</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>1</td><td>22.0</td><td>&quot;20-23&quot;</td><td>68.75</td><td>&quot;Canada&quot;</td><td>&quot;Raw&quot;</td><td>200.0</td><td>122.0</td><td>245.0</td><td>567.0</td><td>430.87</td><td>&quot;wp&quot;</td><td>&quot;World Champion…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>160</td><td>0.1</td><td>0.438056</td><td>false</td><td>737335</td><td>10</td><td>&quot;international&quot;</td><td>68.75</td><td>15.979688</td><td>13.696875</td><td>43.373438</td><td>73.05</td><td>54.467906</td></tr><tr><td>2019-04-26</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>1</td><td>21.5</td><td>&quot;20-23&quot;</td><td>68.65</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>193.0</td><td>116.0</td><td>226.0</td><td>535.0</td><td>407.01</td><td>&quot;pa&quot;</td><td>&quot;Australian Jun…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>139</td><td>-0.1</td><td>0.380561</td><td>true</td><td>737175</td><td>9</td><td>&quot;local&quot;</td><td>68.65</td><td>21.021583</td><td>2.627698</td><td>-23.649281</td><td>0.0</td><td>1.208741</td></tr><tr><td>2018-12-08</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>1</td><td>21.0</td><td>&quot;20-23&quot;</td><td>68.75</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>185.0</td><td>115.0</td><td>235.0</td><td>535.0</td><td>406.55</td><td>&quot;pa&quot;</td><td>&quot;THJE Strength …</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>56</td><td>0.5</td><td>0.15332</td><td>true</td><td>737036</td><td>8</td><td>&quot;local&quot;</td><td>68.75</td><td>-48.917411</td><td>-16.305804</td><td>16.305804</td><td>-48.917411</td><td>-52.635134</td></tr><tr><td>2018-10-13</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>4</td><td>21.0</td><td>&quot;20-23&quot;</td><td>68.25</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>192.5</td><td>117.5</td><td>232.5</td><td>542.5</td><td>414.62</td><td>&quot;pa&quot;</td><td>&quot;Australian Nat…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>71</td><td>2.2</td><td>0.194387</td><td>true</td><td>736980</td><td>7</td><td>&quot;local&quot;</td><td>68.25</td><td>12.860915</td><td>12.860915</td><td>-51.443662</td><td>-25.721831</td><td>-77.216937</td></tr><tr><td>2018-08-03</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>2</td><td>20.5</td><td>&quot;20-23&quot;</td><td>66.05</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>190.0</td><td>115.0</td><td>242.5</td><td>547.5</td><td>429.63</td><td>&quot;pa&quot;</td><td>&quot;Melbourne Open…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>105</td><td>0.4</td><td>0.287474</td><td>true</td><td>736909</td><td>6</td><td>&quot;local&quot;</td><td>66.05</td><td>17.392857</td><td>8.696429</td><td>60.875</td><td>86.964286</td><td>61.083714</td></tr><tr><td>2018-04-20</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>2</td><td>20.5</td><td>&quot;20-23&quot;</td><td>65.65</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>185.0</td><td>112.5</td><td>225.0</td><td>522.5</td><td>412.07</td><td>&quot;wp&quot;</td><td>&quot;Asia Pacific C…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>132</td><td>6.85</td><td>0.361396</td><td>true</td><td>736804</td><td>5</td><td>&quot;local&quot;</td><td>65.65</td><td>5.534091</td><td>13.835227</td><td>-44.272727</td><td>-24.903409</td><td>-137.688182</td></tr><tr><td>2017-12-09</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>1</td><td>20.0</td><td>&quot;20-23&quot;</td><td>58.8</td><td>&quot;Singapore&quot;</td><td>&quot;Raw&quot;</td><td>183.0</td><td>107.5</td><td>241.0</td><td>531.5</td><td>461.83</td><td>&quot;oceaniapf&quot;</td><td>&quot;Oceania Champi…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>57</td><td>-0.1</td><td>0.156057</td><td>false</td><td>736672</td><td>4</td><td>&quot;local&quot;</td><td>58.8</td><td>3.203947</td><td>16.019737</td><td>54.467105</td><td>73.690789</td><td>68.628553</td></tr><tr><td>2017-10-13</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>3</td><td>20.0</td><td>&quot;20-23&quot;</td><td>58.9</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>182.5</td><td>105.0</td><td>232.5</td><td>520.0</td><td>451.12</td><td>&quot;pa&quot;</td><td>&quot;Australia Nati…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>70</td><td>-0.1</td><td>0.19165</td><td>true</td><td>736615</td><td>3</td><td>&quot;local&quot;</td><td>58.9</td><td>26.089286</td><td>26.089286</td><td>-23.480357</td><td>28.698214</td><td>28.541679</td></tr><tr><td>2017-08-04</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>1</td><td>19.5</td><td>&quot;20-23&quot;</td><td>59.0</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>177.5</td><td>100.0</td><td>237.0</td><td>514.5</td><td>445.65</td><td>&quot;pa&quot;</td><td>&quot;Australian Jun…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>75</td><td>0.5</td><td>0.205339</td><td>true</td><td>736545</td><td>2</td><td>&quot;local&quot;</td><td>59.0</td><td>-12.175</td><td>0.0</td><td>131.49</td><td>119.315</td><td>86.8808</td></tr><tr><td>2017-05-21</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>2</td><td>19.5</td><td>&quot;20-23&quot;</td><td>58.5</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>180.0</td><td>100.0</td><td>210.0</td><td>490.0</td><td>427.81</td><td>&quot;pa&quot;</td><td>&quot;Obsidian Showd…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>63</td><td>-0.2</td><td>0.172485</td><td>true</td><td>736470</td><td>1</td><td>&quot;local&quot;</td><td>58.5</td><td>43.482143</td><td>86.964286</td><td>-57.97619</td><td>72.470238</td><td>70.962857</td></tr><tr><td>2017-03-19</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>2</td><td>19.5</td><td>&quot;20-23&quot;</td><td>58.7</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>172.5</td><td>85.0</td><td>220.0</td><td>477.5</td><td>415.57</td><td>&quot;pa&quot;</td><td>&quot;Obsidian Showd…</td><td>&quot;Australia&quot;</td><td>&quot;1997&quot;</td><td>&quot;joshua-luu-199…</td><td>null</td><td>null</td><td>null</td><td>true</td><td>736407</td><td>0</td><td>&quot;local&quot;</td><td>58.7</td><td>null</td><td>null</td><td>null</td><td>null</td><td>null</td></tr></tbody></table></div>
 
 
 
