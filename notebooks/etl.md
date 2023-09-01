@@ -32,7 +32,7 @@ df.head(5)
   text-align: right;
 }
 </style>
-<small>shape: (5, 41)</small><table border="1" class="dataframe"><thead><tr><th>Name</th><th>Sex</th><th>Event</th><th>Equipment</th><th>Age</th><th>AgeClass</th><th>BirthYearClass</th><th>Division</th><th>BodyweightKg</th><th>WeightClassKg</th><th>Squat1Kg</th><th>Squat2Kg</th><th>Squat3Kg</th><th>Squat4Kg</th><th>Best3SquatKg</th><th>Bench1Kg</th><th>Bench2Kg</th><th>Bench3Kg</th><th>Bench4Kg</th><th>Best3BenchKg</th><th>Deadlift1Kg</th><th>Deadlift2Kg</th><th>Deadlift3Kg</th><th>Deadlift4Kg</th><th>Best3DeadliftKg</th><th>TotalKg</th><th>Place</th><th>Dots</th><th>Wilks</th><th>Glossbrenner</th><th>Goodlift</th><th>Tested</th><th>Country</th><th>State</th><th>Federation</th><th>ParentFederation</th><th>Date</th><th>MeetCountry</th><th>MeetState</th><th>MeetTown</th><th>MeetName</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>&quot;Alona Vladi&quot;</td><td>&quot;F&quot;</td><td>&quot;SBD&quot;</td><td>&quot;Raw&quot;</td><td>33.0</td><td>&quot;24-34&quot;</td><td>&quot;24-39&quot;</td><td>&quot;O&quot;</td><td>58.3</td><td>&quot;60&quot;</td><td>75.0</td><td>80.0</td><td>-90.0</td><td>null</td><td>80.0</td><td>50.0</td><td>55.0</td><td>60.0</td><td>null</td><td>60.0</td><td>95.0</td><td>105.0</td><td>107.5</td><td>null</td><td>107.5</td><td>247.5</td><td>&quot;1&quot;</td><td>279.44</td><td>282.18</td><td>249.42</td><td>57.1</td><td>&quot;Yes&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;GFP&quot;</td><td>null</td><td>&quot;2019-05-11&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;Bryansk&quot;</td><td>&quot;Open Tournamen…</td></tr><tr><td>&quot;Galina Solovya…</td><td>&quot;F&quot;</td><td>&quot;SBD&quot;</td><td>&quot;Raw&quot;</td><td>43.0</td><td>&quot;40-44&quot;</td><td>&quot;40-49&quot;</td><td>&quot;M1&quot;</td><td>73.1</td><td>&quot;75&quot;</td><td>95.0</td><td>100.0</td><td>105.0</td><td>null</td><td>105.0</td><td>62.5</td><td>67.5</td><td>-72.5</td><td>null</td><td>67.5</td><td>100.0</td><td>110.0</td><td>-120.0</td><td>null</td><td>110.0</td><td>282.5</td><td>&quot;1&quot;</td><td>278.95</td><td>272.99</td><td>240.35</td><td>56.76</td><td>&quot;Yes&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;GFP&quot;</td><td>null</td><td>&quot;2019-05-11&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;Bryansk&quot;</td><td>&quot;Open Tournamen…</td></tr><tr><td>&quot;Daniil Voronin…</td><td>&quot;M&quot;</td><td>&quot;SBD&quot;</td><td>&quot;Raw&quot;</td><td>15.5</td><td>&quot;16-17&quot;</td><td>&quot;14-18&quot;</td><td>&quot;T&quot;</td><td>67.4</td><td>&quot;75&quot;</td><td>85.0</td><td>90.0</td><td>100.0</td><td>null</td><td>100.0</td><td>55.0</td><td>62.5</td><td>-65.0</td><td>null</td><td>62.5</td><td>90.0</td><td>100.0</td><td>105.0</td><td>null</td><td>105.0</td><td>267.5</td><td>&quot;1&quot;</td><td>206.4</td><td>206.49</td><td>200.45</td><td>41.24</td><td>&quot;Yes&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;GFP&quot;</td><td>null</td><td>&quot;2019-05-11&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;Bryansk&quot;</td><td>&quot;Open Tournamen…</td></tr><tr><td>&quot;Aleksey Krasov…</td><td>&quot;M&quot;</td><td>&quot;SBD&quot;</td><td>&quot;Raw&quot;</td><td>35.0</td><td>&quot;35-39&quot;</td><td>&quot;24-39&quot;</td><td>&quot;O&quot;</td><td>66.65</td><td>&quot;75&quot;</td><td>125.0</td><td>132.0</td><td>137.5</td><td>null</td><td>137.5</td><td>115.0</td><td>122.5</td><td>-127.5</td><td>null</td><td>122.5</td><td>150.0</td><td>165.0</td><td>170.0</td><td>null</td><td>170.0</td><td>430.0</td><td>&quot;1&quot;</td><td>334.49</td><td>334.94</td><td>325.32</td><td>66.68</td><td>&quot;Yes&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;GFP&quot;</td><td>null</td><td>&quot;2019-05-11&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;Bryansk&quot;</td><td>&quot;Open Tournamen…</td></tr><tr><td>&quot;Margarita Ples…</td><td>&quot;M&quot;</td><td>&quot;SBD&quot;</td><td>&quot;Raw&quot;</td><td>26.5</td><td>&quot;24-34&quot;</td><td>&quot;24-39&quot;</td><td>&quot;O&quot;</td><td>72.45</td><td>&quot;75&quot;</td><td>80.0</td><td>85.0</td><td>90.0</td><td>null</td><td>90.0</td><td>40.0</td><td>50.0</td><td>-60.0</td><td>null</td><td>50.0</td><td>112.5</td><td>120.0</td><td>125.0</td><td>null</td><td>125.0</td><td>265.0</td><td>&quot;1&quot;</td><td>194.46</td><td>193.55</td><td>187.29</td><td>39.34</td><td>&quot;Yes&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;GFP&quot;</td><td>null</td><td>&quot;2019-05-11&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;Bryansk&quot;</td><td>&quot;Open Tournamen…</td></tr></tbody></table></div>
+<small>shape: (5, 41)</small><table border="1" class="dataframe"><thead><tr><th>Name</th><th>Sex</th><th>Event</th><th>Equipment</th><th>Age</th><th>AgeClass</th><th>BirthYearClass</th><th>Division</th><th>BodyweightKg</th><th>WeightClassKg</th><th>Squat1Kg</th><th>Squat2Kg</th><th>Squat3Kg</th><th>Squat4Kg</th><th>Best3SquatKg</th><th>Bench1Kg</th><th>Bench2Kg</th><th>Bench3Kg</th><th>Bench4Kg</th><th>Best3BenchKg</th><th>Deadlift1Kg</th><th>Deadlift2Kg</th><th>Deadlift3Kg</th><th>Deadlift4Kg</th><th>Best3DeadliftKg</th><th>TotalKg</th><th>Place</th><th>Dots</th><th>Wilks</th><th>Glossbrenner</th><th>Goodlift</th><th>Tested</th><th>Country</th><th>State</th><th>Federation</th><th>ParentFederation</th><th>Date</th><th>MeetCountry</th><th>MeetState</th><th>MeetTown</th><th>MeetName</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>&quot;Alona Vladi&quot;</td><td>&quot;F&quot;</td><td>&quot;SBD&quot;</td><td>&quot;Raw&quot;</td><td>33.0</td><td>&quot;24-34&quot;</td><td>&quot;24-39&quot;</td><td>&quot;O&quot;</td><td>58.3</td><td>&quot;60&quot;</td><td>75.0</td><td>80.0</td><td>-90.0</td><td>null</td><td>80.0</td><td>50.0</td><td>55.0</td><td>60.0</td><td>null</td><td>60.0</td><td>95.0</td><td>105.0</td><td>107.5</td><td>null</td><td>107.5</td><td>247.5</td><td>&quot;1&quot;</td><td>279.44</td><td>282.18</td><td>249.42</td><td>57.1</td><td>&quot;Yes&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;GFP&quot;</td><td>null</td><td>&quot;2019-05-11&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;Bryansk&quot;</td><td>&quot;Open Tournamen...</td></tr><tr><td>&quot;Galina Solovya...</td><td>&quot;F&quot;</td><td>&quot;SBD&quot;</td><td>&quot;Raw&quot;</td><td>43.0</td><td>&quot;40-44&quot;</td><td>&quot;40-49&quot;</td><td>&quot;M1&quot;</td><td>73.1</td><td>&quot;75&quot;</td><td>95.0</td><td>100.0</td><td>105.0</td><td>null</td><td>105.0</td><td>62.5</td><td>67.5</td><td>-72.5</td><td>null</td><td>67.5</td><td>100.0</td><td>110.0</td><td>-120.0</td><td>null</td><td>110.0</td><td>282.5</td><td>&quot;1&quot;</td><td>278.95</td><td>272.99</td><td>240.35</td><td>56.76</td><td>&quot;Yes&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;GFP&quot;</td><td>null</td><td>&quot;2019-05-11&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;Bryansk&quot;</td><td>&quot;Open Tournamen...</td></tr><tr><td>&quot;Daniil Voronin...</td><td>&quot;M&quot;</td><td>&quot;SBD&quot;</td><td>&quot;Raw&quot;</td><td>15.5</td><td>&quot;16-17&quot;</td><td>&quot;14-18&quot;</td><td>&quot;T&quot;</td><td>67.4</td><td>&quot;75&quot;</td><td>85.0</td><td>90.0</td><td>100.0</td><td>null</td><td>100.0</td><td>55.0</td><td>62.5</td><td>-65.0</td><td>null</td><td>62.5</td><td>90.0</td><td>100.0</td><td>105.0</td><td>null</td><td>105.0</td><td>267.5</td><td>&quot;1&quot;</td><td>206.4</td><td>206.49</td><td>200.45</td><td>41.24</td><td>&quot;Yes&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;GFP&quot;</td><td>null</td><td>&quot;2019-05-11&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;Bryansk&quot;</td><td>&quot;Open Tournamen...</td></tr><tr><td>&quot;Aleksey Krasov...</td><td>&quot;M&quot;</td><td>&quot;SBD&quot;</td><td>&quot;Raw&quot;</td><td>35.0</td><td>&quot;35-39&quot;</td><td>&quot;24-39&quot;</td><td>&quot;O&quot;</td><td>66.65</td><td>&quot;75&quot;</td><td>125.0</td><td>132.0</td><td>137.5</td><td>null</td><td>137.5</td><td>115.0</td><td>122.5</td><td>-127.5</td><td>null</td><td>122.5</td><td>150.0</td><td>165.0</td><td>170.0</td><td>null</td><td>170.0</td><td>430.0</td><td>&quot;1&quot;</td><td>334.49</td><td>334.94</td><td>325.32</td><td>66.68</td><td>&quot;Yes&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;GFP&quot;</td><td>null</td><td>&quot;2019-05-11&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;Bryansk&quot;</td><td>&quot;Open Tournamen...</td></tr><tr><td>&quot;Margarita Ples...</td><td>&quot;M&quot;</td><td>&quot;SBD&quot;</td><td>&quot;Raw&quot;</td><td>26.5</td><td>&quot;24-34&quot;</td><td>&quot;24-39&quot;</td><td>&quot;O&quot;</td><td>72.45</td><td>&quot;75&quot;</td><td>80.0</td><td>85.0</td><td>90.0</td><td>null</td><td>90.0</td><td>40.0</td><td>50.0</td><td>-60.0</td><td>null</td><td>50.0</td><td>112.5</td><td>120.0</td><td>125.0</td><td>null</td><td>125.0</td><td>265.0</td><td>&quot;1&quot;</td><td>194.46</td><td>193.55</td><td>187.29</td><td>39.34</td><td>&quot;Yes&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;GFP&quot;</td><td>null</td><td>&quot;2019-05-11&quot;</td><td>&quot;Russia&quot;</td><td>null</td><td>&quot;Bryansk&quot;</td><td>&quot;Open Tournamen...</td></tr></tbody></table></div>
 
 
 
@@ -70,7 +70,7 @@ print(base_df.shape)
 base_df.head(5)
 ```
 
-    (2943010, 18)
+    (2963284, 18)
 
 
 
@@ -82,7 +82,7 @@ base_df.head(5)
   text-align: right;
 }
 </style>
-<small>shape: (5, 18)</small><table border="1" class="dataframe"><thead><tr><th>Date</th><th>Name</th><th>Sex</th><th>Place</th><th>Age</th><th>AgeClass</th><th>BodyweightKg</th><th>Event</th><th>MeetCountry</th><th>Equipment</th><th>Best3SquatKg</th><th>Best3BenchKg</th><th>Best3DeadliftKg</th><th>TotalKg</th><th>Wilks</th><th>Tested</th><th>Federation</th><th>MeetName</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>&quot;2019-05-11&quot;</td><td>&quot;Alona Vladi&quot;</td><td>&quot;F&quot;</td><td>&quot;1&quot;</td><td>33.0</td><td>&quot;24-34&quot;</td><td>58.3</td><td>&quot;SBD&quot;</td><td>&quot;Russia&quot;</td><td>&quot;Raw&quot;</td><td>80.0</td><td>60.0</td><td>107.5</td><td>247.5</td><td>282.18</td><td>&quot;Yes&quot;</td><td>&quot;GFP&quot;</td><td>&quot;Open Tournamen…</td></tr><tr><td>&quot;2019-05-11&quot;</td><td>&quot;Galina Solovya…</td><td>&quot;F&quot;</td><td>&quot;1&quot;</td><td>43.0</td><td>&quot;40-44&quot;</td><td>73.1</td><td>&quot;SBD&quot;</td><td>&quot;Russia&quot;</td><td>&quot;Raw&quot;</td><td>105.0</td><td>67.5</td><td>110.0</td><td>282.5</td><td>272.99</td><td>&quot;Yes&quot;</td><td>&quot;GFP&quot;</td><td>&quot;Open Tournamen…</td></tr><tr><td>&quot;2019-05-11&quot;</td><td>&quot;Daniil Voronin…</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>15.5</td><td>&quot;16-17&quot;</td><td>67.4</td><td>&quot;SBD&quot;</td><td>&quot;Russia&quot;</td><td>&quot;Raw&quot;</td><td>100.0</td><td>62.5</td><td>105.0</td><td>267.5</td><td>206.49</td><td>&quot;Yes&quot;</td><td>&quot;GFP&quot;</td><td>&quot;Open Tournamen…</td></tr><tr><td>&quot;2019-05-11&quot;</td><td>&quot;Aleksey Krasov…</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>35.0</td><td>&quot;35-39&quot;</td><td>66.65</td><td>&quot;SBD&quot;</td><td>&quot;Russia&quot;</td><td>&quot;Raw&quot;</td><td>137.5</td><td>122.5</td><td>170.0</td><td>430.0</td><td>334.94</td><td>&quot;Yes&quot;</td><td>&quot;GFP&quot;</td><td>&quot;Open Tournamen…</td></tr><tr><td>&quot;2019-05-11&quot;</td><td>&quot;Margarita Ples…</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>26.5</td><td>&quot;24-34&quot;</td><td>72.45</td><td>&quot;SBD&quot;</td><td>&quot;Russia&quot;</td><td>&quot;Raw&quot;</td><td>90.0</td><td>50.0</td><td>125.0</td><td>265.0</td><td>193.55</td><td>&quot;Yes&quot;</td><td>&quot;GFP&quot;</td><td>&quot;Open Tournamen…</td></tr></tbody></table></div>
+<small>shape: (5, 18)</small><table border="1" class="dataframe"><thead><tr><th>Date</th><th>Name</th><th>Sex</th><th>Place</th><th>Age</th><th>AgeClass</th><th>BodyweightKg</th><th>Event</th><th>MeetCountry</th><th>Equipment</th><th>Best3SquatKg</th><th>Best3BenchKg</th><th>Best3DeadliftKg</th><th>TotalKg</th><th>Wilks</th><th>Tested</th><th>Federation</th><th>MeetName</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>&quot;2019-05-11&quot;</td><td>&quot;Alona Vladi&quot;</td><td>&quot;F&quot;</td><td>&quot;1&quot;</td><td>33.0</td><td>&quot;24-34&quot;</td><td>58.3</td><td>&quot;SBD&quot;</td><td>&quot;Russia&quot;</td><td>&quot;Raw&quot;</td><td>80.0</td><td>60.0</td><td>107.5</td><td>247.5</td><td>282.18</td><td>&quot;Yes&quot;</td><td>&quot;GFP&quot;</td><td>&quot;Open Tournamen...</td></tr><tr><td>&quot;2019-05-11&quot;</td><td>&quot;Galina Solovya...</td><td>&quot;F&quot;</td><td>&quot;1&quot;</td><td>43.0</td><td>&quot;40-44&quot;</td><td>73.1</td><td>&quot;SBD&quot;</td><td>&quot;Russia&quot;</td><td>&quot;Raw&quot;</td><td>105.0</td><td>67.5</td><td>110.0</td><td>282.5</td><td>272.99</td><td>&quot;Yes&quot;</td><td>&quot;GFP&quot;</td><td>&quot;Open Tournamen...</td></tr><tr><td>&quot;2019-05-11&quot;</td><td>&quot;Daniil Voronin...</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>15.5</td><td>&quot;16-17&quot;</td><td>67.4</td><td>&quot;SBD&quot;</td><td>&quot;Russia&quot;</td><td>&quot;Raw&quot;</td><td>100.0</td><td>62.5</td><td>105.0</td><td>267.5</td><td>206.49</td><td>&quot;Yes&quot;</td><td>&quot;GFP&quot;</td><td>&quot;Open Tournamen...</td></tr><tr><td>&quot;2019-05-11&quot;</td><td>&quot;Aleksey Krasov...</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>35.0</td><td>&quot;35-39&quot;</td><td>66.65</td><td>&quot;SBD&quot;</td><td>&quot;Russia&quot;</td><td>&quot;Raw&quot;</td><td>137.5</td><td>122.5</td><td>170.0</td><td>430.0</td><td>334.94</td><td>&quot;Yes&quot;</td><td>&quot;GFP&quot;</td><td>&quot;Open Tournamen...</td></tr><tr><td>&quot;2019-05-11&quot;</td><td>&quot;Margarita Ples...</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>26.5</td><td>&quot;24-34&quot;</td><td>72.45</td><td>&quot;SBD&quot;</td><td>&quot;Russia&quot;</td><td>&quot;Raw&quot;</td><td>90.0</td><td>50.0</td><td>125.0</td><td>265.0</td><td>193.55</td><td>&quot;Yes&quot;</td><td>&quot;GFP&quot;</td><td>&quot;Open Tournamen...</td></tr></tbody></table></div>
 
 
 
@@ -98,7 +98,7 @@ print(cleansed_df.shape)
 cleansed_df.head(5)
 ```
 
-    (444331, 16)
+    (453261, 16)
 
 
 
@@ -110,7 +110,7 @@ cleansed_df.head(5)
   text-align: right;
 }
 </style>
-<small>shape: (5, 16)</small><table border="1" class="dataframe"><thead><tr><th>Date</th><th>Name</th><th>Sex</th><th>Place</th><th>Age</th><th>AgeClass</th><th>BodyweightKg</th><th>MeetCountry</th><th>Equipment</th><th>Best3SquatKg</th><th>Best3BenchKg</th><th>Best3DeadliftKg</th><th>TotalKg</th><th>Wilks</th><th>Federation</th><th>MeetName</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>&quot;2023-07-08&quot;</td><td>&quot;Laura Toso&quot;</td><td>&quot;F&quot;</td><td>&quot;6&quot;</td><td>25.0</td><td>&quot;24-34&quot;</td><td>50.9</td><td>&quot;Switzerland&quot;</td><td>&quot;Raw&quot;</td><td>90.0</td><td>50.0</td><td>120.0</td><td>260.0</td><td>329.5</td><td>&quot;KDKS&quot;</td><td>&quot;ORS Cup&quot;</td></tr><tr><td>&quot;2023-07-08&quot;</td><td>&quot;Anna Henzi&quot;</td><td>&quot;F&quot;</td><td>&quot;1&quot;</td><td>30.0</td><td>&quot;24-34&quot;</td><td>56.8</td><td>&quot;Switzerland&quot;</td><td>&quot;Raw&quot;</td><td>135.0</td><td>95.0</td><td>157.5</td><td>387.5</td><td>450.89</td><td>&quot;KDKS&quot;</td><td>&quot;ORS Cup&quot;</td></tr><tr><td>&quot;2023-07-08&quot;</td><td>&quot;Yelyzaveta Tim…</td><td>&quot;F&quot;</td><td>&quot;5&quot;</td><td>21.0</td><td>&quot;20-23&quot;</td><td>56.8</td><td>&quot;Switzerland&quot;</td><td>&quot;Raw&quot;</td><td>100.0</td><td>52.5</td><td>135.0</td><td>287.5</td><td>334.53</td><td>&quot;KDKS&quot;</td><td>&quot;ORS Cup&quot;</td></tr><tr><td>&quot;2023-07-08&quot;</td><td>&quot;Tamara Thoma&quot;</td><td>&quot;F&quot;</td><td>&quot;2&quot;</td><td>29.0</td><td>&quot;24-34&quot;</td><td>68.1</td><td>&quot;Switzerland&quot;</td><td>&quot;Raw&quot;</td><td>130.0</td><td>82.5</td><td>170.0</td><td>382.5</td><td>387.93</td><td>&quot;KDKS&quot;</td><td>&quot;ORS Cup&quot;</td></tr><tr><td>&quot;2023-07-08&quot;</td><td>&quot;Lou Malika Der…</td><td>&quot;F&quot;</td><td>&quot;7&quot;</td><td>25.0</td><td>&quot;24-34&quot;</td><td>68.9</td><td>&quot;Switzerland&quot;</td><td>&quot;Raw&quot;</td><td>100.0</td><td>70.0</td><td>110.0</td><td>280.0</td><td>281.64</td><td>&quot;KDKS&quot;</td><td>&quot;ORS Cup&quot;</td></tr></tbody></table></div>
+<small>shape: (5, 16)</small><table border="1" class="dataframe"><thead><tr><th>Date</th><th>Name</th><th>Sex</th><th>Place</th><th>Age</th><th>AgeClass</th><th>BodyweightKg</th><th>MeetCountry</th><th>Equipment</th><th>Best3SquatKg</th><th>Best3BenchKg</th><th>Best3DeadliftKg</th><th>TotalKg</th><th>Wilks</th><th>Federation</th><th>MeetName</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>&quot;2023-08-23&quot;</td><td>&quot;Rebecca Stace&quot;</td><td>&quot;F&quot;</td><td>&quot;1&quot;</td><td>29.0</td><td>&quot;24-34&quot;</td><td>70.6</td><td>&quot;Ireland&quot;</td><td>&quot;Raw&quot;</td><td>170.0</td><td>105.0</td><td>200.0</td><td>475.0</td><td>469.79</td><td>&quot;IrishPF&quot;</td><td>&quot;ABS Series 14&quot;</td></tr><tr><td>&quot;2023-08-23&quot;</td><td>&quot;Bronagh Maguir...</td><td>&quot;F&quot;</td><td>&quot;3&quot;</td><td>30.5</td><td>&quot;24-34&quot;</td><td>65.95</td><td>&quot;Ireland&quot;</td><td>&quot;Raw&quot;</td><td>140.0</td><td>65.0</td><td>192.5</td><td>397.5</td><td>412.58</td><td>&quot;IrishPF&quot;</td><td>&quot;ABS Series 14&quot;</td></tr><tr><td>&quot;2023-08-23&quot;</td><td>&quot;Shauna Rahaman...</td><td>&quot;F&quot;</td><td>&quot;5&quot;</td><td>29.0</td><td>&quot;24-34&quot;</td><td>69.9</td><td>&quot;Ireland&quot;</td><td>&quot;Raw&quot;</td><td>160.0</td><td>80.0</td><td>157.5</td><td>397.5</td><td>395.84</td><td>&quot;IrishPF&quot;</td><td>&quot;ABS Series 14&quot;</td></tr><tr><td>&quot;2023-08-23&quot;</td><td>&quot;Katie Clarke&quot;</td><td>&quot;F&quot;</td><td>&quot;6&quot;</td><td>26.0</td><td>&quot;24-34&quot;</td><td>72.6</td><td>&quot;Ireland&quot;</td><td>&quot;Raw&quot;</td><td>147.5</td><td>72.5</td><td>182.5</td><td>402.5</td><td>390.71</td><td>&quot;IrishPF&quot;</td><td>&quot;ABS Series 14&quot;</td></tr><tr><td>&quot;2023-08-23&quot;</td><td>&quot;Erik Mata&quot;</td><td>&quot;M&quot;</td><td>&quot;2&quot;</td><td>26.0</td><td>&quot;24-34&quot;</td><td>99.85</td><td>&quot;Ireland&quot;</td><td>&quot;Raw&quot;</td><td>312.5</td><td>190.0</td><td>310.0</td><td>812.5</td><td>494.78</td><td>&quot;IrishPF&quot;</td><td>&quot;ABS Series 14&quot;</td></tr></tbody></table></div>
 
 
 
@@ -128,7 +128,7 @@ cleansed_df.filter(pl.col("Name") == "Joshua Luu").sort("Date", descending=True)
   text-align: right;
 }
 </style>
-<small>shape: (5, 16)</small><table border="1" class="dataframe"><thead><tr><th>Date</th><th>Name</th><th>Sex</th><th>Place</th><th>Age</th><th>AgeClass</th><th>BodyweightKg</th><th>MeetCountry</th><th>Equipment</th><th>Best3SquatKg</th><th>Best3BenchKg</th><th>Best3DeadliftKg</th><th>TotalKg</th><th>Wilks</th><th>Federation</th><th>MeetName</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>&quot;2023-04-22&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>25.5</td><td>&quot;24-34&quot;</td><td>74.15</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>220.0</td><td>130.0</td><td>270.0</td><td>620.0</td><td>445.34</td><td>&quot;USAPL&quot;</td><td>&quot;Bens Army Serv…</td></tr><tr><td>&quot;2022-07-16&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>24.5</td><td>&quot;24-34&quot;</td><td>74.5</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>205.0</td><td>127.5</td><td>262.5</td><td>595.0</td><td>425.96</td><td>&quot;USAPL&quot;</td><td>&quot;Gold Coast Cla…</td></tr><tr><td>&quot;2021-06-19&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>23.5</td><td>&quot;24-34&quot;</td><td>76.4</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>205.0</td><td>120.0</td><td>255.0</td><td>580.0</td><td>408.07</td><td>&quot;PA&quot;</td><td>&quot;TSF Birthday B…</td></tr><tr><td>&quot;2019-10-03&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>22.0</td><td>&quot;20-23&quot;</td><td>68.75</td><td>&quot;Canada&quot;</td><td>&quot;Raw&quot;</td><td>200.0</td><td>122.0</td><td>245.0</td><td>567.0</td><td>430.87</td><td>&quot;WP&quot;</td><td>&quot;World Champion…</td></tr><tr><td>&quot;2019-04-26&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>21.5</td><td>&quot;20-23&quot;</td><td>68.65</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>193.0</td><td>116.0</td><td>226.0</td><td>535.0</td><td>407.01</td><td>&quot;PA&quot;</td><td>&quot;Australian Jun…</td></tr></tbody></table></div>
+<small>shape: (5, 16)</small><table border="1" class="dataframe"><thead><tr><th>Date</th><th>Name</th><th>Sex</th><th>Place</th><th>Age</th><th>AgeClass</th><th>BodyweightKg</th><th>MeetCountry</th><th>Equipment</th><th>Best3SquatKg</th><th>Best3BenchKg</th><th>Best3DeadliftKg</th><th>TotalKg</th><th>Wilks</th><th>Federation</th><th>MeetName</th></tr><tr><td>str</td><td>str</td><td>str</td><td>str</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>&quot;2023-04-22&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>25.5</td><td>&quot;24-34&quot;</td><td>74.15</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>220.0</td><td>130.0</td><td>270.0</td><td>620.0</td><td>445.34</td><td>&quot;USAPL&quot;</td><td>&quot;Bens Army Serv...</td></tr><tr><td>&quot;2022-07-16&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>24.5</td><td>&quot;24-34&quot;</td><td>74.5</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>205.0</td><td>127.5</td><td>262.5</td><td>595.0</td><td>425.96</td><td>&quot;USAPL&quot;</td><td>&quot;Gold Coast Cla...</td></tr><tr><td>&quot;2021-06-19&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>23.5</td><td>&quot;24-34&quot;</td><td>76.4</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>205.0</td><td>120.0</td><td>255.0</td><td>580.0</td><td>408.07</td><td>&quot;PA&quot;</td><td>&quot;TSF Birthday B...</td></tr><tr><td>&quot;2019-10-03&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>22.0</td><td>&quot;20-23&quot;</td><td>68.75</td><td>&quot;Canada&quot;</td><td>&quot;Raw&quot;</td><td>200.0</td><td>122.0</td><td>245.0</td><td>567.0</td><td>430.87</td><td>&quot;WP&quot;</td><td>&quot;World Champion...</td></tr><tr><td>&quot;2019-04-26&quot;</td><td>&quot;Joshua Luu&quot;</td><td>&quot;M&quot;</td><td>&quot;1&quot;</td><td>21.5</td><td>&quot;20-23&quot;</td><td>68.65</td><td>&quot;Australia&quot;</td><td>&quot;Raw&quot;</td><td>193.0</td><td>116.0</td><td>226.0</td><td>535.0</td><td>407.01</td><td>&quot;PA&quot;</td><td>&quot;Australian Jun...</td></tr></tbody></table></div>
 
 
 
@@ -146,38 +146,6 @@ cleansed_df.filter(pl.col("Name") == "Joshua Luu").sort("Date", descending=True)
 # find the first country that the powerlifter competed in and assume that is their country of origin
 lifter_country_df = cleansed_df.groupby(["Name", "Sex"]).agg(pl.first("MeetCountry").alias("OriginCountry"))
 ```
-
-
-```python
-data_prep_df = cleansed_df.sort(["Name", "Date"], descending=[False, True]).join(lifter_country_df, on=["Name", "Sex"]).filter(pl.col("Date").gt("2000-01-01")).with_columns(
-    pl.col("Date").str.strptime(pl.Date, fmt="%Y-%m-%d").alias("Date"),
-    pl.col("Place").cast(pl.Int32).alias("Place"),
-).rename(
-    mapping=conf.op_cols_rename
-).select(
-    pl.all().map_alias(lambda col_name: conf.camel_to_snake(col_name))
-)
-
-
-print(data_prep_df.shape)
-data_prep_df.head(5)
-```
-
-    (443502, 17)
-
-
-
-
-
-<div><style>
-.dataframe > thead > tr > th,
-.dataframe > tbody > tr > td {
-  text-align: right;
-}
-</style>
-<small>shape: (5, 17)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>name</th><th>sex</th><th>place</th><th>age</th><th>age_class</th><th>bodyweight</th><th>meet_country</th><th>equipment</th><th>squat</th><th>bench</th><th>deadlift</th><th>total</th><th>wilks</th><th>federation</th><th>meet_name</th><th>origin_country</th></tr><tr><td>date</td><td>str</td><td>str</td><td>i32</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>2017-12-04</td><td>&quot;A Ajeesha&quot;</td><td>&quot;F&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>71.1</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>112.5</td><td>55.0</td><td>132.5</td><td>300.0</td><td>295.29</td><td>&quot;AsianPF&quot;</td><td>&quot;Asian Classic …</td><td>&quot;India&quot;</td></tr><tr><td>2012-12-10</td><td>&quot;A Ashwin&quot;</td><td>&quot;M&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>82.55</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>170.0</td><td>95.0</td><td>220.0</td><td>485.0</td><td>324.79</td><td>&quot;AsianPF&quot;</td><td>&quot;Asian Classic …</td><td>&quot;India&quot;</td></tr><tr><td>2019-10-01</td><td>&quot;A Belousov&quot;</td><td>&quot;M&quot;</td><td>8</td><td>17.5</td><td>&quot;18-19&quot;</td><td>73.6</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Raw&quot;</td><td>75.0</td><td>75.0</td><td>100.0</td><td>250.0</td><td>180.52</td><td>&quot;KPF&quot;</td><td>&quot;Kazakhstan Cla…</td><td>&quot;Kazakhstan&quot;</td></tr><tr><td>2019-09-26</td><td>&quot;A K S Shri Ram…</td><td>&quot;M&quot;</td><td>13</td><td>16.0</td><td>&quot;16-17&quot;</td><td>78.2</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>117.5</td><td>50.0</td><td>150.0</td><td>317.5</td><td>219.95</td><td>&quot;PI&quot;</td><td>&quot;Indian Classic…</td><td>&quot;India&quot;</td></tr><tr><td>2019-09-26</td><td>&quot;A Pradeep&quot;</td><td>&quot;M&quot;</td><td>6</td><td>17.0</td><td>&quot;16-17&quot;</td><td>80.7</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>150.0</td><td>97.5</td><td>170.0</td><td>417.5</td><td>283.48</td><td>&quot;PI&quot;</td><td>&quot;Indian Classic…</td><td>&quot;India&quot;</td></tr></tbody></table></div>
-
-
 
 ### Feature Engineering
 #### Creating a Primary Key
@@ -201,10 +169,25 @@ A new dataframe is created called `primary_key_df` to generate this `primary_key
 
 
 ```python
+data_prep_df = cleansed_df.sort(["Name", "Date"], descending=[False, True]).join(lifter_country_df, on=["Name", "Sex"]).filter(pl.col("Date").gt("2000-01-01")).with_columns(
+    pl.col("Date").str.strptime(pl.Date, fmt="%Y-%m-%d").alias("Date"),
+    pl.col("Place").cast(pl.Int32).alias("Place"),
+).rename(
+    mapping=conf.op_cols_rename
+).select(
+    pl.all().map_alias(lambda col_name: conf.camel_to_snake(col_name))
+)
+
+print(data_prep_df.shape)
+data_prep_df.head(5)
+```
+
+
+```python
 primary_key_df = data_prep_df.with_columns(
     (pl.col("date").dt.strftime('%Y').cast(pl.Int32) - pl.col("age")).cast(pl.Int32).cast(pl.Utf8).alias("year_of_birth")).with_columns(
-     pl.concat_str([pl.col('year_of_birth'), pl.lit("01-01")], separator="-").str.strptime(pl.Date, fmt="%Y-%m-%d").alias("date_of_birth")).with_columns(
-     pl.concat_str([pl.col('name').str.to_lowercase().str.replace(' ', pl.lit('-')), pl.col("date_of_birth")], separator="-").alias('primary_key')).unique(subset=["primary_key", "date", "meet_name"]).drop(["date_of_birth"])
+    pl.concat_str([pl.col('year_of_birth'), pl.lit("01-01")], separator="-").str.strptime(pl.Date, fmt="%Y-%m-%d").alias("date_of_birth")).with_columns(
+    pl.concat_str([pl.col('name').str.to_lowercase().str.replace(' ', pl.lit('-')), pl.col("date_of_birth")], separator="-").alias('primary_key')).unique(subset=["primary_key", "date", "meet_name"]).drop(["date_of_birth"])
 primary_key_df.head(2)
 ```
 
@@ -217,18 +200,47 @@ primary_key_df.head(2)
   text-align: right;
 }
 </style>
-<small>shape: (2, 19)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>name</th><th>sex</th><th>place</th><th>age</th><th>age_class</th><th>bodyweight</th><th>meet_country</th><th>equipment</th><th>squat</th><th>bench</th><th>deadlift</th><th>total</th><th>wilks</th><th>federation</th><th>meet_name</th><th>origin_country</th><th>year_of_birth</th><th>primary_key</th></tr><tr><td>date</td><td>str</td><td>str</td><td>i32</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>2017-12-04</td><td>&quot;A Ajeesha&quot;</td><td>&quot;F&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>71.1</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>112.5</td><td>55.0</td><td>132.5</td><td>300.0</td><td>295.29</td><td>&quot;AsianPF&quot;</td><td>&quot;Asian Classic …</td><td>&quot;India&quot;</td><td>&quot;2000&quot;</td><td>&quot;a-ajeesha-2000…</td></tr><tr><td>2012-12-10</td><td>&quot;A Ashwin&quot;</td><td>&quot;M&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>82.55</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>170.0</td><td>95.0</td><td>220.0</td><td>485.0</td><td>324.79</td><td>&quot;AsianPF&quot;</td><td>&quot;Asian Classic …</td><td>&quot;India&quot;</td><td>&quot;1995&quot;</td><td>&quot;a-ashwin-1995-…</td></tr></tbody></table></div>
+<small>shape: (2, 19)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>name</th><th>sex</th><th>place</th><th>age</th><th>age_class</th><th>bodyweight</th><th>meet_country</th><th>equipment</th><th>squat</th><th>bench</th><th>deadlift</th><th>total</th><th>wilks</th><th>federation</th><th>meet_name</th><th>origin_country</th><th>year_of_birth</th><th>primary_key</th></tr><tr><td>date</td><td>str</td><td>str</td><td>i32</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td></tr></thead><tbody><tr><td>2017-12-04</td><td>&quot;A Ajeesha&quot;</td><td>&quot;F&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>71.1</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>112.5</td><td>55.0</td><td>132.5</td><td>300.0</td><td>295.29</td><td>&quot;AsianPF&quot;</td><td>&quot;Asian Classic ...</td><td>&quot;India&quot;</td><td>&quot;2000&quot;</td><td>&quot;a-ajeesha-2000...</td></tr><tr><td>2012-12-10</td><td>&quot;A Ashwin&quot;</td><td>&quot;M&quot;</td><td>1</td><td>16.5</td><td>&quot;16-17&quot;</td><td>82.55</td><td>&quot;India&quot;</td><td>&quot;Raw&quot;</td><td>170.0</td><td>95.0</td><td>220.0</td><td>485.0</td><td>324.79</td><td>&quot;AsianPF&quot;</td><td>&quot;Asian Classic ...</td><td>&quot;India&quot;</td><td>&quot;1995&quot;</td><td>&quot;a-ashwin-1995-...</td></tr></tbody></table></div>
 
 
 
 
 ```python
-fe_df = primary_key_df.with_columns(
-     (pl.col('date') - pl.col('date').shift(-1)).over('primary_key').alias('time_since_last_comp').apply(lambda x: x.days).cast(pl.Int32),
-     (pl.col('bodyweight') - pl.col('bodyweight').shift(-1)).over('primary_key').alias('bodyweight_change').cast(pl.Float64),
+primary_key_df.with_columns(
+    (pl.col('date') - pl.col('date').shift(-1)).over('primary_key').alias('time_since_last_comp')
+).filter(
+    pl.col("time_since_last_comp").is_not_null()
+).with_columns(
+    pl.col("time_since_last_comp").dt.days()
+)
+```
+
+
+
+
+<div><style>
+.dataframe > thead > tr > th,
+.dataframe > tbody > tr > td {
+  text-align: right;
+}
+</style>
+<small>shape: (225707, 20)</small><table border="1" class="dataframe"><thead><tr><th>date</th><th>name</th><th>sex</th><th>place</th><th>age</th><th>age_class</th><th>bodyweight</th><th>meet_country</th><th>equipment</th><th>squat</th><th>bench</th><th>deadlift</th><th>total</th><th>wilks</th><th>federation</th><th>meet_name</th><th>origin_country</th><th>year_of_birth</th><th>primary_key</th><th>time_since_last_comp</th></tr><tr><td>date</td><td>str</td><td>str</td><td>i32</td><td>f64</td><td>str</td><td>f64</td><td>str</td><td>str</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>f64</td><td>str</td><td>str</td><td>str</td><td>str</td><td>str</td><td>i64</td></tr></thead><tbody><tr><td>2017-04-08</td><td>&quot;A&#x27;Dren Hye&quot;</td><td>&quot;M&quot;</td><td>1</td><td>23.5</td><td>&quot;24-34&quot;</td><td>104.1</td><td>&quot;USA&quot;</td><td>&quot;Raw&quot;</td><td>287.5</td><td>195.0</td><td>275.0</td><td>757.5</td><td>454.03</td><td>&quot;USAPL&quot;</td><td>&quot;Battle on the ...</td><td>&quot;USA&quot;</td><td>&quot;1993&quot;</td><td>&quot;a&#x27;dren-hye-199...</td><td>308</td></tr><tr><td>2016-06-04</td><td>&quot;A&#x27;Dren Hye&quot;</td><td>&quot;M&quot;</td><td>1</td><td>22.5</td><td>&quot;20-23&quot;</td><td>91.1</td><td>&quot;USA&quot;</td><td>&quot;Raw&quot;</td><td>272.5</td><td>155.0</td><td>280.0</td><td>707.5</td><td>448.92</td><td>&quot;USAPL&quot;</td><td>&quot;North Carolina...</td><td>&quot;USA&quot;</td><td>&quot;1993&quot;</td><td>&quot;a&#x27;dren-hye-199...</td><td>441</td></tr><tr><td>2016-10-03</td><td>&quot;A. Alshabaev&quot;</td><td>&quot;M&quot;</td><td>6</td><td>19.5</td><td>&quot;20-23&quot;</td><td>72.8</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Raw&quot;</td><td>155.0</td><td>112.5</td><td>165.0</td><td>432.5</td><td>314.77</td><td>&quot;KPF&quot;</td><td>&quot;Kazakhstan Pow...</td><td>&quot;Kazakhstan&quot;</td><td>&quot;1996&quot;</td><td>&quot;a.-alshabaev-1...</td><td>364</td></tr><tr><td>2017-04-02</td><td>&quot;A. Bauyrzhan&quot;</td><td>&quot;M&quot;</td><td>1</td><td>17.5</td><td>&quot;18-19&quot;</td><td>65.6</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Raw&quot;</td><td>162.5</td><td>127.5</td><td>195.0</td><td>485.0</td><td>382.73</td><td>&quot;KPF&quot;</td><td>&quot;Kazakhstan Cla...</td><td>&quot;Kazakhstan&quot;</td><td>&quot;1999&quot;</td><td>&quot;a.-bauyrzhan-1...</td><td>181</td></tr><tr><td>2016-10-03</td><td>&quot;A. Bauyrzhan&quot;</td><td>&quot;M&quot;</td><td>4</td><td>16.5</td><td>&quot;16-17&quot;</td><td>64.0</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Raw&quot;</td><td>155.0</td><td>107.5</td><td>192.5</td><td>455.0</td><td>366.58</td><td>&quot;KPF&quot;</td><td>&quot;Kazakhstan Pow...</td><td>&quot;Kazakhstan&quot;</td><td>&quot;1999&quot;</td><td>&quot;a.-bauyrzhan-1...</td><td>364</td></tr><tr><td>2016-04-02</td><td>&quot;A. Belevskiy&quot;</td><td>&quot;M&quot;</td><td>1</td><td>17.5</td><td>&quot;18-19&quot;</td><td>98.65</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Raw&quot;</td><td>212.5</td><td>147.5</td><td>215.0</td><td>575.0</td><td>351.88</td><td>&quot;KPF&quot;</td><td>&quot;Kazakhstan Cla...</td><td>&quot;Kazakhstan&quot;</td><td>&quot;1998&quot;</td><td>&quot;a.-belevskiy-1...</td><td>180</td></tr><tr><td>2016-04-02</td><td>&quot;A. Bezyanova&quot;</td><td>&quot;F&quot;</td><td>2</td><td>14.5</td><td>&quot;13-15&quot;</td><td>97.8</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Raw&quot;</td><td>82.5</td><td>47.5</td><td>120.0</td><td>250.0</td><td>209.56</td><td>&quot;KPF&quot;</td><td>&quot;Kazakhstan Cla...</td><td>&quot;Kazakhstan&quot;</td><td>&quot;2001&quot;</td><td>&quot;a.-bezyanova-2...</td><td>180</td></tr><tr><td>2017-10-02</td><td>&quot;A. Biryukov&quot;</td><td>&quot;M&quot;</td><td>5</td><td>18.5</td><td>&quot;18-19&quot;</td><td>82.85</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Raw&quot;</td><td>207.5</td><td>132.5</td><td>230.0</td><td>570.0</td><td>380.88</td><td>&quot;KPF&quot;</td><td>&quot;Kazakhstan Cla...</td><td>&quot;Kazakhstan&quot;</td><td>&quot;1998&quot;</td><td>&quot;a.-biryukov-19...</td><td>183</td></tr><tr><td>2017-04-02</td><td>&quot;A. Biryukov&quot;</td><td>&quot;M&quot;</td><td>4</td><td>18.5</td><td>&quot;18-19&quot;</td><td>72.6</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Raw&quot;</td><td>175.0</td><td>122.5</td><td>195.0</td><td>492.5</td><td>359.16</td><td>&quot;KPF&quot;</td><td>&quot;Kazakhstan Cla...</td><td>&quot;Kazakhstan&quot;</td><td>&quot;1998&quot;</td><td>&quot;a.-biryukov-19...</td><td>181</td></tr><tr><td>2016-10-03</td><td>&quot;A. Biryukov&quot;</td><td>&quot;M&quot;</td><td>5</td><td>17.5</td><td>&quot;18-19&quot;</td><td>65.9</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Raw&quot;</td><td>155.0</td><td>107.5</td><td>170.0</td><td>432.5</td><td>340.02</td><td>&quot;KPF&quot;</td><td>&quot;Kazakhstan Pow...</td><td>&quot;Kazakhstan&quot;</td><td>&quot;1998&quot;</td><td>&quot;a.-biryukov-19...</td><td>184</td></tr><tr><td>2016-04-02</td><td>&quot;A. Biryukov&quot;</td><td>&quot;M&quot;</td><td>2</td><td>17.5</td><td>&quot;18-19&quot;</td><td>83.25</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Raw&quot;</td><td>195.0</td><td>127.5</td><td>217.5</td><td>540.0</td><td>359.81</td><td>&quot;KPF&quot;</td><td>&quot;Kazakhstan Cla...</td><td>&quot;Kazakhstan&quot;</td><td>&quot;1998&quot;</td><td>&quot;a.-biryukov-19...</td><td>180</td></tr><tr><td>2015-10-05</td><td>&quot;A. Bykova&quot;</td><td>&quot;F&quot;</td><td>3</td><td>20.5</td><td>&quot;20-23&quot;</td><td>57.8</td><td>&quot;Kazakhstan&quot;</td><td>&quot;Raw&quot;</td><td>80.0</td><td>50.0</td><td>90.0</td><td>220.0</td><td>252.52</td><td>&quot;KPF&quot;</td><td>&quot;Kazakhstan Pow...</td><td>&quot;Kazakhstan&quot;</td><td>&quot;1994&quot;</td><td>&quot;a.-bykova-1994...</td><td>893</td></tr><tr><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td><td>&hellip;</td></tr><tr><td>2017-09-16</td><td>&quot;齋藤 光一&quot;</td><td>&quot;M&quot;</td><td>5</td><td>71.5</td><td>&quot;70-74&quot;</td><td>69.05</td><td>&quot;Japan&quot;</td><td>&quot;Raw&quot;</td><td>100.0</td><td>87.5</td><td>107.5</td><td>295.0</td><td>223.41</td><td>&quot;JPA&quot;</td><td>&quot;Japanese Maste...</td><td>&quot;Japan&quot;</td><td>&quot;1945&quot;</td><td>&quot;齋藤-光一-1945-01-...</td><td>364</td></tr><tr><td>2017-09-16</td><td>&quot;齋藤 哲徳&quot;</td><td>&quot;M&quot;</td><td>22</td><td>47.5</td><td>&quot;45-49&quot;</td><td>72.75</td><td>&quot;Japan&quot;</td><td>&quot;Raw&quot;</td><td>165.0</td><td>110.0</td><td>190.0</td><td>465.0</td><td>338.6</td><td>&quot;JPA&quot;</td><td>&quot;Japanese Maste...</td><td>&quot;Japan&quot;</td><td>&quot;1969&quot;</td><td>&quot;齋藤-哲徳-1969-01-...</td><td>364</td></tr><tr><td>2018-08-05</td><td>&quot;齋藤 唯吹&quot;</td><td>&quot;M&quot;</td><td>4</td><td>17.5</td><td>&quot;18-19&quot;</td><td>92.0</td><td>&quot;Japan&quot;</td><td>&quot;Raw&quot;</td><td>145.0</td><td>70.0</td><td>185.0</td><td>400.0</td><td>252.58</td><td>&quot;JPA&quot;</td><td>&quot;Japanese High ...</td><td>&quot;Japan&quot;</td><td>&quot;2000&quot;</td><td>&quot;齋藤-唯吹-2000-01-...</td><td>133</td></tr><tr><td>2018-03-25</td><td>&quot;齋藤 唯吹&quot;</td><td>&quot;M&quot;</td><td>9</td><td>17.5</td><td>&quot;18-19&quot;</td><td>90.9</td><td>&quot;Japan&quot;</td><td>&quot;Raw&quot;</td><td>150.0</td><td>72.5</td><td>185.0</td><td>407.5</td><td>258.85</td><td>&quot;JPA&quot;</td><td>&quot;Japanese High ...</td><td>&quot;Japan&quot;</td><td>&quot;2000&quot;</td><td>&quot;齋藤-唯吹-2000-01-...</td><td>231</td></tr><tr><td>2017-08-06</td><td>&quot;齋藤 唯吹&quot;</td><td>&quot;M&quot;</td><td>9</td><td>16.5</td><td>&quot;16-17&quot;</td><td>91.2</td><td>&quot;Japan&quot;</td><td>&quot;Raw&quot;</td><td>155.0</td><td>70.0</td><td>170.0</td><td>395.0</td><td>250.5</td><td>&quot;JPA&quot;</td><td>&quot;Japanese High ...</td><td>&quot;Japan&quot;</td><td>&quot;2000&quot;</td><td>&quot;齋藤-唯吹-2000-01-...</td><td>133</td></tr><tr><td>2018-08-05</td><td>&quot;齋藤 朱良&quot;</td><td>&quot;M&quot;</td><td>8</td><td>17.5</td><td>&quot;18-19&quot;</td><td>52.4</td><td>&quot;Japan&quot;</td><td>&quot;Raw&quot;</td><td>100.0</td><td>65.0</td><td>125.0</td><td>290.0</td><td>282.3</td><td>&quot;JPA&quot;</td><td>&quot;Japanese High ...</td><td>&quot;Japan&quot;</td><td>&quot;2000&quot;</td><td>&quot;齋藤-朱良-2000-01-...</td><td>133</td></tr><tr><td>2016-02-27</td><td>&quot;齋藤 正&quot;</td><td>&quot;M&quot;</td><td>9</td><td>34.5</td><td>&quot;24-34&quot;</td><td>90.64</td><td>&quot;Japan&quot;</td><td>&quot;Raw&quot;</td><td>220.0</td><td>135.0</td><td>270.0</td><td>625.0</td><td>397.57</td><td>&quot;JPA&quot;</td><td>&quot;Japanese Class...</td><td>&quot;Japan&quot;</td><td>&quot;1981&quot;</td><td>&quot;齋藤-正-1981-01-0...</td><td>160</td></tr><tr><td>2015-09-20</td><td>&quot;齋藤 正&quot;</td><td>&quot;M&quot;</td><td>6</td><td>34.0</td><td>&quot;24-34&quot;</td><td>87.6</td><td>&quot;Japan&quot;</td><td>&quot;Raw&quot;</td><td>215.0</td><td>135.0</td><td>270.0</td><td>620.0</td><td>401.43</td><td>&quot;JPA&quot;</td><td>&quot;National Sport...</td><td>&quot;Japan&quot;</td><td>&quot;1981&quot;</td><td>&quot;齋藤-正-1981-01-0...</td><td>737</td></tr><tr><td>2015-09-20</td><td>&quot;齋藤 誠一郎&quot;</td><td>&quot;M&quot;</td><td>10</td><td>46.0</td><td>&quot;45-49&quot;</td><td>100.0</td><td>&quot;Japan&quot;</td><td>&quot;Raw&quot;</td><td>232.5</td><td>147.5</td><td>212.5</td><td>592.5</td><td>360.59</td><td>&quot;JPA&quot;</td><td>&quot;National Sport...</td><td>&quot;Japan&quot;</td><td>&quot;1969&quot;</td><td>&quot;齋藤-誠一郎-1969-01...</td><td>805</td></tr><tr><td>2018-02-10</td><td>&quot;齋藤 颯太&quot;</td><td>&quot;M&quot;</td><td>1</td><td>22.5</td><td>&quot;20-23&quot;</td><td>127.0</td><td>&quot;Japan&quot;</td><td>&quot;Raw&quot;</td><td>260.0</td><td>182.5</td><td>272.5</td><td>715.0</td><td>406.16</td><td>&quot;JPA&quot;</td><td>&quot;Japanese Class...</td><td>&quot;Japan&quot;</td><td>&quot;1995&quot;</td><td>&quot;齋藤-颯太-1995-01-...</td><td>714</td></tr><tr><td>2018-08-12</td><td>&quot;齋藤 駿弥&quot;</td><td>&quot;M&quot;</td><td>11</td><td>19.5</td><td>&quot;20-23&quot;</td><td>62.35</td><td>&quot;Japan&quot;</td><td>&quot;Raw&quot;</td><td>130.0</td><td>95.0</td><td>160.0</td><td>385.0</td><td>317.26</td><td>&quot;JPA&quot;</td><td>&quot;Japanese Stude...</td><td>&quot;Japan&quot;</td><td>&quot;1998&quot;</td><td>&quot;齋藤-駿弥-1998-01-...</td><td>183</td></tr><tr><td>2019-02-09</td><td>&quot;齋藤 龍&quot;</td><td>&quot;M&quot;</td><td>2</td><td>20.5</td><td>&quot;20-23&quot;</td><td>73.7</td><td>&quot;Japan&quot;</td><td>&quot;Raw&quot;</td><td>230.0</td><td>135.0</td><td>260.0</td><td>625.0</td><td>450.87</td><td>&quot;JPA&quot;</td><td>&quot;Japanese Class...</td><td>&quot;Japan&quot;</td><td>&quot;1998&quot;</td><td>&quot;齋藤-龍-1998-01-0...</td><td>364</td></tr></tbody></table></div>
+
+
+
+
+```python
+time_since_last_comp_df = primary_key_df.with_columns(
+    (pl.col('date') - pl.col('date').shift(-1)).over('primary_key').alias('time_since_last_comp'),
+    (pl.col('bodyweight') - pl.col('bodyweight').shift(-1)).over('primary_key').alias('bodyweight_change').cast(pl.Float64),
 ).sort(
     ["name", "date"], descending=[False, False]
 ).with_columns(
+    pl.col("time_since_last_comp").dt.days()
+)
+
+
+fe_df = time_since_last_comp_df.with_columns(
     (pl.col('time_since_last_comp') / 365.25).alias('years_since_last_comp'),
     (pl.col("meet_country") == pl.col("origin_country")).alias("is_origin_country"),
     pl.col('date').apply(lambda x: x.toordinal()).alias('date_as_ordinal'),
@@ -258,14 +270,147 @@ fe_df = fe_df.with_columns(
 
 ```python
 from dataclasses import dataclass
-from datetime import datetime
 
+DEFAULT_FEDERATION = "IPF"
+
+@dataclass
+class WeightClassification:
+    classes: dict  # Dictionary of upper bounds to weight class strings
+
+    def get_class(self, bodyweight):
+        for upper_bound, weight_class in sorted(self.classes.items()):
+            if bodyweight < upper_bound:
+                return weight_class
+        return None  # Default fallback
+
+
+@dataclass
+class WeightClassFederation:
+    name: str
+    male_classification: WeightClassification
+    female_classification: WeightClassification
+
+@dataclass
+class FederationManager:
+    federations: dict = None  # Dictionary to store WeightClassFederation instances
+
+    def __post_init__(self):
+        self.federations = {}
+
+    def add_federation(self, name, male_classes, female_classes):
+        male_classification = WeightClassification(classes=male_classes)
+        female_classification = WeightClassification(classes=female_classes)
+        
+        federation = WeightClassFederation(name=name, male_classification=male_classification, female_classification=female_classification)
+        
+        self.federations[name] = federation
+
+    def get_federation(self, name):
+        return self.federations.get(name)
+
+    def remove_federation(self, name):
+        if name in self.federations:
+            del self.federations[name]
+
+@dataclass
+class WeightClassAssigner:
+    manager: FederationManager
+
+    def assign_weight_class_by_federation(self, bodyweight, sex, federation):
+        fed = self.manager.get_federation(federation)
+        if not fed:
+            # Assign default federation to be IPF 
+            fed = self.manager.get_federation(DEFAULT_FEDERATION)
+
+        classification = fed.male_classification if sex == 'M' else fed.female_classification
+        return classification.get_class(bodyweight)
+
+    def apply_to_dataframe(self, df):
+        cols_to_select = ['bodyweight', 'sex', 'federation']
+        selected_columns = df.select(cols_to_select)
+        weight_class_column = selected_columns.apply(
+            lambda row: self.assign_weight_class_by_federation(*row), return_dtype=pl.Object
+        )
+
+        print(weight_class_column)
+        # df_with_weight_class = df.left_join(weight_class, on=cols_to_select, how=left)
+
+        return df_with_weight_class
+```
+
+
+```python
+# World Powerlifting has different weight classes to IPF 
+# PA used to be IPF but now is world powerlifting 
 mens_ipf_class = {59: "<59", 66: "59-66", 74: "66-74", 83: "74-83", 93: "83-93", 105: "93-105", 120: "105-120", 999: "120+"}
-mens_usapl_class = {52: "<52", 56: "52-56", 60: "56-60", 67.5: "60-67.5", 75: "67.5-75", 82.5: "82.5-90", 90: "90-100", 100: "100-110", 110: "110-125", 125: "125-140", 999: "140+"}
-mens_wp_class = {62: "<62", 69: "62-69", 77: "69-77", 85: "77-85", 94: "85-94", 105: "94-105", 120: "105-120", 999: "120+"}
-womens_usapl_class = {44: "<44", 48: "44-48", 52: "48-52", 56: "52-56", 60: "56-60", 67.5: "60-67.5", 75: "67.5-75", 82.5: "75-82.5", 90: "82.5-90", 999: "90+"}
+mens_usapl_class = {52: "<52", 56: "52-56", 60: "56-60", 67.5: "60-67.5", 74: "67.5-75", 82.5: "75-82.5", 90: "90-100", 100: "100-110", 110: "110-125", 125: "125-140", 140: "140+"}
+womens_usapl_class = {44: "<44", 48: "44-48", 52: "48-52", 56: "52-56", 60: "56-60", 67.5: "60-67.5", 75: "67.5-75", 82.5: "75-82.5", 90: "90-100", 100: "100-110", 110: "110-125", 125: "125-140", 140: "140+"}
 womens_ipf_class = {47: "<47", 52: "47-52", 57: "52-57", 63: "57-63", 72: "63-72", 84: "72-84", 999: "84+"}
-womens_wp_class = {48: "<48", 53: "48-53", 58: "53-58", 63: "58-63", 69: "63-69", 76: "69-76", 84: "76-84", 100: "84-100", 999: "100+"}
+
+
+manager = FederationManager()
+
+# Add federations
+manager.add_federation(name='IPF', male_classes=mens_ipf_class, female_classes=womens_ipf_class)
+manager.add_federation(name='USAPL', male_classes=mens_usapl_class, female_classes=womens_usapl_class)
+```
+
+
+```python
+assigner = WeightClassAssigner(manager=manager) 
+```
+
+
+```python
+fe_df_with_weight_classes = assigner.apply_to_dataframe(fe_df)
+```
+
+    shape: (432431, 1)
+    ┌───────┐
+    │ apply │
+    │ ---   │
+    │ str   │
+    ╞═══════╡
+    │ 63-72 │
+    │ 74-83 │
+    │ 66-74 │
+    │ 74-83 │
+    │ …     │
+    │ 74-83 │
+    │ 83-93 │
+    │ 66-74 │
+    │ 83-93 │
+    └───────┘
+
+
+
+    ---------------------------------------------------------------------------
+
+    NameError                                 Traceback (most recent call last)
+
+    Cell In[94], line 1
+    ----> 1 fe_df_with_weight_classes = assigner.apply_to_dataframe(fe_df)
+
+
+    Cell In[91], line 67, in WeightClassAssigner.apply_to_dataframe(self, df)
+         64 print(weight_class_column)
+         65 # df_with_weight_class = df.left_join(weight_class, on=cols_to_select, how=left)
+    ---> 67 return df_with_weight_class
+
+
+    NameError: name 'df_with_weight_class' is not defined
+
+
+
+```python
+# make dataclass for this
+
+def assign_weight_class(weight, federation_type="ipf"):
+    for key in sorted(class_dict):
+        if weight <= key:
+            return class_dict[key]
+    return None
+
 
 WEIGHT_CLASSES = {
     "ipf": {
@@ -318,6 +463,60 @@ class WeightClassFederation:
 
 
 ```
+
+
+    ---------------------------------------------------------------------------
+
+    ComputeError                              Traceback (most recent call last)
+
+    Cell In[58], line 10
+          6             return class_dict[key]
+          7     return None
+    ---> 10 fe_df = fe_df.with_columns(
+         11     pl.when(
+         12         pl.col('sex') == "F"
+         13     ).then(
+         14         pl.col('bodyweight_class').apply(lambda x: assign_weight_class(x, womens_ipf_class))
+         15     ).otherwise(
+         16         pl.col('bodyweight_class').apply(lambda x: assign_weight_class(x, mens_ipf_class))
+         17     ).alias('ipf_weight_class')
+         18 ).drop(["bodyweight_class"])
+
+
+    File ~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-kTg0krLY-py3.11/lib/python3.11/site-packages/polars/dataframe/frame.py:6591, in DataFrame.with_columns(self, exprs, *more_exprs, **named_exprs)
+       6438 def with_columns(
+       6439     self,
+       6440     exprs: IntoExpr | Iterable[IntoExpr] = None,
+       6441     *more_exprs: IntoExpr,
+       6442     **named_exprs: IntoExpr,
+       6443 ) -> Self:
+       6444     """
+       6445     Add columns to this DataFrame.
+       6446 
+       (...)
+       6586 
+       6587     """
+       6588     return self._from_pydf(
+       6589         self.lazy()
+       6590         .with_columns(exprs, *more_exprs, **named_exprs)
+    -> 6591         .collect(no_optimization=True)
+       6592         ._df
+       6593     )
+
+
+    File ~/Library/Caches/pypoetry/virtualenvs/powerlifting-ml-progress-kTg0krLY-py3.11/lib/python3.11/site-packages/polars/lazyframe/frame.py:1443, in LazyFrame.collect(self, type_coercion, predicate_pushdown, projection_pushdown, simplify_expression, no_optimization, slice_pushdown, common_subplan_elimination, streaming)
+       1432     common_subplan_elimination = False
+       1434 ldf = self._ldf.optimization_toggle(
+       1435     type_coercion,
+       1436     predicate_pushdown,
+       (...)
+       1441     streaming,
+       1442 )
+    -> 1443 return pli.wrap_df(ldf.collect())
+
+
+    ComputeError: NameError: name 'class_dict' is not defined
+
 
 
 ```python
@@ -402,6 +601,8 @@ federation_weight_classes[0:1][0
 
 
 ```python
+# IPF Weight class only for PA after 2018-01-01 
+# USAPL is it's own federation 
 fe_df.filter(pl.col("name") == "Joshua Luu").sort("date", descending=True)
 ```
 
