@@ -1,5 +1,5 @@
 # 💪🏋️‍♂️ Powerlifting ML Progress
-![Last Updated](https://img.shields.io/badge/Last%20Updated-2023--09--08-blue)
+![Last Updated](https://img.shields.io/badge/Last%20Updated-2023--09--12-blue)
 ![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=102)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://powerlifting.streamlit.app)
