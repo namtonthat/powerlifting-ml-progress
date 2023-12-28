@@ -1,5 +1,4 @@
 import streamlit as st
-import numpy as np
 import polars as pl
 import sys
 from datetime import datetime
@@ -10,9 +9,11 @@ import altair as alt
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
-from steps import conf
+from steps import conf  # noqa: E402
 
-s3_file_path = f"https://{conf.bucket_name}.s3.ap-southeast-2.amazonaws.com/{conf.parquet_file}"
+s3_file_path = (
+    f"https://{conf.bucket_name}.s3.ap-southeast-2.amazonaws.com/{conf.parquet_file}"
+)
 
 
 @st.cache_data
@@ -58,13 +59,17 @@ with st.sidebar:
     )
 
     st.subheader("👱‍♀️ lifter")
-    user = st.multiselect(label="Select a lifter", options=all_users, default="Taylor Atwood")
+    user = st.multiselect(
+        label="Select a lifter", options=all_users, default="Taylor Atwood"
+    )
 
 
 st.write("# Single Lifter Data")
 
 user_df = (
-    df.filter(pl.col("Name").is_in(user) & pl.col("Date").gt(date)).sort(by="Date").drop_nulls()
+    df.filter(pl.col("Name").is_in(user) & pl.col("Date").gt(date))
+    .sort(by="Date")
+    .drop_nulls()
 )
 
 # related events

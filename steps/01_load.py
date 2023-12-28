@@ -13,15 +13,20 @@ from jinja2 import Environment, FileSystemLoader
 
 logging.basicConfig(level=logging.INFO)
 
+
 def update_readme():
-    current_date = datetime.datetime.now().strftime("%Y-%m-%d").replace('-', '--')
+    current_date = datetime.datetime.now().strftime("%Y-%m-%d").replace("-", "--")
 
     # Set up the Jinja2 environment
     env = Environment(loader=FileSystemLoader("."))
     template = env.get_template("templates/README.md")
 
     # Render the template with the variables
-    updated_contents = template.render(last_updated=current_date, bucket_name=conf.bucket_name,s3_key = conf.parquet_file)
+    updated_contents = template.render(
+        last_updated=current_date,
+        bucket_name=conf.bucket_name,
+        s3_key=conf.parquet_file,
+    )
 
     # Save the rendered contents to README.md
     with open("README.md", "w") as readme_file:
@@ -29,6 +34,7 @@ def update_readme():
 
     logging.info("README.md updated")
     return
+
 
 def load_data(url) -> str:
     """
@@ -63,15 +69,17 @@ def load_data(url) -> str:
 if __name__ == "__main__":
     csv_file_path = load_data(conf.zip_url)
     if csv_file_path:
-        s3_key = conf.output_path.split('/')[-1]
+        s3_key = conf.output_path.split("/")[-1]
 
         # Convert CSV to Parquet
         logging.info("Converting CSV to Parquet")
         df = pl.read_csv(csv_file_path, infer_schema_length=None)
         df.write_parquet(conf.output_path)
 
-        s3_client = boto3.client('s3')
-        s3_client.upload_file(conf.output_path, conf.bucket_name, s3_key, ExtraArgs={'ACL':'public-read'})
+        s3_client = boto3.client("s3")
+        s3_client.upload_file(
+            conf.output_path, conf.bucket_name, s3_key, ExtraArgs={"ACL": "public-read"}
+        )
         logging.info("Parquet file uploaded to S3 successfully")
 
         # Clean up

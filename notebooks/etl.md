@@ -3,10 +3,10 @@
 
 ```python
 from IPython.display import display, Markdown
-import polars as pl 
+import polars as pl
 from datetime import datetime as dt
 
-# read configs 
+# read configs
 import sys
 from pathlib import Path
 sys.path.append(str(Path().resolve().parent))
@@ -89,9 +89,9 @@ base_df.head(5)
 
 ```python
 cleansed_df = base_df.filter(
-    (pl.col("Event") == "SBD") & 
-    (pl.col("Tested") == "Yes") & 
-    (pl.col('Place').apply(lambda x: x.isnumeric(), return_dtype = pl.Boolean)) & 
+    (pl.col("Event") == "SBD") &
+    (pl.col("Tested") == "Yes") &
+    (pl.col('Place').apply(lambda x: x.isnumeric(), return_dtype = pl.Boolean)) &
     (pl.col("Equipment") == "Raw")
 ).drop_nulls().unique().sort("Date", descending=True).drop(["Tested", "Event"])
 print(cleansed_df.shape)
@@ -134,12 +134,12 @@ cleansed_df.filter(pl.col("Name") == "Joshua Luu").sort("Date", descending=True)
 
 ## Data Preparation
 - Drop the `Tested`, `Federation` and `Event` columns as they are no longer needed.
-- Update column types: 
+- Update column types:
     - `Date` to `Date`
     - `Place` to `Int64`
-- Collect data from 2000-01-01 onwards. 
-- Rename columns from camel to snake case 
-- Assume that a powerlifter's country is from the first country that compete in. 
+- Collect data from 2000-01-01 onwards.
+- Rename columns from camel to snake case
+- Assume that a powerlifter's country is from the first country that compete in.
 
 
 ```python
@@ -150,21 +150,21 @@ lifter_country_df = cleansed_df.groupby(["Name", "Sex"]).agg(pl.first("MeetCount
 ### Feature Engineering
 #### Creating a Primary Key
 
-- As we require to track a lifter's progress over time,  the problem we'll encounter is that there is no primary key to define the dataset without a lifter's birth date.  
-- This could have been resolved if we had their birth date but in lieu of this, we can derive their age assuming that everyone's birthday is the start of each year. 
-- The only problem that this would result in is that we have two lifters of the same name with the same age (actually likely) but not as  like as the first scenario. 
+- As we require to track a lifter's progress over time,  the problem we'll encounter is that there is no primary key to define the dataset without a lifter's birth date.
+- This could have been resolved if we had their birth date but in lieu of this, we can derive their age assuming that everyone's birthday is the start of each year.
+- The only problem that this would result in is that we have two lifters of the same name with the same age (actually likely) but not as  like as the first scenario.
 
 A new dataframe is created called `primary_key_df` to generate this `primary_key` column
 
-#### Columns added 
+#### Columns added
 - Create a `pot_*` (progress over time) columns for `wilks` and `total`
 - Adds columns:
   - `time_since_last_comp`: identify how long it has been since their last competition (in days)
-  - `home_country`: 1 if `meet_country` == `origin_country` else 0 
+  - `home_country`: 1 if `meet_country` == `origin_country` else 0
   - `bodyweight_change`: change in bodyweight since the last comp (in kg)
   - `cumulative_comps`: running total of the number of comopetitions completed
   - `meet_type`: categories each meet in `local`, `national` or `international`
-  - `ipf_weight_class`: defines the weight class for the lifter the IPF standards for male and females. 
+  - `ipf_weight_class`: defines the weight class for the lifter the IPF standards for male and females.
 - Switches `Date` to ordinal as a new column `date_ass_ordinal`
 
 
@@ -300,9 +300,9 @@ class FederationManager:
     def add_federation(self, name, male_classes, female_classes):
         male_classification = WeightClassification(classes=male_classes)
         female_classification = WeightClassification(classes=female_classes)
-        
+
         federation = WeightClassFederation(name=name, male_classification=male_classification, female_classification=female_classification)
-        
+
         self.federations[name] = federation
 
     def get_federation(self, name):
@@ -319,7 +319,7 @@ class WeightClassAssigner:
     def assign_weight_class_by_federation(self, bodyweight, sex, federation):
         fed = self.manager.get_federation(federation)
         if not fed:
-            # Assign default federation to be IPF 
+            # Assign default federation to be IPF
             fed = self.manager.get_federation(DEFAULT_FEDERATION)
 
         classification = fed.male_classification if sex == 'M' else fed.female_classification
@@ -340,8 +340,8 @@ class WeightClassAssigner:
 
 
 ```python
-# World Powerlifting has different weight classes to IPF 
-# PA used to be IPF but now is world powerlifting 
+# World Powerlifting has different weight classes to IPF
+# PA used to be IPF but now is world powerlifting
 mens_ipf_class = {59: "<59", 66: "59-66", 74: "66-74", 83: "74-83", 93: "83-93", 105: "93-105", 120: "105-120", 999: "120+"}
 mens_usapl_class = {52: "<52", 56: "52-56", 60: "56-60", 67.5: "60-67.5", 74: "67.5-75", 82.5: "75-82.5", 90: "90-100", 100: "100-110", 110: "110-125", 125: "125-140", 140: "140+"}
 womens_usapl_class = {44: "<44", 48: "44-48", 52: "48-52", 56: "52-56", 60: "56-60", 67.5: "60-67.5", 75: "67.5-75", 82.5: "75-82.5", 90: "90-100", 100: "100-110", 110: "110-125", 125: "125-140", 140: "140+"}
@@ -357,7 +357,7 @@ manager.add_federation(name='USAPL', male_classes=mens_usapl_class, female_class
 
 
 ```python
-assigner = WeightClassAssigner(manager=manager) 
+assigner = WeightClassAssigner(manager=manager)
 ```
 
 
@@ -421,7 +421,7 @@ WEIGHT_CLASSES = {
         "M": mens_usapl_class,
         "F": womens_usapl_class
     },
-    "wp": { 
+    "wp": {
         "M": mens_wp_class,
         "F": womens_wp_class
     }
@@ -442,7 +442,7 @@ class WeightClassFederation:
         print(self.weight_class_federation)
         self.weight_class = self.assign_weight_class(self.weight, self.weight_class_federation, self.sex)
         self.date_of_comp = self.date_of_comp.strftime("%Y-%m-%d")
-    
+
 
     def _weight_class_federation(self) -> str:
         print(self.date_of_comp)
@@ -450,7 +450,7 @@ class WeightClassFederation:
             return "usapl"
         elif (self.federation == "pa") & (self.date_of_comp >= datetime(2018,1,1).date()):
             return "wp"
-        else: 
+        else:
             return "ipf"
 
     @staticmethod
@@ -492,9 +492,9 @@ class WeightClassFederation:
        6443 ) -> Self:
        6444     """
        6445     Add columns to this DataFrame.
-       6446 
+       6446
        (...)
-       6586 
+       6586
        6587     """
        6588     return self._from_pydf(
        6589         self.lazy()
@@ -558,9 +558,9 @@ for row in test_df.iter_rows():
        6538 ) -> Self:
        6539     """
        6540     Select columns from this DataFrame.
-       6541 
+       6541
        (...)
-       6638 
+       6638
        6639     """
        6640     return self._from_pydf(
        6641         self.lazy()
@@ -582,7 +582,7 @@ for row in test_df.iter_rows():
 
 
     ColumnNotFoundError: weight
-    
+
     Error originated just after this operation:
     DF ["date", "name", "sex", "place"]; PROJECT */32 COLUMNS; SELECTION: "None"
 
@@ -601,8 +601,8 @@ federation_weight_classes[0:1][0
 
 
 ```python
-# IPF Weight class only for PA after 2018-01-01 
-# USAPL is it's own federation 
+# IPF Weight class only for PA after 2018-01-01
+# USAPL is it's own federation
 fe_df.filter(pl.col("name") == "Joshua Luu").sort("date", descending=True)
 ```
 
@@ -623,12 +623,12 @@ fe_df.filter(pl.col("name") == "Joshua Luu").sort("date", descending=True)
 
 
 ```python
-import altair as alt 
+import altair as alt
 import seaborn as sns
 
 numerical_cols = [
-    "age", 
-    "bodyweight", 
+    "age",
+    "bodyweight",
     "bodyweight_change",
     "time_since_last_comp",
     "cumulative_comps",
@@ -643,7 +643,7 @@ numerical_cols = [
 
 
 ```python
-### plot jl_df using altair 
+### plot jl_df using altair
 
 jl_df = fe_df.filter(pl.col("name") == "Joshua Luu").select(numerical_cols + ["date"]).to_pandas()
 
@@ -1080,7 +1080,7 @@ print(f"mse: {mse}")
 
 ```python
 # Initialize the grid search model
-grid_search = GridSearchCV(estimator = pipeline, param_grid = param_grid, 
+grid_search = GridSearchCV(estimator = pipeline, param_grid = param_grid,
                            cv = 3, scoring="neg_mean_squared_error", verbose = 2)
 
 # Fit the grid search model
