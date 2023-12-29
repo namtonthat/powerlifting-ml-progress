@@ -1,6 +1,6 @@
 # Byte-compiled / optimized / DLL files
 *.pyc
-__pycache__/
+**/__pycache__/
 
 # Ignore all .DS_Store
 .DS_Store
