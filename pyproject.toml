@@ -32,7 +32,7 @@ capitalisation_policy = "lower"
 exclude_rules = "AM04"
 
 [tool.sqlfluff.indentation]
-tab_space_size = 2
+tab_space_size = 4
 
 [build-system]
 requires = ["poetry-core"]
