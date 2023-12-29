@@ -1,7 +1,10 @@
-CREATE TABLE raw.natural_powerlifting AS (
-    SELECT * FROM landing.powerlifting
+CREATE SCHEMA IF NOT EXISTS raw;
+
+DROP TABLE IF EXISTS raw.openpowerlifting;
+CREATE TABLE raw.openpowerlifting AS (
+    SELECT * FROM landing.openpowerlifting
     WHERE
-        [event] = 'SBD'
+        event = 'SBD'
         AND tested = 'Yes'
         AND equipment = 'Raw'
 )
