@@ -28,14 +28,11 @@ duckdb-engine = "^0.10.0"
 
 [tool.sqlfluff.core]
 dialect = "duckdb"
-exclude_rules = "L031, L016, L034"
-ignore = "templating"
-
-[tool.sqlfluff.rules]
-tab_space_size = 2
-
-[tool.sqlfluff.rules.L010]
 capitalisation_policy = "lower"
+exclude_rules = "AM04"
+
+[tool.sqlfluff.indentation]
+tab_space_size = 2
 
 [build-system]
 requires = ["poetry-core"]
