@@ -74,7 +74,12 @@ if __name__ == "__main__":
         # Convert CSV to Parquet
         logging.info("Converting CSV to Parquet")
         df = pl.read_csv(csv_file_path, infer_schema_length=None)
-        df.write_parquet(conf.output_path)
+
+        # Rename columns before saving
+        remapping_cols: dict = {col: conf.camel_to_snake(col) for col in df.columns}
+        logging.info("Renaming columns")
+        renamed_df = df.rename(mapping=remapping_cols)
+        renamed_df.write_parquet(conf.output_path)
 
         s3_client = boto3.client("s3")
         s3_client.upload_file(
