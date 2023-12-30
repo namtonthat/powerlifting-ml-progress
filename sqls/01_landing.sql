@@ -1,4 +1,3 @@
-CREATE SCHEMA IF NOT EXISTS landing;
 CREATE TABLE landing.openpowerlifting AS (
     SELECT
         *
