@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/44a41e9c86454737be797cae1462c799/artifacts
+end_time: 1703927089458
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 44a41e9c86454737be797cae1462c799
+run_name: placid-steed-969
+run_uuid: 44a41e9c86454737be797cae1462c799
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927088596
+status: 3
+tags: []
+user_id: namtonthat

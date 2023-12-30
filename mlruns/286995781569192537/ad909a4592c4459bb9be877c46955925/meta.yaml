@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/ad909a4592c4459bb9be877c46955925/artifacts
+end_time: 1703926671709
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: ad909a4592c4459bb9be877c46955925
+run_name: welcoming-bird-779
+run_uuid: ad909a4592c4459bb9be877c46955925
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926671181
+status: 3
+tags: []
+user_id: namtonthat

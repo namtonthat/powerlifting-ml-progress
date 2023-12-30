@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/7b29e83734b744c78bb85e859e1cf400/artifacts
+end_time: 1703926768177
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 7b29e83734b744c78bb85e859e1cf400
+run_name: merciful-fowl-925
+run_uuid: 7b29e83734b744c78bb85e859e1cf400
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926767915
+status: 3
+tags: []
+user_id: namtonthat

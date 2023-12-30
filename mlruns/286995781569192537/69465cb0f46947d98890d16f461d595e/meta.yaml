@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/69465cb0f46947d98890d16f461d595e/artifacts
+end_time: 1703926746265
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 69465cb0f46947d98890d16f461d595e
+run_name: likeable-robin-188
+run_uuid: 69465cb0f46947d98890d16f461d595e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926745590
+status: 3
+tags: []
+user_id: namtonthat

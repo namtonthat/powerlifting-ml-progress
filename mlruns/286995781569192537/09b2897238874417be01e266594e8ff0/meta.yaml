@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/09b2897238874417be01e266594e8ff0/artifacts
+end_time: 1703926594761
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 09b2897238874417be01e266594e8ff0
+run_name: awesome-snail-428
+run_uuid: 09b2897238874417be01e266594e8ff0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926594115
+status: 3
+tags: []
+user_id: namtonthat

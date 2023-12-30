@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/4eb0357870244122949ab34a02afc6c5/artifacts
+end_time: 1703926757461
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 4eb0357870244122949ab34a02afc6c5
+run_name: thundering-horse-947
+run_uuid: 4eb0357870244122949ab34a02afc6c5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926757179
+status: 3
+tags: []
+user_id: namtonthat

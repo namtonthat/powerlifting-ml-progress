@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/420f290731cd4e7099562d4208690eb9/artifacts
+end_time: 1703926750347
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 420f290731cd4e7099562d4208690eb9
+run_name: skittish-rook-698
+run_uuid: 420f290731cd4e7099562d4208690eb9
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926750068
+status: 3
+tags: []
+user_id: namtonthat

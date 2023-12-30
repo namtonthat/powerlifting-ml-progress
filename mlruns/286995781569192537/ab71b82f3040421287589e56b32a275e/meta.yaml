@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/ab71b82f3040421287589e56b32a275e/artifacts
+end_time: 1703926995187
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: ab71b82f3040421287589e56b32a275e
+run_name: sassy-stoat-272
+run_uuid: ab71b82f3040421287589e56b32a275e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926994333
+status: 3
+tags: []
+user_id: namtonthat

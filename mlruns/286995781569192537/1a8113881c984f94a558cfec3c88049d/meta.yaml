@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/1a8113881c984f94a558cfec3c88049d/artifacts
+end_time: 1703926988315
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 1a8113881c984f94a558cfec3c88049d
+run_name: salty-frog-239
+run_uuid: 1a8113881c984f94a558cfec3c88049d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926987296
+status: 3
+tags: []
+user_id: namtonthat

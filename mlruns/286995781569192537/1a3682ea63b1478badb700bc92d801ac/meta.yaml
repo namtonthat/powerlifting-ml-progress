@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/1a3682ea63b1478badb700bc92d801ac/artifacts
+end_time: 1703926759794
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 1a3682ea63b1478badb700bc92d801ac
+run_name: painted-shad-278
+run_uuid: 1a3682ea63b1478badb700bc92d801ac
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926759489
+status: 3
+tags: []
+user_id: namtonthat

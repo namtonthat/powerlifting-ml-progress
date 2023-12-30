@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/24b9ae9bd3ab4a0bbce26f33829953bb/artifacts
+end_time: 1703926600907
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 24b9ae9bd3ab4a0bbce26f33829953bb
+run_name: ambitious-foal-433
+run_uuid: 24b9ae9bd3ab4a0bbce26f33829953bb
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926600459
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/35261856227f4b8aa01f698428229dfe/artifacts
+end_time: 1703926736769
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 35261856227f4b8aa01f698428229dfe
+run_name: kindly-squid-218
+run_uuid: 35261856227f4b8aa01f698428229dfe
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926736248
+status: 3
+tags: []
+user_id: namtonthat

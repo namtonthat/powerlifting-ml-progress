@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/9765e215927b4935bf37d2090637ad7d/artifacts
+end_time: 1703927182212
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 9765e215927b4935bf37d2090637ad7d
+run_name: agreeable-roo-389
+run_uuid: 9765e215927b4935bf37d2090637ad7d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927181417
+status: 3
+tags: []
+user_id: namtonthat

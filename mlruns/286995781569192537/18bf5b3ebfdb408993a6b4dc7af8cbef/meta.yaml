@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/18bf5b3ebfdb408993a6b4dc7af8cbef/artifacts
+end_time: 1703926668226
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 18bf5b3ebfdb408993a6b4dc7af8cbef
+run_name: brawny-bug-529
+run_uuid: 18bf5b3ebfdb408993a6b4dc7af8cbef
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926667677
+status: 3
+tags: []
+user_id: namtonthat

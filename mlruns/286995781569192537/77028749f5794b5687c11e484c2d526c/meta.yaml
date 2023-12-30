@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/77028749f5794b5687c11e484c2d526c/artifacts
+end_time: 1703926647678
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 77028749f5794b5687c11e484c2d526c
+run_name: marvelous-owl-736
+run_uuid: 77028749f5794b5687c11e484c2d526c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926647126
+status: 3
+tags: []
+user_id: namtonthat

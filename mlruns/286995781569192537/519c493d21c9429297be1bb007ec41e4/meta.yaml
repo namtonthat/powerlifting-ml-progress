@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/519c493d21c9429297be1bb007ec41e4/artifacts
+end_time: 1703926710917
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 519c493d21c9429297be1bb007ec41e4
+run_name: sincere-crow-752
+run_uuid: 519c493d21c9429297be1bb007ec41e4
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926710508
+status: 3
+tags: []
+user_id: namtonthat

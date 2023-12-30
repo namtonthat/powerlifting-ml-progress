@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/e44e107dda114d589a876f5ea93fbb00/artifacts
+end_time: 1703927049194
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: e44e107dda114d589a876f5ea93fbb00
+run_name: powerful-roo-652
+run_uuid: e44e107dda114d589a876f5ea93fbb00
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927048400
+status: 3
+tags: []
+user_id: namtonthat

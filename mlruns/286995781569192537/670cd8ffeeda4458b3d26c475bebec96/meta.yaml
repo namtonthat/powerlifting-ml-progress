@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/670cd8ffeeda4458b3d26c475bebec96/artifacts
+end_time: 1703927105353
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 670cd8ffeeda4458b3d26c475bebec96
+run_name: masked-zebra-731
+run_uuid: 670cd8ffeeda4458b3d26c475bebec96
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927105073
+status: 3
+tags: []
+user_id: namtonthat

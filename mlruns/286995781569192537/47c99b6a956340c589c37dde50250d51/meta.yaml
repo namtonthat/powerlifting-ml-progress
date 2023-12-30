@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/47c99b6a956340c589c37dde50250d51/artifacts
+end_time: 1703926782256
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 47c99b6a956340c589c37dde50250d51
+run_name: redolent-hound-286
+run_uuid: 47c99b6a956340c589c37dde50250d51
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926781997
+status: 3
+tags: []
+user_id: namtonthat

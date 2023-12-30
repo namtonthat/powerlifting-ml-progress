@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/e0769cb79525414481319017849ae065/artifacts
+end_time: 1703926710500
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: e0769cb79525414481319017849ae065
+run_name: learned-bear-704
+run_uuid: e0769cb79525414481319017849ae065
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926710233
+status: 3
+tags: []
+user_id: namtonthat

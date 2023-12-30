@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/a705aa04dce1489eaeff5c96f7f4151d/artifacts
+end_time: 1703927115379
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: a705aa04dce1489eaeff5c96f7f4151d
+run_name: nebulous-eel-754
+run_uuid: a705aa04dce1489eaeff5c96f7f4151d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927114799
+status: 3
+tags: []
+user_id: namtonthat

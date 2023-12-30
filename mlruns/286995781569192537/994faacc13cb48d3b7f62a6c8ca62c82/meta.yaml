@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/994faacc13cb48d3b7f62a6c8ca62c82/artifacts
+end_time: 1703926944324
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 994faacc13cb48d3b7f62a6c8ca62c82
+run_name: omniscient-skunk-523
+run_uuid: 994faacc13cb48d3b7f62a6c8ca62c82
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926943519
+status: 3
+tags: []
+user_id: namtonthat

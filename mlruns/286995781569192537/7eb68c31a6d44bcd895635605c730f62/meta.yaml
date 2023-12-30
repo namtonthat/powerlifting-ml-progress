@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/7eb68c31a6d44bcd895635605c730f62/artifacts
+end_time: 1703926787391
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 7eb68c31a6d44bcd895635605c730f62
+run_name: capable-cow-791
+run_uuid: 7eb68c31a6d44bcd895635605c730f62
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926786696
+status: 3
+tags: []
+user_id: namtonthat

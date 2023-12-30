@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/9c287bf0d7b54b3eb1de647251bc4970/artifacts
+end_time: 1703926957052
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 9c287bf0d7b54b3eb1de647251bc4970
+run_name: amusing-squid-572
+run_uuid: 9c287bf0d7b54b3eb1de647251bc4970
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926956935
+status: 3
+tags: []
+user_id: namtonthat

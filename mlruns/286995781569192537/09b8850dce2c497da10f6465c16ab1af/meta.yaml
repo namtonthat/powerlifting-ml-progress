@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/09b8850dce2c497da10f6465c16ab1af/artifacts
+end_time: 1703927003115
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 09b8850dce2c497da10f6465c16ab1af
+run_name: mysterious-bass-482
+run_uuid: 09b8850dce2c497da10f6465c16ab1af
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927002058
+status: 3
+tags: []
+user_id: namtonthat

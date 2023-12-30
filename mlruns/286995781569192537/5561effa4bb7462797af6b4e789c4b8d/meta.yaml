@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/5561effa4bb7462797af6b4e789c4b8d/artifacts
+end_time: 1703927193365
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 5561effa4bb7462797af6b4e789c4b8d
+run_name: unleashed-quail-53
+run_uuid: 5561effa4bb7462797af6b4e789c4b8d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927192580
+status: 3
+tags: []
+user_id: namtonthat

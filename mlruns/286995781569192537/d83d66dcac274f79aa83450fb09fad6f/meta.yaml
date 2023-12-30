@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/d83d66dcac274f79aa83450fb09fad6f/artifacts
+end_time: 1703927026002
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: d83d66dcac274f79aa83450fb09fad6f
+run_name: exultant-flea-666
+run_uuid: d83d66dcac274f79aa83450fb09fad6f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927025220
+status: 3
+tags: []
+user_id: namtonthat

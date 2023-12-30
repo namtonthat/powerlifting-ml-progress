@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/6404aeebc2bb4ca098bb14c61a472287/artifacts
+end_time: 1703927073405
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 6404aeebc2bb4ca098bb14c61a472287
+run_name: gaudy-ray-474
+run_uuid: 6404aeebc2bb4ca098bb14c61a472287
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927073259
+status: 3
+tags: []
+user_id: namtonthat

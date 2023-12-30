@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/c9fbcef90a6f435eaae978e986ad52c5/artifacts
+end_time: 1703927113214
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: c9fbcef90a6f435eaae978e986ad52c5
+run_name: bouncy-mouse-483
+run_uuid: c9fbcef90a6f435eaae978e986ad52c5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927112439
+status: 3
+tags: []
+user_id: namtonthat

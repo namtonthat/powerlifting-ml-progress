@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/97993094f0054cc0a2f0c32ac1c8171e/artifacts
+end_time: 1703926916772
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 97993094f0054cc0a2f0c32ac1c8171e
+run_name: lyrical-smelt-808
+run_uuid: 97993094f0054cc0a2f0c32ac1c8171e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926915923
+status: 3
+tags: []
+user_id: namtonthat

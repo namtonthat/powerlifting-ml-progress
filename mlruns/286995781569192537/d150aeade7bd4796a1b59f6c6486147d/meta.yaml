@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/d150aeade7bd4796a1b59f6c6486147d/artifacts
+end_time: 1703926785896
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: d150aeade7bd4796a1b59f6c6486147d
+run_name: rare-gnat-243
+run_uuid: d150aeade7bd4796a1b59f6c6486147d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926785664
+status: 3
+tags: []
+user_id: namtonthat

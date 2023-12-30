@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/f6a6329d8e2344ffb401de1e91bc07a7/artifacts
+end_time: 1703927128586
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: f6a6329d8e2344ffb401de1e91bc07a7
+run_name: gaudy-shrike-610
+run_uuid: f6a6329d8e2344ffb401de1e91bc07a7
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927127931
+status: 3
+tags: []
+user_id: namtonthat

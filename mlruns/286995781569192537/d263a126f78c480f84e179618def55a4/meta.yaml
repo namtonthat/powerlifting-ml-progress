@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/d263a126f78c480f84e179618def55a4/artifacts
+end_time: 1703926599231
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: d263a126f78c480f84e179618def55a4
+run_name: victorious-slug-610
+run_uuid: d263a126f78c480f84e179618def55a4
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926598665
+status: 3
+tags: []
+user_id: namtonthat

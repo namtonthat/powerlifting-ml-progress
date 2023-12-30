@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/ce0011cdb80a40b7b033eac7d2101ee0/artifacts
+end_time: 1703926576753
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: ce0011cdb80a40b7b033eac7d2101ee0
+run_name: stately-hog-312
+run_uuid: ce0011cdb80a40b7b033eac7d2101ee0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926576657
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/c85e900b58554882a2bd2c4bfc6aaa1b/artifacts
+end_time: 1703926742447
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: c85e900b58554882a2bd2c4bfc6aaa1b
+run_name: bemused-carp-594
+run_uuid: c85e900b58554882a2bd2c4bfc6aaa1b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926741928
+status: 3
+tags: []
+user_id: namtonthat

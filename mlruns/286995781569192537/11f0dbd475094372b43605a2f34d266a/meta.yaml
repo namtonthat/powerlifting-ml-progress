@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/11f0dbd475094372b43605a2f34d266a/artifacts
+end_time: 1703927075299
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 11f0dbd475094372b43605a2f34d266a
+run_name: funny-calf-567
+run_uuid: 11f0dbd475094372b43605a2f34d266a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927074626
+status: 3
+tags: []
+user_id: namtonthat

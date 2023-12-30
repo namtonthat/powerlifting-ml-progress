@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/dcf46d9427a849aabf76669f7bdfdc94/artifacts
+end_time: 1703926859332
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: dcf46d9427a849aabf76669f7bdfdc94
+run_name: capable-bug-601
+run_uuid: dcf46d9427a849aabf76669f7bdfdc94
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926859229
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/50bad9754b1f4495a55f0f34d0666974/artifacts
+end_time: 1703927142668
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 50bad9754b1f4495a55f0f34d0666974
+run_name: smiling-kit-695
+run_uuid: 50bad9754b1f4495a55f0f34d0666974
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927142082
+status: 3
+tags: []
+user_id: namtonthat

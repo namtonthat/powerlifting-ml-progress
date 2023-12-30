@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/a97b1289c9b448a0a87f93a2caab2dd0/artifacts
+end_time: 1703927080561
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: a97b1289c9b448a0a87f93a2caab2dd0
+run_name: enthused-gull-766
+run_uuid: a97b1289c9b448a0a87f93a2caab2dd0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927080324
+status: 3
+tags: []
+user_id: namtonthat

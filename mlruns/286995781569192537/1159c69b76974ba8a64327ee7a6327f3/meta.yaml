@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/1159c69b76974ba8a64327ee7a6327f3/artifacts
+end_time: 1703926622069
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 1159c69b76974ba8a64327ee7a6327f3
+run_name: fearless-shrimp-206
+run_uuid: 1159c69b76974ba8a64327ee7a6327f3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926621248
+status: 3
+tags: []
+user_id: namtonthat

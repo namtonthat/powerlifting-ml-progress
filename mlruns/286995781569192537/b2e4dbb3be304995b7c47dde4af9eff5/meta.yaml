@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/b2e4dbb3be304995b7c47dde4af9eff5/artifacts
+end_time: 1703927084671
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: b2e4dbb3be304995b7c47dde4af9eff5
+run_name: angry-carp-594
+run_uuid: b2e4dbb3be304995b7c47dde4af9eff5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927083842
+status: 3
+tags: []
+user_id: namtonthat

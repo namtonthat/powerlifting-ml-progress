@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/dfd0ffeb16904487b3475d7281497f99/artifacts
+end_time: 1703926581581
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: dfd0ffeb16904487b3475d7281497f99
+run_name: debonair-crane-888
+run_uuid: dfd0ffeb16904487b3475d7281497f99
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926581398
+status: 3
+tags: []
+user_id: namtonthat

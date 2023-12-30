@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/356de323936944409b78c39bd60d5b8e/artifacts
+end_time: 1703927079738
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 356de323936944409b78c39bd60d5b8e
+run_name: caring-cub-743
+run_uuid: 356de323936944409b78c39bd60d5b8e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927079448
+status: 3
+tags: []
+user_id: namtonthat

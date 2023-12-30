@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/8b259ff5c7974d4e97a530d172594ecc/artifacts
+end_time: 1703926652201
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 8b259ff5c7974d4e97a530d172594ecc
+run_name: sassy-yak-218
+run_uuid: 8b259ff5c7974d4e97a530d172594ecc
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926651509
+status: 3
+tags: []
+user_id: namtonthat

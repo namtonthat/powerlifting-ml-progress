@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/9f2c16ab53e548a58c114380502179c5/artifacts
+end_time: 1703926647122
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 9f2c16ab53e548a58c114380502179c5
+run_name: abrasive-steed-304
+run_uuid: 9f2c16ab53e548a58c114380502179c5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926646630
+status: 3
+tags: []
+user_id: namtonthat

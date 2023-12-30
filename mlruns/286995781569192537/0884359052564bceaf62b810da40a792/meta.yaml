@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/0884359052564bceaf62b810da40a792/artifacts
+end_time: 1703927113359
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 0884359052564bceaf62b810da40a792
+run_name: gentle-shad-294
+run_uuid: 0884359052564bceaf62b810da40a792
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927113227
+status: 3
+tags: []
+user_id: namtonthat

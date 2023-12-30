@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/7a3ac389c7584ea381d5faac2ca69f1a/artifacts
+end_time: 1703926704088
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 7a3ac389c7584ea381d5faac2ca69f1a
+run_name: likeable-horse-475
+run_uuid: 7a3ac389c7584ea381d5faac2ca69f1a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926703585
+status: 3
+tags: []
+user_id: namtonthat

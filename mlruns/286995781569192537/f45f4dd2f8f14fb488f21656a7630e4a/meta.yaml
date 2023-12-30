@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/f45f4dd2f8f14fb488f21656a7630e4a/artifacts
+end_time: 1703926872379
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: f45f4dd2f8f14fb488f21656a7630e4a
+run_name: chill-turtle-375
+run_uuid: f45f4dd2f8f14fb488f21656a7630e4a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926871624
+status: 3
+tags: []
+user_id: namtonthat

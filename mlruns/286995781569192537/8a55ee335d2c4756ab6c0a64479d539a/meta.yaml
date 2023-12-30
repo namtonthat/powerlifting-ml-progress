@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/8a55ee335d2c4756ab6c0a64479d539a/artifacts
+end_time: 1703926898307
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 8a55ee335d2c4756ab6c0a64479d539a
+run_name: loud-frog-859
+run_uuid: 8a55ee335d2c4756ab6c0a64479d539a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926897535
+status: 3
+tags: []
+user_id: namtonthat

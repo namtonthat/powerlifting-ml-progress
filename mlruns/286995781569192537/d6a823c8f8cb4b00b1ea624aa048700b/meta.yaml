@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/d6a823c8f8cb4b00b1ea624aa048700b/artifacts
+end_time: 1703926591479
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: d6a823c8f8cb4b00b1ea624aa048700b
+run_name: big-stoat-399
+run_uuid: d6a823c8f8cb4b00b1ea624aa048700b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926590995
+status: 3
+tags: []
+user_id: namtonthat

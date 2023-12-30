@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/6c546d8a249245b887eacd56994ab5ba/artifacts
+end_time: 1703926879894
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 6c546d8a249245b887eacd56994ab5ba
+run_name: sincere-newt-939
+run_uuid: 6c546d8a249245b887eacd56994ab5ba
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926879014
+status: 3
+tags: []
+user_id: namtonthat

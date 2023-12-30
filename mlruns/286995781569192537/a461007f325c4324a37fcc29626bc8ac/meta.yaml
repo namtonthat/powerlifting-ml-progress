@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/a461007f325c4324a37fcc29626bc8ac/artifacts
+end_time: 1703926892460
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: a461007f325c4324a37fcc29626bc8ac
+run_name: clean-chimp-632
+run_uuid: a461007f325c4324a37fcc29626bc8ac
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926891530
+status: 3
+tags: []
+user_id: namtonthat

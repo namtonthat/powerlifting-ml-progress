@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/ce2acd4a0c68415fb6cbc851dabb48e4/artifacts
+end_time: 1703926706539
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: ce2acd4a0c68415fb6cbc851dabb48e4
+run_name: chill-pig-320
+run_uuid: ce2acd4a0c68415fb6cbc851dabb48e4
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926706073
+status: 3
+tags: []
+user_id: namtonthat

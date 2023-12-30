@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/a955264e204540d9926dd5b5a451e7d8/artifacts
+end_time: 1703926685320
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: a955264e204540d9926dd5b5a451e7d8
+run_name: gifted-mare-987
+run_uuid: a955264e204540d9926dd5b5a451e7d8
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926685051
+status: 3
+tags: []
+user_id: namtonthat

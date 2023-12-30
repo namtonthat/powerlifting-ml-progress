@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/88d003f24df84762a253aaa828dcb8ec/artifacts
+end_time: 1703926631493
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 88d003f24df84762a253aaa828dcb8ec
+run_name: popular-mare-330
+run_uuid: 88d003f24df84762a253aaa828dcb8ec
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926630734
+status: 3
+tags: []
+user_id: namtonthat

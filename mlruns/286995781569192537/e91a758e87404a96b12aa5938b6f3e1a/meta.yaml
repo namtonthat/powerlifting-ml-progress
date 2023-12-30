@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/e91a758e87404a96b12aa5938b6f3e1a/artifacts
+end_time: 1703926726204
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: e91a758e87404a96b12aa5938b6f3e1a
+run_name: flawless-panda-440
+run_uuid: e91a758e87404a96b12aa5938b6f3e1a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926725693
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/35825c02ed3141db91d7912bfab380b8/artifacts
+end_time: 1703926965241
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 35825c02ed3141db91d7912bfab380b8
+run_name: salty-penguin-839
+run_uuid: 35825c02ed3141db91d7912bfab380b8
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926964864
+status: 3
+tags: []
+user_id: namtonthat

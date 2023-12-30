@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/ec52774d6038488ebedd6da5ec49ae30/artifacts
+end_time: 1703926721016
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: ec52774d6038488ebedd6da5ec49ae30
+run_name: sedate-gnat-526
+run_uuid: ec52774d6038488ebedd6da5ec49ae30
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926720300
+status: 3
+tags: []
+user_id: namtonthat

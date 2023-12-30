@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/1d3ab78d9d6c4d438322aeae325fb8bd/artifacts
+end_time: 1703926701617
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 1d3ab78d9d6c4d438322aeae325fb8bd
+run_name: auspicious-ape-488
+run_uuid: 1d3ab78d9d6c4d438322aeae325fb8bd
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926700979
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/f80f367846774e8fad75b66b8d731439/artifacts
+end_time: 1703926996880
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: f80f367846774e8fad75b66b8d731439
+run_name: handsome-goose-558
+run_uuid: f80f367846774e8fad75b66b8d731439
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926995894
+status: 3
+tags: []
+user_id: namtonthat

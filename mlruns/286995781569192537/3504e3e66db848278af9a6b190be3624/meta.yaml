@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/3504e3e66db848278af9a6b190be3624/artifacts
+end_time: 1703926754188
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 3504e3e66db848278af9a6b190be3624
+run_name: dazzling-quail-117
+run_uuid: 3504e3e66db848278af9a6b190be3624
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926753647
+status: 3
+tags: []
+user_id: namtonthat

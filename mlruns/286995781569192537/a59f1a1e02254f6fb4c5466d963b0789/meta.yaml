@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/a59f1a1e02254f6fb4c5466d963b0789/artifacts
+end_time: 1703926991192
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: a59f1a1e02254f6fb4c5466d963b0789
+run_name: big-stork-356
+run_uuid: a59f1a1e02254f6fb4c5466d963b0789
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926990618
+status: 3
+tags: []
+user_id: namtonthat

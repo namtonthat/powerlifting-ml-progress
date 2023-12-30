@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/7951377b5a4a46328b9ba5a0640a2daa/artifacts
+end_time: 1703927150648
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 7951377b5a4a46328b9ba5a0640a2daa
+run_name: legendary-mole-764
+run_uuid: 7951377b5a4a46328b9ba5a0640a2daa
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927150552
+status: 3
+tags: []
+user_id: namtonthat

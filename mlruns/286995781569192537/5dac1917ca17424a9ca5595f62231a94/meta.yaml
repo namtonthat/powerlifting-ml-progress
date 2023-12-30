@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/5dac1917ca17424a9ca5595f62231a94/artifacts
+end_time: 1703926683055
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 5dac1917ca17424a9ca5595f62231a94
+run_name: clean-duck-369
+run_uuid: 5dac1917ca17424a9ca5595f62231a94
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926682789
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/1822d92c8637419aa8f70ece59b70e86/artifacts
+end_time: 1703926788399
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 1822d92c8637419aa8f70ece59b70e86
+run_name: industrious-duck-238
+run_uuid: 1822d92c8637419aa8f70ece59b70e86
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926788094
+status: 3
+tags: []
+user_id: namtonthat

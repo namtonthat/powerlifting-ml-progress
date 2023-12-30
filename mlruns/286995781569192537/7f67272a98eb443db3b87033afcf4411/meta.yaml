@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/7f67272a98eb443db3b87033afcf4411/artifacts
+end_time: 1703926747683
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 7f67272a98eb443db3b87033afcf4411
+run_name: skittish-swan-572
+run_uuid: 7f67272a98eb443db3b87033afcf4411
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926747174
+status: 3
+tags: []
+user_id: namtonthat

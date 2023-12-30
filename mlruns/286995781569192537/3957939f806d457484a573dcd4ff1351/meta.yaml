@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/3957939f806d457484a573dcd4ff1351/artifacts
+end_time: 1703926764315
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 3957939f806d457484a573dcd4ff1351
+run_name: beautiful-mouse-778
+run_uuid: 3957939f806d457484a573dcd4ff1351
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926763754
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/dfa93259671242228159587dd74f8e88/artifacts
+end_time: 1703926744935
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: dfa93259671242228159587dd74f8e88
+run_name: tasteful-perch-349
+run_uuid: dfa93259671242228159587dd74f8e88
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926744642
+status: 3
+tags: []
+user_id: namtonthat

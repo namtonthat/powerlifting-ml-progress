@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/812f6169c7284fc2aa7eb8860959bf5c/artifacts
+end_time: 1703926693879
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 812f6169c7284fc2aa7eb8860959bf5c
+run_name: kindly-boar-518
+run_uuid: 812f6169c7284fc2aa7eb8860959bf5c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926693460
+status: 3
+tags: []
+user_id: namtonthat

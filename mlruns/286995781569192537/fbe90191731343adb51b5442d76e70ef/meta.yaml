@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/fbe90191731343adb51b5442d76e70ef/artifacts
+end_time: 1703926717582
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: fbe90191731343adb51b5442d76e70ef
+run_name: wistful-perch-627
+run_uuid: fbe90191731343adb51b5442d76e70ef
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926717181
+status: 3
+tags: []
+user_id: namtonthat

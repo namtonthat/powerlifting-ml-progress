@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/7f7324d71f66464eb7d64a5e140bcca0/artifacts
+end_time: 1703926773014
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 7f7324d71f66464eb7d64a5e140bcca0
+run_name: ambitious-fish-903
+run_uuid: 7f7324d71f66464eb7d64a5e140bcca0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926772714
+status: 3
+tags: []
+user_id: namtonthat

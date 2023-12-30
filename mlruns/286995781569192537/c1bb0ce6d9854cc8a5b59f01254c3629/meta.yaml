@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/c1bb0ce6d9854cc8a5b59f01254c3629/artifacts
+end_time: 1703926738810
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: c1bb0ce6d9854cc8a5b59f01254c3629
+run_name: placid-carp-701
+run_uuid: c1bb0ce6d9854cc8a5b59f01254c3629
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926738323
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/6e1ecea8d2a7473ebfe14fe2912e8b1a/artifacts
+end_time: 1703926761499
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 6e1ecea8d2a7473ebfe14fe2912e8b1a
+run_name: abundant-auk-756
+run_uuid: 6e1ecea8d2a7473ebfe14fe2912e8b1a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926761047
+status: 3
+tags: []
+user_id: namtonthat

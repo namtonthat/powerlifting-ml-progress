@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/d2da7c19397342e7833081dcecc1823b/artifacts
+end_time: 1703926784735
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: d2da7c19397342e7833081dcecc1823b
+run_name: bemused-fish-142
+run_uuid: d2da7c19397342e7833081dcecc1823b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926784113
+status: 3
+tags: []
+user_id: namtonthat

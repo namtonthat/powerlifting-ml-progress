@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/985eaaf5e2a4407cb7fa72e311e91c43/artifacts
+end_time: 1703926750060
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 985eaaf5e2a4407cb7fa72e311e91c43
+run_name: charming-rook-133
+run_uuid: 985eaaf5e2a4407cb7fa72e311e91c43
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926749343
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/32bcf898885644ca85bb88f80ef7a3d5/artifacts
+end_time: 1703926706066
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 32bcf898885644ca85bb88f80ef7a3d5
+run_name: skittish-rat-638
+run_uuid: 32bcf898885644ca85bb88f80ef7a3d5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926705540
+status: 3
+tags: []
+user_id: namtonthat

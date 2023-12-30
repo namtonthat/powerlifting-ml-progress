@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/d7644c479df544bea554405b35e659a9/artifacts
+end_time: 1703926907247
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: d7644c479df544bea554405b35e659a9
+run_name: bold-shad-879
+run_uuid: d7644c479df544bea554405b35e659a9
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926906195
+status: 3
+tags: []
+user_id: namtonthat

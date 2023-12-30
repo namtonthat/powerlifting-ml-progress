@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/31dd225c64b94f5a962e46f7aeed1667/artifacts
+end_time: 1703926650955
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 31dd225c64b94f5a962e46f7aeed1667
+run_name: placid-horse-288
+run_uuid: 31dd225c64b94f5a962e46f7aeed1667
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926650113
+status: 3
+tags: []
+user_id: namtonthat

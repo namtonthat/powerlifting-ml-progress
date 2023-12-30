@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/03ba2ea73e4745be933dc8b5ad1848d3/artifacts
+end_time: 1703927096195
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 03ba2ea73e4745be933dc8b5ad1848d3
+run_name: charming-koi-639
+run_uuid: 03ba2ea73e4745be933dc8b5ad1848d3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927095687
+status: 3
+tags: []
+user_id: namtonthat

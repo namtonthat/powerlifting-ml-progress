@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/d611dbddd212470490296d9c1599b544/artifacts
+end_time: 1703927095116
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: d611dbddd212470490296d9c1599b544
+run_name: receptive-hawk-300
+run_uuid: d611dbddd212470490296d9c1599b544
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927094330
+status: 3
+tags: []
+user_id: namtonthat

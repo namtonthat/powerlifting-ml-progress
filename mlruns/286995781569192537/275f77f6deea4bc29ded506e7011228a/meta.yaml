@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/275f77f6deea4bc29ded506e7011228a/artifacts
+end_time: 1703926578033
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 275f77f6deea4bc29ded506e7011228a
+run_name: sincere-penguin-27
+run_uuid: 275f77f6deea4bc29ded506e7011228a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926577812
+status: 3
+tags: []
+user_id: namtonthat

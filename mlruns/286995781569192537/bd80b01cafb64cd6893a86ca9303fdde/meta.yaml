@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/bd80b01cafb64cd6893a86ca9303fdde/artifacts
+end_time: 1703926608003
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: bd80b01cafb64cd6893a86ca9303fdde
+run_name: worried-worm-298
+run_uuid: bd80b01cafb64cd6893a86ca9303fdde
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926607326
+status: 3
+tags: []
+user_id: namtonthat

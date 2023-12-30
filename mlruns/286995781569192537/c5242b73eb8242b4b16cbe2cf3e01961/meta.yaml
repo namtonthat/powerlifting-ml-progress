@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/c5242b73eb8242b4b16cbe2cf3e01961/artifacts
+end_time: 1703926716142
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: c5242b73eb8242b4b16cbe2cf3e01961
+run_name: rare-snake-361
+run_uuid: c5242b73eb8242b4b16cbe2cf3e01961
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926715859
+status: 3
+tags: []
+user_id: namtonthat

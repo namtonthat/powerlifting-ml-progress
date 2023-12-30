@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/40cddb36fcb5471a89ca1da89b78b982/artifacts
+end_time: 1703926727047
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 40cddb36fcb5471a89ca1da89b78b982
+run_name: auspicious-bass-855
+run_uuid: 40cddb36fcb5471a89ca1da89b78b982
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926726519
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/d8c29af7847745bc8c08385b068dbcfa/artifacts
+end_time: 1703926735998
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: d8c29af7847745bc8c08385b068dbcfa
+run_name: magnificent-grub-308
+run_uuid: d8c29af7847745bc8c08385b068dbcfa
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926735374
+status: 3
+tags: []
+user_id: namtonthat

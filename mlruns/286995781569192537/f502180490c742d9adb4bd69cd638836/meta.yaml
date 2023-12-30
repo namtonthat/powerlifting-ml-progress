@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/f502180490c742d9adb4bd69cd638836/artifacts
+end_time: 1703926708456
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: f502180490c742d9adb4bd69cd638836
+run_name: casual-pug-556
+run_uuid: f502180490c742d9adb4bd69cd638836
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926707962
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/edd45af083084f6084ba410e3b5ede27/artifacts
+end_time: 1703926669671
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: edd45af083084f6084ba410e3b5ede27
+run_name: sassy-dove-221
+run_uuid: edd45af083084f6084ba410e3b5ede27
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926669220
+status: 3
+tags: []
+user_id: namtonthat

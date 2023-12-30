@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/79ddb42f526547ebbfb1c14e8ad72a67/artifacts
+end_time: 1703927151749
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 79ddb42f526547ebbfb1c14e8ad72a67
+run_name: luxuriant-skink-101
+run_uuid: 79ddb42f526547ebbfb1c14e8ad72a67
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927150653
+status: 3
+tags: []
+user_id: namtonthat

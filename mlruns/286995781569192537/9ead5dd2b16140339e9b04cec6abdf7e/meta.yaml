@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/9ead5dd2b16140339e9b04cec6abdf7e/artifacts
+end_time: 1703926994323
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 9ead5dd2b16140339e9b04cec6abdf7e
+run_name: suave-gnat-457
+run_uuid: 9ead5dd2b16140339e9b04cec6abdf7e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926993415
+status: 3
+tags: []
+user_id: namtonthat

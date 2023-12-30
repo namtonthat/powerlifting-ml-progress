@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/b0769c8eb1e84def886f148088977df0/artifacts
+end_time: 1703927184500
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: b0769c8eb1e84def886f148088977df0
+run_name: tasteful-sheep-426
+run_uuid: b0769c8eb1e84def886f148088977df0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927183636
+status: 3
+tags: []
+user_id: namtonthat

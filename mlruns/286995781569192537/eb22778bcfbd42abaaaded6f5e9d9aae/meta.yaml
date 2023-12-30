@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/eb22778bcfbd42abaaaded6f5e9d9aae/artifacts
+end_time: 1703926742892
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: eb22778bcfbd42abaaaded6f5e9d9aae
+run_name: bouncy-stag-726
+run_uuid: eb22778bcfbd42abaaaded6f5e9d9aae
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926742575
+status: 3
+tags: []
+user_id: namtonthat

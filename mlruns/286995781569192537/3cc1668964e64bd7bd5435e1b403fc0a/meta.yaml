@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/3cc1668964e64bd7bd5435e1b403fc0a/artifacts
+end_time: 1703926765690
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 3cc1668964e64bd7bd5435e1b403fc0a
+run_name: adorable-shrew-991
+run_uuid: 3cc1668964e64bd7bd5435e1b403fc0a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926765197
+status: 3
+tags: []
+user_id: namtonthat

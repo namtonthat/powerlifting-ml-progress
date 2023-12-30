@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/1883a582f16d4713ab73e5e832e3464e/artifacts
+end_time: 1703927133072
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 1883a582f16d4713ab73e5e832e3464e
+run_name: big-croc-390
+run_uuid: 1883a582f16d4713ab73e5e832e3464e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927132135
+status: 3
+tags: []
+user_id: namtonthat

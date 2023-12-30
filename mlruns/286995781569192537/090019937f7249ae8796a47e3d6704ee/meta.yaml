@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/090019937f7249ae8796a47e3d6704ee/artifacts
+end_time: 1703926694347
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 090019937f7249ae8796a47e3d6704ee
+run_name: spiffy-carp-194
+run_uuid: 090019937f7249ae8796a47e3d6704ee
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926694077
+status: 3
+tags: []
+user_id: namtonthat

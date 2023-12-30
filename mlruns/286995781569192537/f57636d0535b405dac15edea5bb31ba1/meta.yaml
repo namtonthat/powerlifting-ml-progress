@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/f57636d0535b405dac15edea5bb31ba1/artifacts
+end_time: 1703927195354
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: f57636d0535b405dac15edea5bb31ba1
+run_name: handsome-ant-726
+run_uuid: f57636d0535b405dac15edea5bb31ba1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927194539
+status: 3
+tags: []
+user_id: namtonthat

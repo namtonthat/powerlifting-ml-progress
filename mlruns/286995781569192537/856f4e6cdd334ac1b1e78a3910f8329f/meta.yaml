@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/856f4e6cdd334ac1b1e78a3910f8329f/artifacts
+end_time: 1703927180185
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 856f4e6cdd334ac1b1e78a3910f8329f
+run_name: legendary-boar-259
+run_uuid: 856f4e6cdd334ac1b1e78a3910f8329f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927179451
+status: 3
+tags: []
+user_id: namtonthat

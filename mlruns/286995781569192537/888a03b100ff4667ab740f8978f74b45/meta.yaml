@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/888a03b100ff4667ab740f8978f74b45/artifacts
+end_time: 1703926870951
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 888a03b100ff4667ab740f8978f74b45
+run_name: orderly-asp-632
+run_uuid: 888a03b100ff4667ab740f8978f74b45
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926870167
+status: 3
+tags: []
+user_id: namtonthat

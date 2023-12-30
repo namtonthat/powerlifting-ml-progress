@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/f495625908964314a118f863b6f1119b/artifacts
+end_time: 1703927036257
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: f495625908964314a118f863b6f1119b
+run_name: persistent-colt-662
+run_uuid: f495625908964314a118f863b6f1119b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927035566
+status: 3
+tags: []
+user_id: namtonthat

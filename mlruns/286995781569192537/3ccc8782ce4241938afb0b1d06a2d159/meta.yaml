@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/3ccc8782ce4241938afb0b1d06a2d159/artifacts
+end_time: 1703927148349
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 3ccc8782ce4241938afb0b1d06a2d159
+run_name: redolent-eel-981
+run_uuid: 3ccc8782ce4241938afb0b1d06a2d159
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927147549
+status: 3
+tags: []
+user_id: namtonthat

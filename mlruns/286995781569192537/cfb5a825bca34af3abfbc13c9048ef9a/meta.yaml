@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/cfb5a825bca34af3abfbc13c9048ef9a/artifacts
+end_time: 1703926758379
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: cfb5a825bca34af3abfbc13c9048ef9a
+run_name: capricious-dove-622
+run_uuid: cfb5a825bca34af3abfbc13c9048ef9a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926758110
+status: 3
+tags: []
+user_id: namtonthat

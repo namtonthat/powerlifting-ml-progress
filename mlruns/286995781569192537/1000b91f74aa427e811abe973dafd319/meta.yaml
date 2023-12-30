@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/1000b91f74aa427e811abe973dafd319/artifacts
+end_time: 1703926719419
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 1000b91f74aa427e811abe973dafd319
+run_name: redolent-roo-487
+run_uuid: 1000b91f74aa427e811abe973dafd319
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926719224
+status: 3
+tags: []
+user_id: namtonthat

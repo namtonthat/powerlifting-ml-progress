@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/62ef1ef1def446d5a6b16b243b546f08/artifacts
+end_time: 1703926580659
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 62ef1ef1def446d5a6b16b243b546f08
+run_name: loud-moose-208
+run_uuid: 62ef1ef1def446d5a6b16b243b546f08
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926580119
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/a74f2e1ad9684fd687a69097e513fb39/artifacts
+end_time: 1703927192570
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: a74f2e1ad9684fd687a69097e513fb39
+run_name: fearless-lark-78
+run_uuid: a74f2e1ad9684fd687a69097e513fb39
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927191742
+status: 3
+tags: []
+user_id: namtonthat

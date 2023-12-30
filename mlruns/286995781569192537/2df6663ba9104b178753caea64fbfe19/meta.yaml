@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/2df6663ba9104b178753caea64fbfe19/artifacts
+end_time: 1703927099837
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 2df6663ba9104b178753caea64fbfe19
+run_name: victorious-skink-150
+run_uuid: 2df6663ba9104b178753caea64fbfe19
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927099288
+status: 3
+tags: []
+user_id: namtonthat

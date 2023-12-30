@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/8692d0ca9e7e4c6d8fd8bba4d56dc80c/artifacts
+end_time: 1703926636393
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 8692d0ca9e7e4c6d8fd8bba4d56dc80c
+run_name: stylish-steed-441
+run_uuid: 8692d0ca9e7e4c6d8fd8bba4d56dc80c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926635663
+status: 3
+tags: []
+user_id: namtonthat

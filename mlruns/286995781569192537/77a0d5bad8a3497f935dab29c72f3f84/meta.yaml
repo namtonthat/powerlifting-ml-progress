@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/77a0d5bad8a3497f935dab29c72f3f84/artifacts
+end_time: 1703927096716
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 77a0d5bad8a3497f935dab29c72f3f84
+run_name: amusing-sow-924
+run_uuid: 77a0d5bad8a3497f935dab29c72f3f84
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927096204
+status: 3
+tags: []
+user_id: namtonthat

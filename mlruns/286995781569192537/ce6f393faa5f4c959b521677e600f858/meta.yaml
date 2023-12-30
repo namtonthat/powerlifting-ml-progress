@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/ce6f393faa5f4c959b521677e600f858/artifacts
+end_time: 1703926863233
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: ce6f393faa5f4c959b521677e600f858
+run_name: invincible-crane-289
+run_uuid: ce6f393faa5f4c959b521677e600f858
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926862630
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/0102b978ac04422ba488237e2ae64fed/artifacts
+end_time: 1703926642332
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 0102b978ac04422ba488237e2ae64fed
+run_name: charming-deer-476
+run_uuid: 0102b978ac04422ba488237e2ae64fed
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926641513
+status: 3
+tags: []
+user_id: namtonthat

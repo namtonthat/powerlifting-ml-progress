@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/f390f1b409144d8dad156cba5e86d852/artifacts
+end_time: 1703926878711
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: f390f1b409144d8dad156cba5e86d852
+run_name: mysterious-loon-145
+run_uuid: f390f1b409144d8dad156cba5e86d852
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926877987
+status: 3
+tags: []
+user_id: namtonthat

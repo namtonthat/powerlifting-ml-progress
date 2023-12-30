@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/fe4a18bf600242eb81f92e97634d49d0/artifacts
+end_time: 1703926975627
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: fe4a18bf600242eb81f92e97634d49d0
+run_name: masked-kite-953
+run_uuid: fe4a18bf600242eb81f92e97634d49d0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926974665
+status: 3
+tags: []
+user_id: namtonthat

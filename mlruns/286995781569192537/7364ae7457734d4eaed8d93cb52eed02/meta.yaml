@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/7364ae7457734d4eaed8d93cb52eed02/artifacts
+end_time: 1703926788866
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 7364ae7457734d4eaed8d93cb52eed02
+run_name: serious-carp-884
+run_uuid: 7364ae7457734d4eaed8d93cb52eed02
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926788574
+status: 3
+tags: []
+user_id: namtonthat

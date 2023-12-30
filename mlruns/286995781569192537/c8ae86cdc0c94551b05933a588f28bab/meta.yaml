@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/c8ae86cdc0c94551b05933a588f28bab/artifacts
+end_time: 1703927070686
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: c8ae86cdc0c94551b05933a588f28bab
+run_name: resilient-chimp-277
+run_uuid: c8ae86cdc0c94551b05933a588f28bab
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927069919
+status: 3
+tags: []
+user_id: namtonthat

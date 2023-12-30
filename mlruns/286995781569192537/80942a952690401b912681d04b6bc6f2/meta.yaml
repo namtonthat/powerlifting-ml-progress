@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/80942a952690401b912681d04b6bc6f2/artifacts
+end_time: 1703926864285
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 80942a952690401b912681d04b6bc6f2
+run_name: silent-midge-941
+run_uuid: 80942a952690401b912681d04b6bc6f2
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926863881
+status: 3
+tags: []
+user_id: namtonthat

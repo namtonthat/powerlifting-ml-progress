@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/53f69a6e5df548de9dbcda95ec0655fc/artifacts
+end_time: 1703926607319
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 53f69a6e5df548de9dbcda95ec0655fc
+run_name: bald-snake-304
+run_uuid: 53f69a6e5df548de9dbcda95ec0655fc
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926606803
+status: 3
+tags: []
+user_id: namtonthat

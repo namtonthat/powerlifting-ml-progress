@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/e96698ca267d4e1093a2b9397ae401be/artifacts
+end_time: 1703927064959
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: e96698ca267d4e1093a2b9397ae401be
+run_name: dazzling-worm-663
+run_uuid: e96698ca267d4e1093a2b9397ae401be
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927064187
+status: 3
+tags: []
+user_id: namtonthat

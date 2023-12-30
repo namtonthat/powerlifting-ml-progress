@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/0a2dbdb6c06048bdab9a2d678279732c/artifacts
+end_time: 1703926893318
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 0a2dbdb6c06048bdab9a2d678279732c
+run_name: classy-rat-937
+run_uuid: 0a2dbdb6c06048bdab9a2d678279732c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926892469
+status: 3
+tags: []
+user_id: namtonthat

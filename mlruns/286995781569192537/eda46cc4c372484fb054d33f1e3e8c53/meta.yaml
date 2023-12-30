@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/eda46cc4c372484fb054d33f1e3e8c53/artifacts
+end_time: 1703926585283
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: eda46cc4c372484fb054d33f1e3e8c53
+run_name: judicious-yak-823
+run_uuid: eda46cc4c372484fb054d33f1e3e8c53
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926584836
+status: 3
+tags: []
+user_id: namtonthat

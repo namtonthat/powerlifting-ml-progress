@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/92ede3302ade4ea6963b7a6f79887f7a/artifacts
+end_time: 1703926768727
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 92ede3302ade4ea6963b7a6f79887f7a
+run_name: sneaky-lamb-254
+run_uuid: 92ede3302ade4ea6963b7a6f79887f7a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926768185
+status: 3
+tags: []
+user_id: namtonthat

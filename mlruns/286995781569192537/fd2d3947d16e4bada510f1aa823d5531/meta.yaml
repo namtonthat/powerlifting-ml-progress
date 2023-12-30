@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/fd2d3947d16e4bada510f1aa823d5531/artifacts
+end_time: 1703926857641
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: fd2d3947d16e4bada510f1aa823d5531
+run_name: salty-foal-6
+run_uuid: fd2d3947d16e4bada510f1aa823d5531
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926857460
+status: 3
+tags: []
+user_id: namtonthat

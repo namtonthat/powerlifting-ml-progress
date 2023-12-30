@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/8e2e9a1dd1ab4306ba80589bf4351fd3/artifacts
+end_time: 1703926694069
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 8e2e9a1dd1ab4306ba80589bf4351fd3
+run_name: monumental-wolf-84
+run_uuid: 8e2e9a1dd1ab4306ba80589bf4351fd3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926693886
+status: 3
+tags: []
+user_id: namtonthat

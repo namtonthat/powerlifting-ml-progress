@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/d78246dffe234d3bbc39d9be46407e97/artifacts
+end_time: 1703926931609
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: d78246dffe234d3bbc39d9be46407e97
+run_name: grandiose-lynx-141
+run_uuid: d78246dffe234d3bbc39d9be46407e97
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926931400
+status: 3
+tags: []
+user_id: namtonthat

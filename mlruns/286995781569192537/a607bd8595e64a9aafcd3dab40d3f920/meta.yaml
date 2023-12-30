@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/a607bd8595e64a9aafcd3dab40d3f920/artifacts
+end_time: 1703926682019
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: a607bd8595e64a9aafcd3dab40d3f920
+run_name: popular-shrike-57
+run_uuid: a607bd8595e64a9aafcd3dab40d3f920
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926681744
+status: 3
+tags: []
+user_id: namtonthat

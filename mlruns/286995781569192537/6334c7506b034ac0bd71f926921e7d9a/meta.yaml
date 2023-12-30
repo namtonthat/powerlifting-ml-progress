@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/6334c7506b034ac0bd71f926921e7d9a/artifacts
+end_time: 1703926735045
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 6334c7506b034ac0bd71f926921e7d9a
+run_name: delicate-panda-713
+run_uuid: 6334c7506b034ac0bd71f926921e7d9a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926734667
+status: 3
+tags: []
+user_id: namtonthat

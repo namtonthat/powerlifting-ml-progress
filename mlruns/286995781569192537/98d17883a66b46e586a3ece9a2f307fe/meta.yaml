@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/98d17883a66b46e586a3ece9a2f307fe/artifacts
+end_time: 1703927121800
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 98d17883a66b46e586a3ece9a2f307fe
+run_name: beautiful-rat-799
+run_uuid: 98d17883a66b46e586a3ece9a2f307fe
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927120931
+status: 3
+tags: []
+user_id: namtonthat

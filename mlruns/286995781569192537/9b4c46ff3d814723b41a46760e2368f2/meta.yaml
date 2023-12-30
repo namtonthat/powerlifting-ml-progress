@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/9b4c46ff3d814723b41a46760e2368f2/artifacts
+end_time: 1703926641503
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 9b4c46ff3d814723b41a46760e2368f2
+run_name: likeable-ox-819
+run_uuid: 9b4c46ff3d814723b41a46760e2368f2
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926640822
+status: 3
+tags: []
+user_id: namtonthat

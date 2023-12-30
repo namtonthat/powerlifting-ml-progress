@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/fc84510502b54f6284774cb7c67c2da4/artifacts
+end_time: 1703926577699
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: fc84510502b54f6284774cb7c67c2da4
+run_name: bedecked-shoat-758
+run_uuid: fc84510502b54f6284774cb7c67c2da4
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926577172
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/ce256182b0554a97988ec8fc2617ccaa/artifacts
+end_time: 1703926724763
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: ce256182b0554a97988ec8fc2617ccaa
+run_name: popular-hen-261
+run_uuid: ce256182b0554a97988ec8fc2617ccaa
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926724659
+status: 3
+tags: []
+user_id: namtonthat

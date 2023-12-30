@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/ef5b16d27bf643959e2026f4ae0acaab/artifacts
+end_time: 1703926755456
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: ef5b16d27bf643959e2026f4ae0acaab
+run_name: sedate-shoat-596
+run_uuid: ef5b16d27bf643959e2026f4ae0acaab
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926754972
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/b00063685dfe4f76ac4e89b95c2097ee/artifacts
+end_time: 1703926737272
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: b00063685dfe4f76ac4e89b95c2097ee
+run_name: overjoyed-sow-655
+run_uuid: b00063685dfe4f76ac4e89b95c2097ee
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926736777
+status: 3
+tags: []
+user_id: namtonthat

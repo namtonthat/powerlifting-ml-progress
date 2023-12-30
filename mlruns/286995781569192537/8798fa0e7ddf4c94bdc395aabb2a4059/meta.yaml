@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/8798fa0e7ddf4c94bdc395aabb2a4059/artifacts
+end_time: 1703926695132
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 8798fa0e7ddf4c94bdc395aabb2a4059
+run_name: luxuriant-rook-13
+run_uuid: 8798fa0e7ddf4c94bdc395aabb2a4059
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926694874
+status: 3
+tags: []
+user_id: namtonthat

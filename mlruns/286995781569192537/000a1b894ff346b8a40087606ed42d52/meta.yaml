@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/000a1b894ff346b8a40087606ed42d52/artifacts
+end_time: 1703926978298
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 000a1b894ff346b8a40087606ed42d52
+run_name: indecisive-rook-82
+run_uuid: 000a1b894ff346b8a40087606ed42d52
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926977464
+status: 3
+tags: []
+user_id: namtonthat

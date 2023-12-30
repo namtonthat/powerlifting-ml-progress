@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/e4af0e5b68a341dea90b41a10e0ce536/artifacts
+end_time: 1703926901487
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: e4af0e5b68a341dea90b41a10e0ce536
+run_name: selective-mole-732
+run_uuid: e4af0e5b68a341dea90b41a10e0ce536
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926901379
+status: 3
+tags: []
+user_id: namtonthat

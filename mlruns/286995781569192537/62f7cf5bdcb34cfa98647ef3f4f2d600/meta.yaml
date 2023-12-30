@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/62f7cf5bdcb34cfa98647ef3f4f2d600/artifacts
+end_time: 1703926684800
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 62f7cf5bdcb34cfa98647ef3f4f2d600
+run_name: awesome-bee-128
+run_uuid: 62f7cf5bdcb34cfa98647ef3f4f2d600
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926684515
+status: 3
+tags: []
+user_id: namtonthat

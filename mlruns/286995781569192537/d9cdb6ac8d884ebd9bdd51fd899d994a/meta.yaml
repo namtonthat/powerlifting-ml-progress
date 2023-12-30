@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/d9cdb6ac8d884ebd9bdd51fd899d994a/artifacts
+end_time: 1703926738016
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: d9cdb6ac8d884ebd9bdd51fd899d994a
+run_name: skillful-cod-924
+run_uuid: d9cdb6ac8d884ebd9bdd51fd899d994a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926737549
+status: 3
+tags: []
+user_id: namtonthat

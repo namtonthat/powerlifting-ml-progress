@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/837034b2dade45779bbd61d67300bf87/artifacts
+end_time: 1703927108580
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 837034b2dade45779bbd61d67300bf87
+run_name: rumbling-rat-271
+run_uuid: 837034b2dade45779bbd61d67300bf87
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927107731
+status: 3
+tags: []
+user_id: namtonthat

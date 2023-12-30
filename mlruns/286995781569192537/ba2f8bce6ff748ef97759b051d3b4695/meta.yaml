@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/ba2f8bce6ff748ef97759b051d3b4695/artifacts
+end_time: 1703926964855
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: ba2f8bce6ff748ef97759b051d3b4695
+run_name: incongruous-wolf-67
+run_uuid: ba2f8bce6ff748ef97759b051d3b4695
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926963975
+status: 3
+tags: []
+user_id: namtonthat

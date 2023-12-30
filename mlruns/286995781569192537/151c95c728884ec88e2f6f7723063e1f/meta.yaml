@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/151c95c728884ec88e2f6f7723063e1f/artifacts
+end_time: 1703926868754
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 151c95c728884ec88e2f6f7723063e1f
+run_name: receptive-carp-228
+run_uuid: 151c95c728884ec88e2f6f7723063e1f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926868016
+status: 3
+tags: []
+user_id: namtonthat

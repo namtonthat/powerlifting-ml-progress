@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/1796d2aceca44e85b9bc45391b067d35/artifacts
+end_time: 1703926717172
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 1796d2aceca44e85b9bc45391b067d35
+run_name: dashing-cow-163
+run_uuid: 1796d2aceca44e85b9bc45391b067d35
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926716644
+status: 3
+tags: []
+user_id: namtonthat

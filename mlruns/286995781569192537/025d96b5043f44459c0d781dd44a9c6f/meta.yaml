@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/025d96b5043f44459c0d781dd44a9c6f/artifacts
+end_time: 1703926672186
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 025d96b5043f44459c0d781dd44a9c6f
+run_name: charming-fawn-297
+run_uuid: 025d96b5043f44459c0d781dd44a9c6f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926671717
+status: 3
+tags: []
+user_id: namtonthat

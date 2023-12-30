@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/6f59c640875e4e819f39ad3188548ecd/artifacts
+end_time: 1703926687676
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 6f59c640875e4e819f39ad3188548ecd
+run_name: thundering-frog-905
+run_uuid: 6f59c640875e4e819f39ad3188548ecd
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926687366
+status: 3
+tags: []
+user_id: namtonthat

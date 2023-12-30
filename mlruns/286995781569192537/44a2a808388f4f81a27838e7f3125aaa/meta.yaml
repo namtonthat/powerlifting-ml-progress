@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/44a2a808388f4f81a27838e7f3125aaa/artifacts
+end_time: 1703927025210
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 44a2a808388f4f81a27838e7f3125aaa
+run_name: blushing-pug-669
+run_uuid: 44a2a808388f4f81a27838e7f3125aaa
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927024408
+status: 3
+tags: []
+user_id: namtonthat

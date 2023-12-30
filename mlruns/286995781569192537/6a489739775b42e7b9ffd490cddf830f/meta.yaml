@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/6a489739775b42e7b9ffd490cddf830f/artifacts
+end_time: 1703926779870
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 6a489739775b42e7b9ffd490cddf830f
+run_name: angry-turtle-598
+run_uuid: 6a489739775b42e7b9ffd490cddf830f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926779292
+status: 3
+tags: []
+user_id: namtonthat

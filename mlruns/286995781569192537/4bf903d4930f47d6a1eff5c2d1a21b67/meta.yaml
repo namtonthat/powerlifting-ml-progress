@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/4bf903d4930f47d6a1eff5c2d1a21b67/artifacts
+end_time: 1703926719215
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 4bf903d4930f47d6a1eff5c2d1a21b67
+run_name: capable-crow-370
+run_uuid: 4bf903d4930f47d6a1eff5c2d1a21b67
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926718922
+status: 3
+tags: []
+user_id: namtonthat

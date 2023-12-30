@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/df8f0aaffba14e3b8643793fdcba4d19/artifacts
+end_time: 1703926699265
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: df8f0aaffba14e3b8643793fdcba4d19
+run_name: beautiful-bat-674
+run_uuid: df8f0aaffba14e3b8643793fdcba4d19
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926699157
+status: 3
+tags: []
+user_id: namtonthat

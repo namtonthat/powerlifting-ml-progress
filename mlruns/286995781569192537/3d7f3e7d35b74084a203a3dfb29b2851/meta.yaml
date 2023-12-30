@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/3d7f3e7d35b74084a203a3dfb29b2851/artifacts
+end_time: 1703926864829
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 3d7f3e7d35b74084a203a3dfb29b2851
+run_name: treasured-pig-385
+run_uuid: 3d7f3e7d35b74084a203a3dfb29b2851
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926864294
+status: 3
+tags: []
+user_id: namtonthat

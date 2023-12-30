@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/c7109a38a68f44bea67d79e4ec14f22c/artifacts
+end_time: 1703927103564
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: c7109a38a68f44bea67d79e4ec14f22c
+run_name: powerful-wasp-534
+run_uuid: c7109a38a68f44bea67d79e4ec14f22c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927103027
+status: 3
+tags: []
+user_id: namtonthat

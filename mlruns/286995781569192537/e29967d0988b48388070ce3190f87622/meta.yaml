@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/e29967d0988b48388070ce3190f87622/artifacts
+end_time: 1703926986438
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: e29967d0988b48388070ce3190f87622
+run_name: resilient-deer-812
+run_uuid: e29967d0988b48388070ce3190f87622
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926985347
+status: 3
+tags: []
+user_id: namtonthat

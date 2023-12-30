@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/dd4df9f1dca14e06a77f8bb1e1039f8f/artifacts
+end_time: 1703926999511
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: dd4df9f1dca14e06a77f8bb1e1039f8f
+run_name: peaceful-hen-320
+run_uuid: dd4df9f1dca14e06a77f8bb1e1039f8f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926998663
+status: 3
+tags: []
+user_id: namtonthat

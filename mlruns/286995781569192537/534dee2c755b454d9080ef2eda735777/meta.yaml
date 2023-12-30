@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/534dee2c755b454d9080ef2eda735777/artifacts
+end_time: 1703926680482
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 534dee2c755b454d9080ef2eda735777
+run_name: sedate-asp-838
+run_uuid: 534dee2c755b454d9080ef2eda735777
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926680233
+status: 3
+tags: []
+user_id: namtonthat

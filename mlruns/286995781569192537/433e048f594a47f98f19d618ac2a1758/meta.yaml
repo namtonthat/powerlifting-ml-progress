@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/433e048f594a47f98f19d618ac2a1758/artifacts
+end_time: 1703926630491
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 433e048f594a47f98f19d618ac2a1758
+run_name: nervous-donkey-25
+run_uuid: 433e048f594a47f98f19d618ac2a1758
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926629574
+status: 3
+tags: []
+user_id: namtonthat

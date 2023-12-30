@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/83ae9b0085064e04bc517100ea7ea3a0/artifacts
+end_time: 1703926635656
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 83ae9b0085064e04bc517100ea7ea3a0
+run_name: adorable-robin-942
+run_uuid: 83ae9b0085064e04bc517100ea7ea3a0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926634823
+status: 3
+tags: []
+user_id: namtonthat

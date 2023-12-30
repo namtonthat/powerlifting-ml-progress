@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/9909b108b2e34d7bb0836d295ca7987a/artifacts
+end_time: 1703927001208
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 9909b108b2e34d7bb0836d295ca7987a
+run_name: trusting-koi-675
+run_uuid: 9909b108b2e34d7bb0836d295ca7987a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927000314
+status: 3
+tags: []
+user_id: namtonthat

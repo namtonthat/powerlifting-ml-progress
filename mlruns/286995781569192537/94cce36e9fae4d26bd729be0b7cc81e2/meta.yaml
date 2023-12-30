@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/94cce36e9fae4d26bd729be0b7cc81e2/artifacts
+end_time: 1703926578716
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 94cce36e9fae4d26bd729be0b7cc81e2
+run_name: painted-skink-629
+run_uuid: 94cce36e9fae4d26bd729be0b7cc81e2
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926578626
+status: 3
+tags: []
+user_id: namtonthat

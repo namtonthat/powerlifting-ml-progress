@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/f2082ff97e924a399910959228954363/artifacts
+end_time: 1703926790765
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: f2082ff97e924a399910959228954363
+run_name: incongruous-dog-148
+run_uuid: f2082ff97e924a399910959228954363
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926790188
+status: 3
+tags: []
+user_id: namtonthat

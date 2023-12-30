@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/bca0312b66ba4a468c358a22f64bc481/artifacts
+end_time: 1703927098375
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: bca0312b66ba4a468c358a22f64bc481
+run_name: selective-dove-135
+run_uuid: bca0312b66ba4a468c358a22f64bc481
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927097779
+status: 3
+tags: []
+user_id: namtonthat

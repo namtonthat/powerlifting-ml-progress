@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/32cd3360cc3f4519991037c8c31d50c7/artifacts
+end_time: 1703926921594
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 32cd3360cc3f4519991037c8c31d50c7
+run_name: valuable-yak-847
+run_uuid: 32cd3360cc3f4519991037c8c31d50c7
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926920513
+status: 3
+tags: []
+user_id: namtonthat

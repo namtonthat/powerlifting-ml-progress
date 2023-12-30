@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/67b9ec76ff1d4440a8066e63b4205a18/artifacts
+end_time: 1703927005006
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 67b9ec76ff1d4440a8066e63b4205a18
+run_name: nebulous-lynx-857
+run_uuid: 67b9ec76ff1d4440a8066e63b4205a18
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927004096
+status: 3
+tags: []
+user_id: namtonthat

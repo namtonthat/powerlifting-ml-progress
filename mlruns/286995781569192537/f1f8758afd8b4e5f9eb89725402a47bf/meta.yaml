@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/f1f8758afd8b4e5f9eb89725402a47bf/artifacts
+end_time: 1703927017147
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: f1f8758afd8b4e5f9eb89725402a47bf
+run_name: luminous-hen-994
+run_uuid: f1f8758afd8b4e5f9eb89725402a47bf
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927016384
+status: 3
+tags: []
+user_id: namtonthat

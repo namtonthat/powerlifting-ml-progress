@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/57a04d3af0b249f6bf553550cde16080/artifacts
+end_time: 1703926934281
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 57a04d3af0b249f6bf553550cde16080
+run_name: gifted-duck-422
+run_uuid: 57a04d3af0b249f6bf553550cde16080
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926933579
+status: 3
+tags: []
+user_id: namtonthat

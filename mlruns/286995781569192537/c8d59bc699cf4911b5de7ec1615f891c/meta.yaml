@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/c8d59bc699cf4911b5de7ec1615f891c/artifacts
+end_time: 1703926604769
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: c8d59bc699cf4911b5de7ec1615f891c
+run_name: abundant-duck-154
+run_uuid: c8d59bc699cf4911b5de7ec1615f891c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926604239
+status: 3
+tags: []
+user_id: namtonthat

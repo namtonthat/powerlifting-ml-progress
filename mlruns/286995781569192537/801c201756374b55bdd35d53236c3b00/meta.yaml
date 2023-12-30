@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/801c201756374b55bdd35d53236c3b00/artifacts
+end_time: 1703926886253
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 801c201756374b55bdd35d53236c3b00
+run_name: rogue-lamb-176
+run_uuid: 801c201756374b55bdd35d53236c3b00
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926886150
+status: 3
+tags: []
+user_id: namtonthat

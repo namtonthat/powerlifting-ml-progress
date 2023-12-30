@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/fcc419b13f8e48b3b604db02bdf54ae7/artifacts
+end_time: 1703927058210
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: fcc419b13f8e48b3b604db02bdf54ae7
+run_name: likeable-foal-259
+run_uuid: fcc419b13f8e48b3b604db02bdf54ae7
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927057716
+status: 3
+tags: []
+user_id: namtonthat

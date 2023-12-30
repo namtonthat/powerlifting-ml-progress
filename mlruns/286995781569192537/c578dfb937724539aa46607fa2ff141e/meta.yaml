@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/c578dfb937724539aa46607fa2ff141e/artifacts
+end_time: 1703927104078
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: c578dfb937724539aa46607fa2ff141e
+run_name: unruly-carp-639
+run_uuid: c578dfb937724539aa46607fa2ff141e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927103572
+status: 3
+tags: []
+user_id: namtonthat

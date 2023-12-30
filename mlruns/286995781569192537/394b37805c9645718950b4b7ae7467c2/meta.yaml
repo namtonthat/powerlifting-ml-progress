@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/394b37805c9645718950b4b7ae7467c2/artifacts
+end_time: 1703926756389
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 394b37805c9645718950b4b7ae7467c2
+run_name: traveling-crab-412
+run_uuid: 394b37805c9645718950b4b7ae7467c2
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926756131
+status: 3
+tags: []
+user_id: namtonthat

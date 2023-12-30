@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/0c1de948b4c149948843558e436d9ebf/artifacts
+end_time: 1703926673694
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 0c1de948b4c149948843558e436d9ebf
+run_name: bittersweet-colt-20
+run_uuid: 0c1de948b4c149948843558e436d9ebf
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926673397
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/76618f1fd9594cd580a7328d1aebeb2a/artifacts
+end_time: 1703927021699
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 76618f1fd9594cd580a7328d1aebeb2a
+run_name: delicate-gnat-661
+run_uuid: 76618f1fd9594cd580a7328d1aebeb2a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927021585
+status: 3
+tags: []
+user_id: namtonthat

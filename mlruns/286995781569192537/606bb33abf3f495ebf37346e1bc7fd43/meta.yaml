@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/606bb33abf3f495ebf37346e1bc7fd43/artifacts
+end_time: 1703926669213
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 606bb33abf3f495ebf37346e1bc7fd43
+run_name: efficient-lamb-719
+run_uuid: 606bb33abf3f495ebf37346e1bc7fd43
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926668779
+status: 3
+tags: []
+user_id: namtonthat

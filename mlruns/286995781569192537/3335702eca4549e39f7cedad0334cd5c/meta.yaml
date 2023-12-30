@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/3335702eca4549e39f7cedad0334cd5c/artifacts
+end_time: 1703926913972
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 3335702eca4549e39f7cedad0334cd5c
+run_name: delicate-swan-634
+run_uuid: 3335702eca4549e39f7cedad0334cd5c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926913131
+status: 3
+tags: []
+user_id: namtonthat

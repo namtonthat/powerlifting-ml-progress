@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/6d6af49a9411412e99d2cb74a6960e17/artifacts
+end_time: 1703927179437
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 6d6af49a9411412e99d2cb74a6960e17
+run_name: whimsical-hare-356
+run_uuid: 6d6af49a9411412e99d2cb74a6960e17
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927179322
+status: 3
+tags: []
+user_id: namtonthat

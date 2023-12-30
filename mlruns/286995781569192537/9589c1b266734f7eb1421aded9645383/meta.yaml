@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/9589c1b266734f7eb1421aded9645383/artifacts
+end_time: 1703927014610
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 9589c1b266734f7eb1421aded9645383
+run_name: rare-cub-220
+run_uuid: 9589c1b266734f7eb1421aded9645383
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927013938
+status: 3
+tags: []
+user_id: namtonthat

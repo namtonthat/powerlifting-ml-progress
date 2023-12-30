@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/0c5a6e7183204131952828044cf3fd3f/artifacts
+end_time: 1703926969858
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 0c5a6e7183204131952828044cf3fd3f
+run_name: gaudy-squirrel-762
+run_uuid: 0c5a6e7183204131952828044cf3fd3f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926968926
+status: 3
+tags: []
+user_id: namtonthat

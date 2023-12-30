@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/068180a47db04a71b9520867b2c9a83c/artifacts
+end_time: 1703926700466
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 068180a47db04a71b9520867b2c9a83c
+run_name: adorable-auk-746
+run_uuid: 068180a47db04a71b9520867b2c9a83c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926699804
+status: 3
+tags: []
+user_id: namtonthat

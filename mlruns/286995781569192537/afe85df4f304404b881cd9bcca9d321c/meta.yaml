@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/afe85df4f304404b881cd9bcca9d321c/artifacts
+end_time: 1703926659033
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: afe85df4f304404b881cd9bcca9d321c
+run_name: blushing-whale-753
+run_uuid: afe85df4f304404b881cd9bcca9d321c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926658318
+status: 3
+tags: []
+user_id: namtonthat

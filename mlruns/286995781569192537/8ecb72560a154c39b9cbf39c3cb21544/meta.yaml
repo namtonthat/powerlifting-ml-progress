@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/8ecb72560a154c39b9cbf39c3cb21544/artifacts
+end_time: 1703926778157
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 8ecb72560a154c39b9cbf39c3cb21544
+run_name: likeable-cow-837
+run_uuid: 8ecb72560a154c39b9cbf39c3cb21544
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926777635
+status: 3
+tags: []
+user_id: namtonthat

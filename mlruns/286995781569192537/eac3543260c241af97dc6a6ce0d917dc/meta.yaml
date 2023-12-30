@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/eac3543260c241af97dc6a6ce0d917dc/artifacts
+end_time: 1703926773879
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: eac3543260c241af97dc6a6ce0d917dc
+run_name: thundering-swan-494
+run_uuid: eac3543260c241af97dc6a6ce0d917dc
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926773589
+status: 3
+tags: []
+user_id: namtonthat

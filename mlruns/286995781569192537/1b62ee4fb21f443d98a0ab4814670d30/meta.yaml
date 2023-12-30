@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/1b62ee4fb21f443d98a0ab4814670d30/artifacts
+end_time: 1703926747165
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 1b62ee4fb21f443d98a0ab4814670d30
+run_name: dapper-bat-985
+run_uuid: 1b62ee4fb21f443d98a0ab4814670d30
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926746527
+status: 3
+tags: []
+user_id: namtonthat

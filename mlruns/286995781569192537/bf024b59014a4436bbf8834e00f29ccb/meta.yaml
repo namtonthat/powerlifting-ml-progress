@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/bf024b59014a4436bbf8834e00f29ccb/artifacts
+end_time: 1703926587358
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: bf024b59014a4436bbf8834e00f29ccb
+run_name: classy-seal-661
+run_uuid: bf024b59014a4436bbf8834e00f29ccb
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926586760
+status: 3
+tags: []
+user_id: namtonthat

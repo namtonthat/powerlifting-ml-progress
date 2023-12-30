@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/2ca3c642c71a48ab87ac36e55bfc5b2f/artifacts
+end_time: 1703926951106
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 2ca3c642c71a48ab87ac36e55bfc5b2f
+run_name: melodic-moth-640
+run_uuid: 2ca3c642c71a48ab87ac36e55bfc5b2f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926950422
+status: 3
+tags: []
+user_id: namtonthat

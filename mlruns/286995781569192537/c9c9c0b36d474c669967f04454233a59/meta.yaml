@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/c9c9c0b36d474c669967f04454233a59/artifacts
+end_time: 1703927159701
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: c9c9c0b36d474c669967f04454233a59
+run_name: crawling-shoat-277
+run_uuid: c9c9c0b36d474c669967f04454233a59
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927158979
+status: 3
+tags: []
+user_id: namtonthat

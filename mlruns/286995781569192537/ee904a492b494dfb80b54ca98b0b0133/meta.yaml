@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/ee904a492b494dfb80b54ca98b0b0133/artifacts
+end_time: 1703926943509
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: ee904a492b494dfb80b54ca98b0b0133
+run_name: amazing-wolf-494
+run_uuid: ee904a492b494dfb80b54ca98b0b0133
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926942739
+status: 3
+tags: []
+user_id: namtonthat

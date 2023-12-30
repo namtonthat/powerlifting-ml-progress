@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/458dae3ba9f04ffa9e4ab0383fe86311/artifacts
+end_time: 1703926939639
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 458dae3ba9f04ffa9e4ab0383fe86311
+run_name: vaunted-wolf-198
+run_uuid: 458dae3ba9f04ffa9e4ab0383fe86311
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926938944
+status: 3
+tags: []
+user_id: namtonthat

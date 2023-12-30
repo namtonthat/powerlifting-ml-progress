@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/ee79f706c2d04f059a638079dfa542be/artifacts
+end_time: 1703926787687
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: ee79f706c2d04f059a638079dfa542be
+run_name: dazzling-gnu-377
+run_uuid: ee79f706c2d04f059a638079dfa542be
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926787399
+status: 3
+tags: []
+user_id: namtonthat

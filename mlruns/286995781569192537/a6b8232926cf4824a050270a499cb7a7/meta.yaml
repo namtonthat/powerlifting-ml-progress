@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/a6b8232926cf4824a050270a499cb7a7/artifacts
+end_time: 1703926654878
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: a6b8232926cf4824a050270a499cb7a7
+run_name: casual-sponge-959
+run_uuid: a6b8232926cf4824a050270a499cb7a7
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926654350
+status: 3
+tags: []
+user_id: namtonthat

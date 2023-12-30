@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/50897109327c49f5a45fd21a9d1916dd/artifacts
+end_time: 1703926579129
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 50897109327c49f5a45fd21a9d1916dd
+run_name: bemused-bee-13
+run_uuid: 50897109327c49f5a45fd21a9d1916dd
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926578986
+status: 3
+tags: []
+user_id: namtonthat

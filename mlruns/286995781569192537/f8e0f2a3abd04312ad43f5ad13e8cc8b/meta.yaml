@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/f8e0f2a3abd04312ad43f5ad13e8cc8b/artifacts
+end_time: 1703926771340
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: f8e0f2a3abd04312ad43f5ad13e8cc8b
+run_name: delicate-conch-207
+run_uuid: f8e0f2a3abd04312ad43f5ad13e8cc8b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926771052
+status: 3
+tags: []
+user_id: namtonthat

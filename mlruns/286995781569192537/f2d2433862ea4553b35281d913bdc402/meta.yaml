@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/f2d2433862ea4553b35281d913bdc402/artifacts
+end_time: 1703927166886
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: f2d2433862ea4553b35281d913bdc402
+run_name: receptive-seal-647
+run_uuid: f2d2433862ea4553b35281d913bdc402
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927166108
+status: 3
+tags: []
+user_id: namtonthat

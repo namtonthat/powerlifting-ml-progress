@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/5fffa298e7474c03a0a8057908d1499e/artifacts
+end_time: 1703926915914
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 5fffa298e7474c03a0a8057908d1499e
+run_name: luminous-trout-21
+run_uuid: 5fffa298e7474c03a0a8057908d1499e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926914990
+status: 3
+tags: []
+user_id: namtonthat

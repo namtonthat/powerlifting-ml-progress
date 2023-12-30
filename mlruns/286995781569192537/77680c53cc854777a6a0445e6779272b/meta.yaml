@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/77680c53cc854777a6a0445e6779272b/artifacts
+end_time: 1703926758693
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 77680c53cc854777a6a0445e6779272b
+run_name: debonair-gnu-33
+run_uuid: 77680c53cc854777a6a0445e6779272b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926758386
+status: 3
+tags: []
+user_id: namtonthat

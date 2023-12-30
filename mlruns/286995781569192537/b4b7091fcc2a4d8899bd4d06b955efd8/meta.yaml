@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/b4b7091fcc2a4d8899bd4d06b955efd8/artifacts
+end_time: 1703926723304
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: b4b7091fcc2a4d8899bd4d06b955efd8
+run_name: fearless-wasp-594
+run_uuid: b4b7091fcc2a4d8899bd4d06b955efd8
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926722774
+status: 3
+tags: []
+user_id: namtonthat

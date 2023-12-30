@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/2e3894539d404fd2942ef9a52cc4d46b/artifacts
+end_time: 1703927048392
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 2e3894539d404fd2942ef9a52cc4d46b
+run_name: delightful-ape-245
+run_uuid: 2e3894539d404fd2942ef9a52cc4d46b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927047729
+status: 3
+tags: []
+user_id: namtonthat

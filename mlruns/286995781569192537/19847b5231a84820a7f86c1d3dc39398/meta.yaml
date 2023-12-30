@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/19847b5231a84820a7f86c1d3dc39398/artifacts
+end_time: 1703926655397
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 19847b5231a84820a7f86c1d3dc39398
+run_name: nimble-mole-585
+run_uuid: 19847b5231a84820a7f86c1d3dc39398
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926654883
+status: 3
+tags: []
+user_id: namtonthat

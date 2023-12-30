@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/7ae40ca29f2044df9776761a2396cf7d/artifacts
+end_time: 1703927026962
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 7ae40ca29f2044df9776761a2396cf7d
+run_name: chill-bass-483
+run_uuid: 7ae40ca29f2044df9776761a2396cf7d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927026012
+status: 3
+tags: []
+user_id: namtonthat

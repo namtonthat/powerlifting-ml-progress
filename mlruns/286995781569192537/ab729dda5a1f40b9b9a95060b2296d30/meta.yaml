@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/ab729dda5a1f40b9b9a95060b2296d30/artifacts
+end_time: 1703926762040
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: ab729dda5a1f40b9b9a95060b2296d30
+run_name: unruly-lynx-953
+run_uuid: ab729dda5a1f40b9b9a95060b2296d30
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926761507
+status: 3
+tags: []
+user_id: namtonthat

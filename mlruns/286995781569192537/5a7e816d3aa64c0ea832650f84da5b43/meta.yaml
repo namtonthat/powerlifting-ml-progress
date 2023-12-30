@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/5a7e816d3aa64c0ea832650f84da5b43/artifacts
+end_time: 1703926973807
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 5a7e816d3aa64c0ea832650f84da5b43
+run_name: marvelous-snipe-924
+run_uuid: 5a7e816d3aa64c0ea832650f84da5b43
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926973182
+status: 3
+tags: []
+user_id: namtonthat

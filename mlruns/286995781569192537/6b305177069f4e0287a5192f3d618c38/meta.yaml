@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/6b305177069f4e0287a5192f3d618c38/artifacts
+end_time: 1703926856328
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 6b305177069f4e0287a5192f3d618c38
+run_name: nosy-wren-26
+run_uuid: 6b305177069f4e0287a5192f3d618c38
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926856076
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/4636faa173f94774ba3cc7086abee17c/artifacts
+end_time: 1703926890637
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 4636faa173f94774ba3cc7086abee17c
+run_name: peaceful-crab-822
+run_uuid: 4636faa173f94774ba3cc7086abee17c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926889747
+status: 3
+tags: []
+user_id: namtonthat

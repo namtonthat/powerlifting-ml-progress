@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/74bab826a6a446b687f49e5988ebd7ce/artifacts
+end_time: 1703926639851
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 74bab826a6a446b687f49e5988ebd7ce
+run_name: youthful-boar-933
+run_uuid: 74bab826a6a446b687f49e5988ebd7ce
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926638917
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/a2fced816fe94aa3906efa47f7120831/artifacts
+end_time: 1703926584830
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: a2fced816fe94aa3906efa47f7120831
+run_name: carefree-hawk-168
+run_uuid: a2fced816fe94aa3906efa47f7120831
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926584510
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/4bdd8c43b41d4045b1f09a3b4eae608b/artifacts
+end_time: 1703926912339
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 4bdd8c43b41d4045b1f09a3b4eae608b
+run_name: defiant-bear-338
+run_uuid: 4bdd8c43b41d4045b1f09a3b4eae608b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926911362
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/0c916ea5ae5247babb3ac994d7015d5a/artifacts
+end_time: 1703926586274
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 0c916ea5ae5247babb3ac994d7015d5a
+run_name: monumental-bug-965
+run_uuid: 0c916ea5ae5247babb3ac994d7015d5a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926585914
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/b506f6d3f0504f01b2d012a27c6154a5/artifacts
+end_time: 1703926694865
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: b506f6d3f0504f01b2d012a27c6154a5
+run_name: skillful-pig-564
+run_uuid: b506f6d3f0504f01b2d012a27c6154a5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926694354
+status: 3
+tags: []
+user_id: namtonthat

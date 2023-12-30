@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/67436681f9d04bf1a0abb8e49ca0b92f/artifacts
+end_time: 1703927114293
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 67436681f9d04bf1a0abb8e49ca0b92f
+run_name: delicate-frog-617
+run_uuid: 67436681f9d04bf1a0abb8e49ca0b92f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927113370
+status: 3
+tags: []
+user_id: namtonthat

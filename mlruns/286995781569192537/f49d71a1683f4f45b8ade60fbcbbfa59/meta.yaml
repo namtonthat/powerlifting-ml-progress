@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/f49d71a1683f4f45b8ade60fbcbbfa59/artifacts
+end_time: 1703926713325
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: f49d71a1683f4f45b8ade60fbcbbfa59
+run_name: mercurial-moose-486
+run_uuid: f49d71a1683f4f45b8ade60fbcbbfa59
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926713058
+status: 3
+tags: []
+user_id: namtonthat

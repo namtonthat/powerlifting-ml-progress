@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/f8367d7b70644ef3b0a49ea669f6ad87/artifacts
+end_time: 1703926743633
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: f8367d7b70644ef3b0a49ea669f6ad87
+run_name: useful-penguin-876
+run_uuid: f8367d7b70644ef3b0a49ea669f6ad87
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926743347
+status: 3
+tags: []
+user_id: namtonthat

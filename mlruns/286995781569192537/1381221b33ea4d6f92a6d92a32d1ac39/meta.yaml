@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/1381221b33ea4d6f92a6d92a32d1ac39/artifacts
+end_time: 1703926951954
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 1381221b33ea4d6f92a6d92a32d1ac39
+run_name: popular-ox-15
+run_uuid: 1381221b33ea4d6f92a6d92a32d1ac39
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926951115
+status: 3
+tags: []
+user_id: namtonthat

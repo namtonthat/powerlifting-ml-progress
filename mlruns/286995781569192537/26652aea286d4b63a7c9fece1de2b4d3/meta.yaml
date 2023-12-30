@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/26652aea286d4b63a7c9fece1de2b4d3/artifacts
+end_time: 1703926889736
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 26652aea286d4b63a7c9fece1de2b4d3
+run_name: redolent-penguin-629
+run_uuid: 26652aea286d4b63a7c9fece1de2b4d3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926888911
+status: 3
+tags: []
+user_id: namtonthat

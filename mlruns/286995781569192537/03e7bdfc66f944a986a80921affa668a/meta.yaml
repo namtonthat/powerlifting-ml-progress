@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/03e7bdfc66f944a986a80921affa668a/artifacts
+end_time: 1703927076388
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 03e7bdfc66f944a986a80921affa668a
+run_name: debonair-mink-895
+run_uuid: 03e7bdfc66f944a986a80921affa668a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927075830
+status: 3
+tags: []
+user_id: namtonthat

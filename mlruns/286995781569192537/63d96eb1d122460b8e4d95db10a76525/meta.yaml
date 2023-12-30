@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/63d96eb1d122460b8e4d95db10a76525/artifacts
+end_time: 1703926689536
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 63d96eb1d122460b8e4d95db10a76525
+run_name: agreeable-snail-675
+run_uuid: 63d96eb1d122460b8e4d95db10a76525
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926689052
+status: 3
+tags: []
+user_id: namtonthat

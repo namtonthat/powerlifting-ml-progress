@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/e9358cb453bc475bba2693abbb9bda48/artifacts
+end_time: 1703926855550
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: e9358cb453bc475bba2693abbb9bda48
+run_name: vaunted-dolphin-546
+run_uuid: e9358cb453bc475bba2693abbb9bda48
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926855278
+status: 3
+tags: []
+user_id: namtonthat

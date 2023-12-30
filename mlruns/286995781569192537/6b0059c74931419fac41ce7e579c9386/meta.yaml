@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/6b0059c74931419fac41ce7e579c9386/artifacts
+end_time: 1703927091308
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 6b0059c74931419fac41ce7e579c9386
+run_name: dazzling-goose-999
+run_uuid: 6b0059c74931419fac41ce7e579c9386
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927090454
+status: 3
+tags: []
+user_id: namtonthat

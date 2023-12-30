@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/509b365389da488c8114dca7f5765e90/artifacts
+end_time: 1703926741031
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 509b365389da488c8114dca7f5765e90
+run_name: delightful-shad-382
+run_uuid: 509b365389da488c8114dca7f5765e90
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926740912
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/c3b49afe36e54a869c566c61b4b8753a/artifacts
+end_time: 1703927057707
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: c3b49afe36e54a869c566c61b4b8753a
+run_name: persistent-finch-724
+run_uuid: c3b49afe36e54a869c566c61b4b8753a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927056883
+status: 3
+tags: []
+user_id: namtonthat

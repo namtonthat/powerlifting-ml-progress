@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/fc40aac1e5264b8aad50e4f41b333399/artifacts
+end_time: 1703926764881
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: fc40aac1e5264b8aad50e4f41b333399
+run_name: inquisitive-frog-684
+run_uuid: fc40aac1e5264b8aad50e4f41b333399
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926764323
+status: 3
+tags: []
+user_id: namtonthat

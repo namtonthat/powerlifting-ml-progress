@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/d6418a660c684539b9becc89c7f9c0db/artifacts
+end_time: 1703926577054
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: d6418a660c684539b9becc89c7f9c0db
+run_name: vaunted-sheep-692
+run_uuid: d6418a660c684539b9becc89c7f9c0db
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926576856
+status: 3
+tags: []
+user_id: namtonthat

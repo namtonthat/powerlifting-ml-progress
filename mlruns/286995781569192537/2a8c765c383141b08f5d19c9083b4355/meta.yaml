@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/2a8c765c383141b08f5d19c9083b4355/artifacts
+end_time: 1703926633102
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 2a8c765c383141b08f5d19c9083b4355
+run_name: overjoyed-tern-218
+run_uuid: 2a8c765c383141b08f5d19c9083b4355
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926632210
+status: 3
+tags: []
+user_id: namtonthat

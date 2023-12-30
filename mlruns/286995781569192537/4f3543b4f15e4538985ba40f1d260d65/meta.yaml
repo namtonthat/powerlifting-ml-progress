@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/4f3543b4f15e4538985ba40f1d260d65/artifacts
+end_time: 1703926684238
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 4f3543b4f15e4538985ba40f1d260d65
+run_name: auspicious-mink-247
+run_uuid: 4f3543b4f15e4538985ba40f1d260d65
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926683969
+status: 3
+tags: []
+user_id: namtonthat

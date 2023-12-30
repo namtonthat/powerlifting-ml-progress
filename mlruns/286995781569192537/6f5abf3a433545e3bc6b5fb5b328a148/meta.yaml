@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/6f5abf3a433545e3bc6b5fb5b328a148/artifacts
+end_time: 1703926670590
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 6f5abf3a433545e3bc6b5fb5b328a148
+run_name: tasteful-midge-992
+run_uuid: 6f5abf3a433545e3bc6b5fb5b328a148
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926670187
+status: 3
+tags: []
+user_id: namtonthat

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/d7c9a47439ea4971bb69c9011bb054cd/artifacts
+end_time: 1703927083833
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: d7c9a47439ea4971bb69c9011bb054cd
+run_name: nebulous-smelt-466
+run_uuid: d7c9a47439ea4971bb69c9011bb054cd
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927083093
+status: 3
+tags: []
+user_id: namtonthat

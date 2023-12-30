@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/383aa65782e54f4fba987f3dc1ddc662/artifacts
+end_time: 1703926880677
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 383aa65782e54f4fba987f3dc1ddc662
+run_name: upset-eel-797
+run_uuid: 383aa65782e54f4fba987f3dc1ddc662
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926880577
+status: 3
+tags: []
+user_id: namtonthat

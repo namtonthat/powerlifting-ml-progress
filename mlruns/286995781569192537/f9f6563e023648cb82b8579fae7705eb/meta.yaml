@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/f9f6563e023648cb82b8579fae7705eb/artifacts
+end_time: 1703926906188
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: f9f6563e023648cb82b8579fae7705eb
+run_name: aged-midge-289
+run_uuid: f9f6563e023648cb82b8579fae7705eb
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926905423
+status: 3
+tags: []
+user_id: namtonthat

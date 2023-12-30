@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/15bba6a7d74547ae89895da8b6c74762/artifacts
+end_time: 1703926701749
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 15bba6a7d74547ae89895da8b6c74762
+run_name: bedecked-perch-563
+run_uuid: 15bba6a7d74547ae89895da8b6c74762
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926701623
+status: 3
+tags: []
+user_id: namtonthat

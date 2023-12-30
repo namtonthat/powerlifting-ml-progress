@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/fe0297efe68642f0b134f4215c70da95/artifacts
+end_time: 1703926776982
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: fe0297efe68642f0b134f4215c70da95
+run_name: luminous-bird-578
+run_uuid: fe0297efe68642f0b134f4215c70da95
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926776695
+status: 3
+tags: []
+user_id: namtonthat

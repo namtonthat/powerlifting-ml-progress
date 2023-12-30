@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/4901c6394b4b4f698f42e4421a0c9fb9/artifacts
+end_time: 1703926680226
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 4901c6394b4b4f698f42e4421a0c9fb9
+run_name: adorable-snipe-992
+run_uuid: 4901c6394b4b4f698f42e4421a0c9fb9
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926679931
+status: 3
+tags: []
+user_id: namtonthat

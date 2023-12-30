@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/6da45f2c73a04287b6802d1940443290/artifacts
+end_time: 1703927041281
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 6da45f2c73a04287b6802d1940443290
+run_name: bustling-cow-257
+run_uuid: 6da45f2c73a04287b6802d1940443290
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927040582
+status: 3
+tags: []
+user_id: namtonthat

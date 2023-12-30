@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/ced6bda145634ea6aeb1c82853f167f0/artifacts
+end_time: 1703927045378
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: ced6bda145634ea6aeb1c82853f167f0
+run_name: loud-lamb-329
+run_uuid: ced6bda145634ea6aeb1c82853f167f0
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927044573
+status: 3
+tags: []
+user_id: namtonthat

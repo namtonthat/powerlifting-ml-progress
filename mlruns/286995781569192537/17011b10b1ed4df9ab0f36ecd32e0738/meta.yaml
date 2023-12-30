@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/17011b10b1ed4df9ab0f36ecd32e0738/artifacts
+end_time: 1703927133438
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 17011b10b1ed4df9ab0f36ecd32e0738
+run_name: zealous-stoat-175
+run_uuid: 17011b10b1ed4df9ab0f36ecd32e0738
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927133080
+status: 3
+tags: []
+user_id: namtonthat

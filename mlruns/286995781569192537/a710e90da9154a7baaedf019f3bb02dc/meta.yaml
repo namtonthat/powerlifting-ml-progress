@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/a710e90da9154a7baaedf019f3bb02dc/artifacts
+end_time: 1703926854377
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: a710e90da9154a7baaedf019f3bb02dc
+run_name: masked-toad-831
+run_uuid: a710e90da9154a7baaedf019f3bb02dc
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926854122
+status: 3
+tags: []
+user_id: namtonthat

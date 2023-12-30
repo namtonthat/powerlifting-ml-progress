@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/cc0be4da454642d3804e22c202aec7ab/artifacts
+end_time: 1703927038585
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: cc0be4da454642d3804e22c202aec7ab
+run_name: auspicious-rook-394
+run_uuid: cc0be4da454642d3804e22c202aec7ab
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927037914
+status: 3
+tags: []
+user_id: namtonthat

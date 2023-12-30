@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/0f0fb0d87ba54377af032cda34d5208f/artifacts
+end_time: 1703926762669
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 0f0fb0d87ba54377af032cda34d5208f
+run_name: respected-fawn-264
+run_uuid: 0f0fb0d87ba54377af032cda34d5208f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926762157
+status: 3
+tags: []
+user_id: namtonthat

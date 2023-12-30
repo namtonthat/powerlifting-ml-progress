@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/e0817abc48fe497c8216ff275d112382/artifacts
+end_time: 1703926989027
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: e0817abc48fe497c8216ff275d112382
+run_name: loud-mink-135
+run_uuid: e0817abc48fe497c8216ff275d112382
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926988324
+status: 3
+tags: []
+user_id: namtonthat

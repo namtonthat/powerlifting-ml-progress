@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/25c3664fd966411fab279cc06af2ebab/artifacts
+end_time: 1703926745579
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 25c3664fd966411fab279cc06af2ebab
+run_name: honorable-goose-676
+run_uuid: 25c3664fd966411fab279cc06af2ebab
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926745368
+status: 3
+tags: []
+user_id: namtonthat

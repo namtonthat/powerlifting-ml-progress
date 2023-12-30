@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/b6a4cc311be94a6fb4225e6a8e36103f/artifacts
+end_time: 1703927037022
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: b6a4cc311be94a6fb4225e6a8e36103f
+run_name: classy-skunk-664
+run_uuid: b6a4cc311be94a6fb4225e6a8e36103f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703927036268
+status: 3
+tags: []
+user_id: namtonthat

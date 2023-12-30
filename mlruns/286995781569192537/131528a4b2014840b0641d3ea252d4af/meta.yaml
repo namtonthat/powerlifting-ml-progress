@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/131528a4b2014840b0641d3ea252d4af/artifacts
+end_time: 1703926967969
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 131528a4b2014840b0641d3ea252d4af
+run_name: rogue-stork-966
+run_uuid: 131528a4b2014840b0641d3ea252d4af
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926967041
+status: 3
+tags: []
+user_id: namtonthat

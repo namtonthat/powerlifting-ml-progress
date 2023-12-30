@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/af409aad5337424db237335d6954344b/artifacts
+end_time: 1703926747974
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: af409aad5337424db237335d6954344b
+run_name: languid-shrimp-546
+run_uuid: af409aad5337424db237335d6954344b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926747691
+status: 3
+tags: []
+user_id: namtonthat

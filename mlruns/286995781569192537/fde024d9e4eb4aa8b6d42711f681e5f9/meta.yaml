@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/fde024d9e4eb4aa8b6d42711f681e5f9/artifacts
+end_time: 1703926728547
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: fde024d9e4eb4aa8b6d42711f681e5f9
+run_name: sincere-croc-64
+run_uuid: fde024d9e4eb4aa8b6d42711f681e5f9
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926727955
+status: 3
+tags: []
+user_id: namtonthat

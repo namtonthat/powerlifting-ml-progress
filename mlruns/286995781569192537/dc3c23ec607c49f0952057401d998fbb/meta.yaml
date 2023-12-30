@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/dc3c23ec607c49f0952057401d998fbb/artifacts
+end_time: 1703926733187
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: dc3c23ec607c49f0952057401d998fbb
+run_name: tasteful-yak-129
+run_uuid: dc3c23ec607c49f0952057401d998fbb
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926733080
+status: 3
+tags: []
+user_id: namtonthat

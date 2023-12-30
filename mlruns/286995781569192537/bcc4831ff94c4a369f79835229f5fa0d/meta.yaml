@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/bcc4831ff94c4a369f79835229f5fa0d/artifacts
+end_time: 1703926772088
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: bcc4831ff94c4a369f79835229f5fa0d
+run_name: bustling-moth-332
+run_uuid: bcc4831ff94c4a369f79835229f5fa0d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926771791
+status: 3
+tags: []
+user_id: namtonthat

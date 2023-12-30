@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/a94a66ff94d440a48d3f3106e73cff5f/artifacts
+end_time: 1703926588517
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: a94a66ff94d440a48d3f3106e73cff5f
+run_name: burly-donkey-692
+run_uuid: a94a66ff94d440a48d3f3106e73cff5f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926587921
+status: 3
+tags: []
+user_id: namtonthat

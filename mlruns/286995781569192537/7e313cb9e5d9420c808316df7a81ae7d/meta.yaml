@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/7e313cb9e5d9420c808316df7a81ae7d/artifacts
+end_time: 1703926690393
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 7e313cb9e5d9420c808316df7a81ae7d
+run_name: invincible-ram-866
+run_uuid: 7e313cb9e5d9420c808316df7a81ae7d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926690110
+status: 3
+tags: []
+user_id: namtonthat

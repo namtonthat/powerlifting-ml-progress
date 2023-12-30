@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/60cff8d57d064c16aa9a6723a654ecd5/artifacts
+end_time: 1703926618456
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: 60cff8d57d064c16aa9a6723a654ecd5
+run_name: bittersweet-calf-274
+run_uuid: 60cff8d57d064c16aa9a6723a654ecd5
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926617800
+status: 3
+tags: []
+user_id: namtonthat

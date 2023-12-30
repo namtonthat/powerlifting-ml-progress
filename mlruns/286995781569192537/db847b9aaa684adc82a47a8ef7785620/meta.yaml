@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/286995781569192537/db847b9aaa684adc82a47a8ef7785620/artifacts
+end_time: 1703926750446
+entry_point_name: ''
+experiment_id: '286995781569192537'
+lifecycle_stage: active
+run_id: db847b9aaa684adc82a47a8ef7785620
+run_name: bedecked-slug-755
+run_uuid: db847b9aaa684adc82a47a8ef7785620
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1703926750355
+status: 3
+tags: []
+user_id: namtonthat
