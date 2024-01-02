@@ -1,6 +1,7 @@
 import boto3
 import conf
 import polars as pl
+import os
 
 import logging
 
@@ -10,9 +11,8 @@ logging.basicConfig(level=logging.INFO)
 if __name__ == "__main__":
     logging.info("Loading data from S3")
     s3 = boto3.client("s3")
-    obj = s3.get_object(Bucket=conf.bucket_name, Key=conf.landing_s3_key)
-    df = pl.read_parquet(obj)
-    logging.info(f"Loaded {obj} from S3")
+    df = pl.read_parquet(source=conf.landing_s3_http)
+    logging.info(f"Loaded {conf.landing_s3_http}")
 
     logging.info("Performing raw transformations")
     # Filter out rows where the place is not numeric
@@ -49,10 +49,8 @@ if __name__ == "__main__":
                 pl.col("year_of_birth"),
             ],
             separator="-",
-        )
-        .alias("primary_key")
-        .unique(subset=["primary_key", "date", "meet_name"])
-    )
+        ).alias("primary_key")
+    ).unique(subset=["primary_key", "date", "meet_name"])
 
     # Find the first country that the powerlifter competed in and assume that is their country of origin
     lifter_country_df = primary_key_df.groupby(["primary_key"]).agg(
@@ -64,11 +62,13 @@ if __name__ == "__main__":
 
     # Test counts
     logging.info("Testing counts")
-    duplicates_on_primary_key: bool = len(raw_df) == len(primary_key_df)
+    duplicates_on_primary_key: bool = len(raw_df) != len(primary_key_df)
     logging.info(f"Duplicate primary key: {duplicates_on_primary_key}")
 
     # Write to parquet to s3
     logging.info("Writing to parquet")
+    # Need to generate root data folder to ensure it can be written out to
+    conf.create_root_data_folder()
     raw_df.write_parquet(conf.raw_local_path)
 
     logging.info("Writing to S3")
@@ -77,4 +77,7 @@ if __name__ == "__main__":
         conf.raw_local_path,
         conf.bucket_name,
         conf.raw_s3_key,
+        ExtraArgs={"ACL": "public-read"},
     )
+
+    conf.clean_up_root_data_folder()

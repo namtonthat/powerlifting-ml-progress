@@ -1,4 +1,7 @@
 import re
+import os
+import logging
+import shutil
 from enum import Enum
 
 
@@ -30,33 +33,71 @@ class FileLocation(Enum):
 
 
 def create_output_path(
-    output_path_type: OutputPathType, file_location: FileLocation, file_name: str
+    output_path_type: OutputPathType,
+    file_location: FileLocation,
+    as_http: bool = False,
+    file_name: str = parquet_file,
 ) -> str:
+    "Generates the output path for a given file location and output path type"
     if file_location == FileLocation.LOCAL:
         return f"{root_data_folder}/{output_path_type.value}/{file_name}"
-    elif file_location == FileLocation.S3:
+    elif file_location == FileLocation.S3 and not as_http:
         return f"{output_path_type.value}/{file_name}"
+    elif file_location == FileLocation.S3 and as_http:
+        return f"https://{bucket_name}.s3.amazonaws.com/{output_path_type.value}/{file_name}"
     else:
         raise ValueError("Invalid file location")
 
 
 # Local
 landing_local_path = create_output_path(
-    OutputPathType.LANDING, FileLocation.LOCAL, parquet_file
+    OutputPathType.LANDING,
+    FileLocation.LOCAL,
 )
 raw_local_path = create_output_path(
-    OutputPathType.RAW, FileLocation.LOCAL, parquet_file
+    OutputPathType.RAW,
+    FileLocation.LOCAL,
 )
 
 # S3 keys
 landing_s3_key = create_output_path(
-    OutputPathType.LANDING, FileLocation.S3, parquet_file
+    OutputPathType.LANDING,
+    FileLocation.S3,
 )
-raw_s3_key = create_output_path(OutputPathType.RAW, FileLocation.S3, parquet_file)
-base_s3_key = create_output_path(OutputPathType.BASE, FileLocation.S3, parquet_file)
+raw_s3_key = create_output_path(
+    OutputPathType.RAW,
+    FileLocation.S3,
+)
+base_s3_key = create_output_path(
+    OutputPathType.BASE,
+    FileLocation.S3,
+)
 semantic_s3_key = create_output_path(
-    OutputPathType.SEMANTIC, FileLocation.S3, parquet_file
+    OutputPathType.SEMANTIC,
+    FileLocation.S3,
 )
+
+landing_s3_http = create_output_path(
+    OutputPathType.LANDING, FileLocation.S3, as_http=True
+)
+
+
+def create_root_data_folder() -> None:
+    if not os.path.exists(root_data_folder):
+        logging.info(f"Creating root data folder: {root_data_folder}")
+    else:
+        logging.info(f"Root data folder already exists: {root_data_folder}")
+
+    for folder in OutputPathType:
+        logging.info(f"Creating {folder.value} folder")
+        folder_path = os.path.join(root_data_folder, folder.value)
+        os.makedirs(folder_path, exist_ok=True)
+
+
+def clean_up_root_data_folder() -> None:
+    logging.info("Cleaning files")
+    shutil.rmtree(root_data_folder)
+    logging.info(f"Files from '{root_data_folder}' removed")
 
 
 # data specific config
