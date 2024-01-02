@@ -1,5 +1,3 @@
-CREATE SCHEMA IF NOT EXISTS raw;
-
 DROP TABLE IF EXISTS raw.openpowerlifting;
 CREATE TABLE raw.openpowerlifting AS (
     SELECT * FROM landing.openpowerlifting
