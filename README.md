@@ -5,7 +5,7 @@
 [![scrape](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/scrape.yml/badge.svg)](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/scrape.yml)
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://powerlifting.streamlit.app)
 
-![Last Updated](https://img.shields.io/badge/Last%20Updated-2023--12--29-blue)
+![Last Updated](https://img.shields.io/badge/Last%20Updated-2024--01--02-blue)
 # :computer: Local Development
 
 Refer to the `Makefile` using: `make` from the command line.
