@@ -16,6 +16,9 @@ parquet_file = "openpowerlifting-latest.parquet"
 extract_path = f"{root_data_folder}/raw"
 output_path = f"{root_data_folder}/{parquet_file}"
 
+# output locations
+landing_s3_key = f"landing/{parquet_file}"
+
 # data specific config
 op_cols = [
     "Date",

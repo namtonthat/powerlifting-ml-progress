@@ -25,7 +25,7 @@ def update_readme():
     updated_contents = template.render(
         last_updated=current_date,
         bucket_name=conf.bucket_name,
-        s3_key=conf.parquet_file,
+        s3_key=conf.landing_s3_key,
     )
 
     # Save the rendered contents to README.md
@@ -69,7 +69,7 @@ def load_data(url) -> str:
 if __name__ == "__main__":
     csv_file_path = load_data(conf.zip_url)
     if csv_file_path:
-        s3_key = conf.output_path.split("/")[-1]
+        s3_key = conf.landing_s3_key
 
         # Convert CSV to Parquet
         logging.info("Converting CSV to Parquet")
