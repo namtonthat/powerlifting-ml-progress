@@ -11,10 +11,7 @@ logging.basicConfig(level=logging.INFO)
 if __name__ == "__main__":
     logging.info("Loading data from S3")
     s3 = boto3.client("s3")
-    # df = pl.read_parquet(source=conf.landing_s3_http)
-    df = pl.read_parquet(
-        source="/Users/namtonthat/Downloads/openpowerlifting-latest.parquet"
-    )
+    df = pl.read_parquet(source=conf.landing_s3_http)
     logging.info(f"Loaded {conf.landing_s3_http}")
 
     logging.info("Performing raw transformations")
