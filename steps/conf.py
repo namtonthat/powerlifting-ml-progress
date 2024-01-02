@@ -101,7 +101,7 @@ def clean_up_root_data_folder() -> None:
 
 
 # data specific config
-op_cols = [
+required_cols = [
     "Date",
     "Name",
     "Sex",
@@ -129,3 +129,5 @@ op_cols_rename = {
     "TotalKg": "Total",
     "BodyweightKg": "Bodyweight",
 }
+
+required_columns = [camel_to_snake(col) for col in required_cols]

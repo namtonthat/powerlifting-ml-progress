@@ -11,7 +11,10 @@ logging.basicConfig(level=logging.INFO)
 if __name__ == "__main__":
     logging.info("Loading data from S3")
     s3 = boto3.client("s3")
-    df = pl.read_parquet(source=conf.landing_s3_http)
+    # df = pl.read_parquet(source=conf.landing_s3_http)
+    df = pl.read_parquet(
+        source="/Users/namtonthat/Downloads/openpowerlifting-latest.parquet"
+    )
     logging.info(f"Loaded {conf.landing_s3_http}")
 
     logging.info("Performing raw transformations")
@@ -20,10 +23,11 @@ if __name__ == "__main__":
         df.filter(
             pl.col("place").apply(lambda x: x.isnumeric(), return_dtype=pl.Boolean)
         )
-        .drop_nulls()
+        .drop_nulls(subset=conf.required_columns)
         .unique()
         .sort("date", descending=True)
     )
+    logging.info(f"Row count (filtered_df): {len(filtered_df)}")
 
     # Perform type casting in place
     filtered_with_type_df = filtered_df.with_columns(
@@ -59,6 +63,8 @@ if __name__ == "__main__":
 
     # Add the origin country to the primary key dataframe
     raw_df = primary_key_df.join(lifter_country_df, on=["primary_key"])
+    logging.info("Added origin country to primary key dataframe")
+    logging.info(f"Row count (raw_df): {len(raw_df)}")
 
     # Test counts
     logging.info("Testing counts")
