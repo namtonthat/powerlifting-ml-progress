@@ -22,12 +22,14 @@ graph LR
 
     A[scrape.yml]
     B[01_load.py]
-    C[`dbt` transformations]
-    D[train machine learning model]
+    C[02_raw.py]
+    D[`dbt` transformations]
+    E[train machine learning model]
 
     A --> B
     B --> C
     C --> D
+    D --> E
 ```
 
 ## 💡 Purpose
