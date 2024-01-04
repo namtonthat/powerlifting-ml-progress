@@ -1,6 +1,7 @@
 import boto3
 import conf
 import polars as pl
+import common_io
 
 import logging
 
@@ -89,8 +90,8 @@ if __name__ == "__main__":
     test_counts(raw_df, primary_key_df)
 
     # Write to parquet to s3
-    conf.io_write_local_to_s3(
+    common_io.io_write_from_local_to_s3(
         raw_df,
-        conf.raw_local_path,
+        conf.raw_local_file_path,
         conf.raw_s3_key,
     )

@@ -1,13 +1,9 @@
-import boto3
 import re
-import os
-import logging
-import shutil
 from enum import Enum
-import polars as pl
 
 
 class OutputPathType(Enum):
+    EXTRACT = "extract"
     LANDING = "landing"
     RAW = "raw"
     BASE = "base"
@@ -25,8 +21,6 @@ root_data_folder = "data"
 bucket_name = "powerlifting-ml-progress"
 parquet_file = "openpowerlifting-latest.parquet"
 
-extract_path = f"{root_data_folder}/raw"
-
 DAYS_IN_YEAR = 365.25
 
 
@@ -36,13 +30,13 @@ def camel_to_snake(camel_str):
     return snake_str
 
 
-def create_output_path(
+def create_output_file_path(
     output_path_type: OutputPathType,
     file_location: FileLocation,
     as_http: bool = False,
     file_name: str = parquet_file,
 ) -> str:
-    "Generates the output path for a given file location and output path type"
+    "Generates the output file path for a given file location and output path type"
     if file_location == FileLocation.LOCAL:
         return f"{root_data_folder}/{output_path_type.value}/{file_name}"
     elif file_location == FileLocation.S3 and not as_http:
@@ -53,117 +47,43 @@ def create_output_path(
         raise ValueError("Invalid file location")
 
 
-# IO functions
-def io_create_root_data_folder() -> bool:
-    """
-    Create root data folder and subfolders as defined in OutputPathType.
-
-    Returns:
-        bool: True if all folders are created successfully, False otherwise.
-    """
-    try:
-        if not os.path.exists(root_data_folder):
-            os.makedirs(root_data_folder, exist_ok=True)
-            logging.info(f"Created root data folder: {root_data_folder}")
-        else:
-            logging.info(f"Root data folder already exists: {root_data_folder}")
-
-        for folder in OutputPathType:
-            folder_path = os.path.join(root_data_folder, folder.value)
-            os.makedirs(folder_path, exist_ok=True)
-            logging.info(f"Created {folder.value} folder")
-
-        return True
-    except Exception as e:
-        logging.error(f"Error in creating root data folder: {e}")
-        return False
-
-
-def io_clean_up_root_data_folder() -> bool:
-    """
-    Clean up the root data folder by deleting it.
-
-    Returns:
-        bool: True if the folder is deleted successfully, False otherwise.
-    """
-    try:
-        if os.path.exists(root_data_folder):
-            shutil.rmtree(root_data_folder)
-            logging.info(f"Files from '{root_data_folder}' removed")
-            return True
-        else:
-            logging.warning(f"Root data folder '{root_data_folder}' does not exist.")
-            return False
-    except Exception as e:
-        logging.error(f"Error in cleaning up root data folder: {e}")
-        return False
-
-
-def io_write_local_to_s3(df: pl.DataFrame, local_path: str, s3_key: str) -> None:
-    logging.info("Writing to parquet")
-    # Need to generate root data folder to ensure it can be written out to
-    io_create_root_data_folder()
-    df.write_parquet(local_path)
-
-    logging.info("Writing to S3")
-    s3_client = boto3.client("s3")
-    s3_client.upload_file(
-        local_path,
-        bucket_name,
-        s3_key,
-        ExtraArgs={"ACL": "public-read"},
-    )
-    logging.info("Parquet file uploaded to S3 successfully")
-
-    io_clean_up_root_data_folder()
-
-
-def debug(func):
-    def wrapper(*args, **kwargs):
-        result_df: pl.DataFrame = func(*args, **kwargs)
-        logging.info(result_df.head(2))
-
-        logging.info(f"Row count: {len(result_df)}")
-        return result_df
-
-    return wrapper
-
+extract_path = f"{root_data_folder}/{OutputPathType.EXTRACT.value}"
 
 # Local
-landing_local_path = create_output_path(
+landing_local_file_path = create_output_file_path(
     OutputPathType.LANDING,
     FileLocation.LOCAL,
 )
-raw_local_path = create_output_path(
+raw_local_file_path = create_output_file_path(
     OutputPathType.RAW,
     FileLocation.LOCAL,
 )
-base_local_path = create_output_path(
+base_local_file_path = create_output_file_path(
     OutputPathType.BASE,
     FileLocation.LOCAL,
 )
 
 # S3 keys
-landing_s3_key = create_output_path(
+landing_s3_key = create_output_file_path(
     OutputPathType.LANDING,
     FileLocation.S3,
 )
-raw_s3_key = create_output_path(
+raw_s3_key = create_output_file_path(
     OutputPathType.RAW,
     FileLocation.S3,
 )
-base_s3_key = create_output_path(
+base_s3_key = create_output_file_path(
     OutputPathType.BASE,
     FileLocation.S3,
 )
-semantic_s3_key = create_output_path(
+semantic_s3_key = create_output_file_path(
     OutputPathType.SEMANTIC,
     FileLocation.S3,
 )
 
-landing_s3_http = create_output_path(OutputPathType.LANDING, FileLocation.S3, as_http=True)
+landing_s3_http = create_output_file_path(OutputPathType.LANDING, FileLocation.S3, as_http=True)
 
-raw_s3_http = create_output_path(OutputPathType.RAW, FileLocation.S3, as_http=True)
+raw_s3_http = create_output_file_path(OutputPathType.RAW, FileLocation.S3, as_http=True)
 
 
 # Columns

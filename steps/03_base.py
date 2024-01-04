@@ -1,5 +1,6 @@
 import boto3
 import conf
+import common_io
 import polars as pl
 
 import logging
@@ -80,8 +81,8 @@ if __name__ == "__main__":
     progress_df = add_powerlifting_progress(generic_feature_engineering_df)
     fe_df = add_previous_powerlifting_records(progress_df)
 
-    conf.io_write_local_to_s3(
+    common_io.io_write_from_local_to_s3(
         fe_df,
-        conf.base_local_path,
+        conf.base_local_file_path,
         conf.base_s3_key,
     )
