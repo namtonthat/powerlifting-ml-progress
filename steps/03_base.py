@@ -11,24 +11,11 @@ logging.basicConfig(level=logging.INFO)
 @conf.debug
 def add_powerlifting_progress(df: pl.DataFrame) -> pl.DataFrame:
     progress_df = df.with_columns(
-        ((pl.col("squat") - pl.col("squat").shift(1)) / pl.col("years_since_last_comp"))
-        .over("primary_key")
-        .alias("squat_progress"),
-        ((pl.col("bench") - pl.col("bench").shift(1)) / pl.col("years_since_last_comp"))
-        .over("primary_key")
-        .alias("bench_progress"),
-        (
-            (pl.col("deadlift") - pl.col("deadlift").shift(1))
-            / pl.col("years_since_last_comp")
-        )
-        .over("primary_key")
-        .alias("deadlift_progress"),
-        ((pl.col("total") - pl.col("total").shift(1)) / pl.col("years_since_last_comp"))
-        .over("primary_key")
-        .alias("total_progress"),
-        ((pl.col("wilks") - pl.col("wilks").shift(1)) / pl.col("years_since_last_comp"))
-        .over("primary_key")
-        .alias("wilks_progress"),
+        ((pl.col("squat") - pl.col("squat").shift(1)) / pl.col("years_since_last_comp")).over("primary_key").alias("squat_progress"),
+        ((pl.col("bench") - pl.col("bench").shift(1)) / pl.col("years_since_last_comp")).over("primary_key").alias("bench_progress"),
+        ((pl.col("deadlift") - pl.col("deadlift").shift(1)) / pl.col("years_since_last_comp")).over("primary_key").alias("deadlift_progress"),
+        ((pl.col("total") - pl.col("total").shift(1)) / pl.col("years_since_last_comp")).over("primary_key").alias("total_progress"),
+        ((pl.col("wilks") - pl.col("wilks").shift(1)) / pl.col("years_since_last_comp")).over("primary_key").alias("wilks_progress"),
     ).filter(pl.col("total_progress").is_not_null())
 
     return progress_df
@@ -36,24 +23,14 @@ def add_powerlifting_progress(df: pl.DataFrame) -> pl.DataFrame:
 
 @conf.debug
 def filter_for_raw_events(df: pl.DataFrame) -> pl.DataFrame:
-    return df.filter(
-        (pl.col("event") == "SBD")
-        & (pl.col("tested") == "Yes")
-        & (pl.col("equipment") == "Raw")
-    )
+    return df.filter((pl.col("event") == "SBD") & (pl.col("tested") == "Yes") & (pl.col("equipment") == "Raw"))
 
 
 @conf.debug
 def add_time_since_last_comp(df: pl.DataFrame) -> pl.DataFrame:
-    return df.with_columns(
-        (pl.col("date") - pl.col("date").shift(-1))
-        .over("primary_key")
-        .alias("time_since_last_comp_days")
-    ).with_columns(
+    return df.with_columns((pl.col("date") - pl.col("date").shift(-1)).over("primary_key").alias("time_since_last_comp_days")).with_columns(
         pl.col("time_since_last_comp_days").dt.days(),
-        (pl.col("time_since_last_comp_days") / conf.DAYS_IN_YEAR).alias(
-            "years_since_last_comp"
-        ),
+        (pl.col("time_since_last_comp_days") / conf.DAYS_IN_YEAR).alias("years_since_last_comp"),
     )
 
 
@@ -62,13 +39,7 @@ def add_meet_type(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         pl.when(pl.col("meet_name").str.contains("national"))
         .then("national")
-        .otherwise(
-            pl.when(
-                pl.col("meet_name").str.contains("International|World|Commonwealth")
-            )
-            .then("international")
-            .otherwise("local")
-        )
+        .otherwise(pl.when(pl.col("meet_name").str.contains("International|World|Commonwealth")).then("international").otherwise("local"))
         .alias("meet_type"),
     )
 
@@ -105,9 +76,7 @@ if __name__ == "__main__":
     logging.info("Performing feature engineering transformations")
     time_since_last_comp_df = add_time_since_last_comp(cleansed_df)
     meet_type_df = add_meet_type(time_since_last_comp_df)
-    generic_feature_engineering_df = add_generic_feature_engineering_columns(
-        meet_type_df
-    )
+    generic_feature_engineering_df = add_generic_feature_engineering_columns(meet_type_df)
     progress_df = add_powerlifting_progress(generic_feature_engineering_df)
     fe_df = add_previous_powerlifting_records(progress_df)
 

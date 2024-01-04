@@ -5,6 +5,10 @@ description = ""
 authors = ["Nam Tonthat <n.nam.tonthat@gmail.com>"]
 readme = "README.md"
 
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry.dependencies]
 python = "3.11.6"
 polars = "^0.16.14"
@@ -31,6 +35,9 @@ jupyter = "^1.0.0"
 jupysql = "^0.10.7"
 duckdb-engine = "^0.10.0"
 
+[tool.ruff]
+line-length = 200
+
 [tool.sqlfluff.core]
 dialect = "duckdb"
 capitalisation_policy = "lower"
@@ -38,7 +45,3 @@ exclude_rules = "AM04"
 
 [tool.sqlfluff.indentation]
 tab_space_size = 4
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
