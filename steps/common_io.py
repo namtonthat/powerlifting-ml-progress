@@ -57,7 +57,7 @@ def io_remove_root_data_folder() -> bool:
         return False
 
 
-def io_write_from_local_to_s3(df: pl.DataFrame, local_path: str, s3_key: str) -> None:
+def io_write_from_local_to_s3(df: pl.DataFrame, local_path: str, s3_key: str, debug: bool = True) -> None:
     """
     Saves a dataframe to local and then uploads it to S3.
     Performs the clean up of the local file after the upload.
@@ -77,16 +77,8 @@ def io_write_from_local_to_s3(df: pl.DataFrame, local_path: str, s3_key: str) ->
     )
     logging.info("Parquet file uploaded to S3 successfully")
 
-    io_remove_root_data_folder()
-
-
-# A debug decorator to log the head of the dataframe and the row count
-def debug(func):
-    def wrapper(*args, **kwargs):
-        result_df: pl.DataFrame = func(*args, **kwargs)
-        logging.info(result_df.head(2))
-
-        logging.info(f"Row count: {len(result_df)}")
-        return result_df
-
-    return wrapper
+    if debug:
+        logging.info(f"Parquet file can be found at: {local_path}")
+    else:
+        logging.info("Cleaning up local files")
+        io_remove_root_data_folder()

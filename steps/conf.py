@@ -1,5 +1,7 @@
 import re
 from enum import Enum
+import logging
+import polars as pl
 
 
 class OutputPathType(Enum):
@@ -21,6 +23,8 @@ root_data_folder = "data"
 bucket_name = "powerlifting-ml-progress"
 parquet_file = "openpowerlifting-latest.parquet"
 
+# Magic numbers
+AGE_TOLERANCE_YEARS = 1  # used to determine if a lifter is the same person
 DAYS_IN_YEAR = 365.25
 
 
@@ -28,6 +32,18 @@ DAYS_IN_YEAR = 365.25
 def camel_to_snake(camel_str):
     snake_str = re.sub(r"(?<!^)(?=[A-Z])", "_", camel_str).lower()
     return snake_str
+
+
+# A debug decorator to log the head of the dataframe and the row count
+def debug(func):
+    def wrapper(*args, **kwargs):
+        result_df: pl.DataFrame = func(*args, **kwargs)
+        logging.info(result_df.head(2))
+
+        logging.info(f"Row count: {len(result_df)}")
+        return result_df
+
+    return wrapper
 
 
 def create_output_file_path(

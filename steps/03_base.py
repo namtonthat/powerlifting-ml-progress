@@ -23,6 +23,11 @@ def add_powerlifting_progress(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
+def order_by_primary_key_and_date(df: pl.DataFrame) -> pl.DataFrame:
+    return df.sort(["name", "date"], descending=[False, True])
+
+
+@conf.debug
 def filter_for_raw_events(df: pl.DataFrame) -> pl.DataFrame:
     return df.filter((pl.col("event") == "SBD") & (pl.col("tested") == "Yes") & (pl.col("equipment") == "Raw"))
 
@@ -71,7 +76,8 @@ if __name__ == "__main__":
 
     logging.info("Performing base transformations")
     renamed_df = df.select(conf.base_columns).rename(conf.base_renamed_columns)
-    cleansed_df = filter_for_raw_events(renamed_df)
+    ordered_df = order_by_primary_key_and_date(renamed_df)
+    cleansed_df = filter_for_raw_events(ordered_df)
 
     # Create feature engineered columns
     logging.info("Performing feature engineering transformations")

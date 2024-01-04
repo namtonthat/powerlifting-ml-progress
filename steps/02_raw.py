@@ -13,6 +13,7 @@ def filter_non_numeric_place(df: pl.DataFrame) -> pl.DataFrame:
     return df.filter(pl.col("place").apply(lambda x: x.isnumeric(), return_dtype=pl.Boolean))
 
 
+@conf.debug
 def type_cast(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         pl.col("date").str.strptime(pl.Date, "%Y-%m-%d").alias("date"),
@@ -20,8 +21,28 @@ def type_cast(df: pl.DataFrame) -> pl.DataFrame:
     )
 
 
+@conf.debug
+def add_event_year(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns((pl.col("date").dt.strftime("%Y").cast(pl.Int32)).alias("event_year"))
+
+
+@conf.debug
 def add_year_of_birth(df: pl.DataFrame) -> pl.DataFrame:
-    return df.with_columns((pl.col("date").dt.strftime("%Y").cast(pl.Int32) - pl.col("age").cast(pl.Int32)).alias("year_of_birth"))
+    """
+    Edge cases exist when the age ends in .0, so we round down to the nearest 0.5 year
+    Test case: Joshua Luu
+    """
+
+    min_max_birth_year_df = df.with_columns(
+        (pl.col("event_year") - (pl.col("age") + conf.AGE_TOLERANCE_YEARS)).alias("min_birth_year"),
+        (pl.col("event_year") - (pl.col("age") - conf.AGE_TOLERANCE_YEARS)).alias("max_birth_year"),
+    )
+
+    # Use the average of the min and max birth year as a likely birth year
+    year_of_birth_df = min_max_birth_year_df.with_columns(((pl.col("min_birth_year") + pl.col("max_birth_year")) / 2).floor().cast(pl.Int32).alias("year_of_birth"))
+
+    year_of_birth_df.drop(["min_birth_year", "max_birth_year", "event_year"])
+    return year_of_birth_df
 
 
 @conf.debug
@@ -35,16 +56,22 @@ def add_primary_key(df: pl.DataFrame) -> pl.DataFrame:
         pl.concat_str(
             [
                 pl.col("name").str.to_lowercase().str.replace(" ", "-"),
-                pl.col("sex"),
+                pl.col("sex").str.to_lowercase(),
                 pl.col("year_of_birth").cast(pl.Utf8),
             ],
             separator="-",
         ).alias("primary_key")
     )
 
-    primary_key_df_filtered = primary_key_df.unique(subset=["primary_key", "date", "meet_name"])
+    # Sort by primary key and date descending
+    # Records need to be sorted to ensure that the origin country is the first country that the lifter competed in
+    primary_key_df_sorted = primary_key_df.sort(by=["primary_key", "date"], descending=[False, False])
 
-    return primary_key_df_filtered
+    return primary_key_df_sorted
+
+
+def filter_for_unique_primary_key(df: pl.DataFrame) -> pl.DataFrame:
+    return df.unique(subset=["primary_key", "date", "meet_name"])
 
 
 @conf.debug
@@ -55,7 +82,7 @@ def create_origin_country_df(df: pl.DataFrame) -> pl.DataFrame:
 
 @conf.debug
 def add_origin_country(df: pl.DataFrame, lifter_country_df: pl.DataFrame) -> pl.DataFrame:
-    logging.info(f"Row count (df): {len(raw_df)}")
+    logging.info(f"Row count (df): {len(df)}")
     logging.info(f"Row count (lifter_country_df): {len(lifter_country_df)}")
     return df.join(lifter_country_df, on="primary_key", how="inner")
 
@@ -78,8 +105,10 @@ if __name__ == "__main__":
     type_cast_df = type_cast(filtered_df)
 
     # Add columns
-    year_of_birth_df = add_year_of_birth(type_cast_df)
-    primary_key_df = add_primary_key(year_of_birth_df)
+    event_year_df = add_event_year(type_cast_df)
+    year_of_birth_df = add_year_of_birth(event_year_df)
+    all_primary_key_df = add_primary_key(year_of_birth_df)
+    primary_key_df = filter_for_unique_primary_key(all_primary_key_df)
 
     # Find the first country that the powerlifter competed in and assume that is their country of origin
     lifter_country_df = create_origin_country_df(primary_key_df)
