@@ -4,3 +4,6 @@
 
 # Ignore all .DS_Store
 .DS_Store
+
+# Ignore all parquet files
+*.parquet
