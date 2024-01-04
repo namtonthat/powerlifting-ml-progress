@@ -1,7 +1,6 @@
 import boto3
 import conf
 import polars as pl
-import os
 
 import logging
 
@@ -20,7 +19,7 @@ if __name__ == "__main__":
         df.filter(
             pl.col("place").apply(lambda x: x.isnumeric(), return_dtype=pl.Boolean)
         )
-        .drop_nulls(subset=conf.required_columns)
+        .drop_nulls(subset=conf.landing_column_names)
         .unique()
         .sort("date", descending=True)
     )
@@ -34,9 +33,10 @@ if __name__ == "__main__":
 
     # Create a year of birth to identify lifters
     year_of_birth_df = filtered_with_type_df.with_columns(
-        (pl.col("date").dt.strftime("%Y").cast(pl.Int32) - pl.col("age").cast(pl.Int32))
-        .cast(pl.Utf8)
-        .alias("year_of_birth")
+        (
+            pl.col("date").dt.strftime("%Y").cast(pl.Int32)
+            - pl.col("age").cast(pl.Int32)
+        ).alias("year_of_birth")
     )
 
     # Primary key column is snake case of name plus year of birth
@@ -47,7 +47,7 @@ if __name__ == "__main__":
             [
                 pl.col("name").str.to_lowercase().str.replace(" ", "-"),
                 pl.col("sex"),
-                pl.col("year_of_birth"),
+                pl.col("year_of_birth").cast(pl.Utf8),
             ],
             separator="-",
         ).alias("primary_key")
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     # Write to parquet to s3
     logging.info("Writing to parquet")
     # Need to generate root data folder to ensure it can be written out to
-    conf.create_root_data_folder()
+    conf.io_create_root_data_folder()
     raw_df.write_parquet(conf.raw_local_path)
 
     logging.info("Writing to S3")
@@ -83,4 +83,4 @@ if __name__ == "__main__":
         ExtraArgs={"ACL": "public-read"},
     )
 
-    conf.clean_up_root_data_folder()
+    conf.io_clean_up_root_data_folder()
