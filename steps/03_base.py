@@ -111,6 +111,7 @@ if __name__ == "__main__":
     progress_df = add_powerlifting_progress(generic_feature_engineering_df)
     fe_df = add_previous_powerlifting_records(progress_df)
 
+    conf.io_create_root_data_folder()
     fe_df.write_parquet(conf.base_local_path)
 
     logging.info("Writing to S3")
@@ -121,3 +122,5 @@ if __name__ == "__main__":
         conf.base_s3_key,
         ExtraArgs={"ACL": "public-read"},
     )
+
+    conf.io_clean_up_root_data_folder()
