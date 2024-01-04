@@ -101,6 +101,7 @@ landing_s3_http = create_output_file_path(OutputPathType.LANDING, FileLocation.S
 
 raw_s3_http = create_output_file_path(OutputPathType.RAW, FileLocation.S3, as_http=True)
 
+base_s3_http = create_output_file_path(OutputPathType.BASE, FileLocation.S3, as_http=True)
 
 # Columns
 # Landing

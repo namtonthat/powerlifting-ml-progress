@@ -27,9 +27,9 @@ def order_by_primary_key_and_date(df: pl.DataFrame) -> pl.DataFrame:
     return df.sort(by=["primary_key", "date"], descending=[False, False])
 
 
-@conf.debug
-def filter_for_raw_events(df: pl.DataFrame) -> pl.DataFrame:
-    return df.filter((pl.col("event") == "SBD") & (pl.col("tested") == "Yes") & (pl.col("equipment") == "Raw"))
+# @conf.debug
+# def filter_for_raw_events(df: pl.DataFrame) -> pl.DataFrame:
+#     return df.filter((pl.col("event") == "SBD") & (pl.col("tested") == "Yes") & (pl.col("equipment") == "Raw"))
 
 
 @conf.debug
@@ -91,7 +91,6 @@ if __name__ == "__main__":
     logging.info("Performing base transformations")
     renamed_df = df.select(conf.base_columns).rename(conf.base_renamed_columns)
     ordered_df = order_by_primary_key_and_date(renamed_df)
-    # cleansed_df = filter_for_raw_events(ordered_df)
 
     logging.info("Performing feature engineering transformations")
 
