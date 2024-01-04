@@ -21,12 +21,12 @@ def type_cast(df: pl.DataFrame) -> pl.DataFrame:
     )
 
 
-def add_age_rounded_to_half(df: pl.DataFrame) -> pl.DataFrame:
+def add_age_rounded_up_half(df: pl.DataFrame) -> pl.DataFrame:
     """
     Rounds ages ending in .0 to up to the next 0.5 year.
     Used that to calculate year of birth
     """
-    return df.with_columns(pl.when(pl.col("age").apply(lambda x: x % 1 == 0)).then(pl.col("age") + 0.5).otherwise(pl.col("age")).alias("age_rounded_to_half"))
+    return df.with_columns(pl.when(pl.col("age").apply(lambda x: x % 1 == 0)).then(pl.col("age") + 0.5).otherwise(pl.col("age")).alias("age_rounded_up_half"))
 
 
 @conf.debug
@@ -44,8 +44,8 @@ def add_year_of_birth(df: pl.DataFrame) -> pl.DataFrame:
     """
 
     min_max_birth_year_df = df.with_columns(
-        (pl.col("event_year") - (pl.col("age_rounded_to_half") + conf.AGE_TOLERANCE_YEARS)).alias("min_birth_year"),
-        (pl.col("event_year") - (pl.col("age_rounded_to_half") - conf.AGE_TOLERANCE_YEARS)).alias("max_birth_year"),
+        (pl.col("event_year") - (pl.col("age_rounded_up_half") + conf.AGE_TOLERANCE_YEARS)).alias("min_birth_year"),
+        (pl.col("event_year") - (pl.col("age_rounded_up_half") - conf.AGE_TOLERANCE_YEARS)).alias("max_birth_year"),
     )
 
     # Use the average of the min and max birth year as a likely birth year
@@ -118,8 +118,8 @@ if __name__ == "__main__":
 
     # Add columns
     event_year_df = add_event_year(type_cast_df)
-    age_rounded_to_half_df = add_age_rounded_to_half(event_year_df)
-    year_of_birth_df = add_year_of_birth(age_rounded_to_half_df)
+    age_rounded_up_half_df = add_age_rounded_up_half(event_year_df)
+    year_of_birth_df = add_year_of_birth(age_rounded_up_half_df)
 
     # Create primary key
     all_primary_key_df = add_primary_key(year_of_birth_df)

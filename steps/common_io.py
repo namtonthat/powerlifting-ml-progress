@@ -2,7 +2,6 @@
 A set of common IO functions to be used across all steps.
 """
 
-import boto3
 import os
 import logging
 import shutil
@@ -67,15 +66,15 @@ def io_write_from_local_to_s3(df: pl.DataFrame, local_path: str, s3_key: str, de
     io_create_root_data_folder()
     df.write_parquet(local_path)
 
-    logging.info("Writing to S3")
-    s3_client = boto3.client("s3")
-    s3_client.upload_file(
-        local_path,
-        conf.bucket_name,
-        s3_key,
-        ExtraArgs={"ACL": "public-read"},
-    )
-    logging.info("Parquet file uploaded to S3 successfully")
+    # logging.info("Writing to S3")
+    # s3_client = boto3.client("s3")
+    # s3_client.upload_file(
+    #     local_path,
+    #     conf.bucket_name,
+    #     s3_key,
+    #     ExtraArgs={"ACL": "public-read"},
+    # )
+    # logging.info("Parquet file uploaded to S3 successfully")
 
     if debug:
         logging.info(f"Parquet file can be found at: {local_path}")
