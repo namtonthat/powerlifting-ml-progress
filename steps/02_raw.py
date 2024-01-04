@@ -21,6 +21,12 @@ def type_cast(df: pl.DataFrame) -> pl.DataFrame:
     )
 
 
+@conf.debug
+def to_lowercase(df: pl.DataFrame) -> pl.DataFrame:
+    "In place modification of column values to lowercase"
+    return df.with_columns(pl.col("meet_name").str.to_lowercase())
+
+
 def add_age_rounded_up_half(df: pl.DataFrame) -> pl.DataFrame:
     """
     Rounds ages ending in .0 to up to the next 0.5 year.
@@ -88,7 +94,7 @@ def filter_for_unique_primary_key(df: pl.DataFrame) -> pl.DataFrame:
 
 @conf.debug
 def create_origin_country_df(df: pl.DataFrame) -> pl.DataFrame:
-    lifter_country_df = df.groupby(["primary_key"]).agg(pl.first("meet_country").alias("origin_country"))
+    lifter_country_df = df.group_by(["primary_key"]).agg(pl.first("meet_country").alias("origin_country"))
     return lifter_country_df
 
 
@@ -115,9 +121,10 @@ if __name__ == "__main__":
     # Filter out rows where the place is not numeric
     filtered_df = filter_non_numeric_place(df)
     type_cast_df = type_cast(filtered_df)
+    lowercase_df = to_lowercase(type_cast_df)
 
     # Add columns
-    event_year_df = add_event_year(type_cast_df)
+    event_year_df = add_event_year(lowercase_df)
     age_rounded_up_half_df = add_age_rounded_up_half(event_year_df)
     year_of_birth_df = add_year_of_birth(age_rounded_up_half_df)
 
