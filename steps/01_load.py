@@ -87,6 +87,6 @@ if __name__ == "__main__":
         )
         logging.info("Parquet file uploaded to S3 successfully")
 
-        conf.clean_up_root_data_folder()
+        conf.io_clean_up_root_data_folder()
 
         update_readme()

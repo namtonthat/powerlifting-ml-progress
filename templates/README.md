@@ -2,7 +2,7 @@
 
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![python](https://img.shields.io/badge/Python-3.11-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
-[![scrape](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/scrape.yml/badge.svg)](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/scrape.yml)
+[![extract-transform-load](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/extract-transform-load.yml/badge.svg)](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/extract-transform-load.yml)
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://powerlifting.streamlit.app)
 
 ![Last Updated](https://img.shields.io/badge/Last%20Updated-{{ last_updated }}-blue)
@@ -13,21 +13,23 @@ Refer to the `Makefile` using: `make` from the command line.
 - `make setup` - creates a `virtualenv` and installs dependencies (via `pyenv` and `poetry` respectively) and then installs `precommit` for linting and code quality
 
 # :gear: Data Model
-Refer to `.github/workflows/scrape.yml` file.
+Refer to `.github/workflows/*.yml` files.
 
 Jobs are orchestrated by [`dagster`](https://github.com/dagster-io/dagster) with transformations done by `dbt`.
 
 ```mermaid
 graph LR
 
-    A[scrape.yml]
+    A[extract-transform-load.yml]
     B[01_load.py]
-    C[`dbt` transformations]
-    D[train machine learning model]
+    C[02_raw.py]
+    D[`dbt` transformations]
+    E[train machine learning model]
 
     A --> B
     B --> C
     C --> D
+    D --> E
 ```
 
 ## 💡 Purpose
