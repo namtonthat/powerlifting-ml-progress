@@ -24,7 +24,7 @@ def add_powerlifting_progress(df: pl.DataFrame) -> pl.DataFrame:
 
 @conf.debug
 def order_by_primary_key_and_date(df: pl.DataFrame) -> pl.DataFrame:
-    return df.sort(["name", "date"], descending=[False, True])
+    return df.sort(["primary_key", "date"], descending=[False, True])
 
 
 @conf.debug

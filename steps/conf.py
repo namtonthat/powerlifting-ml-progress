@@ -24,7 +24,7 @@ bucket_name = "powerlifting-ml-progress"
 parquet_file = "openpowerlifting-latest.parquet"
 
 # Magic numbers
-AGE_TOLERANCE_YEARS = 1  # used to determine if a lifter is the same person
+AGE_TOLERANCE_YEARS = 2  # used to determine if a lifter is the same person
 DAYS_IN_YEAR = 365.25
 
 
