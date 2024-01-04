@@ -80,16 +80,8 @@ if __name__ == "__main__":
     progress_df = add_powerlifting_progress(generic_feature_engineering_df)
     fe_df = add_previous_powerlifting_records(progress_df)
 
-    conf.io_create_root_data_folder()
-    fe_df.write_parquet(conf.base_local_path)
-
-    logging.info("Writing to S3")
-    s3_client = boto3.client("s3")
-    s3_client.upload_file(
+    conf.io_write_local_to_s3(
+        fe_df,
         conf.base_local_path,
-        conf.bucket_name,
         conf.base_s3_key,
-        ExtraArgs={"ACL": "public-read"},
     )
-
-    conf.io_clean_up_root_data_folder()

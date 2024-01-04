@@ -1,3 +1,4 @@
+import boto3
 import re
 import os
 import logging
@@ -53,22 +54,68 @@ def create_output_path(
 
 
 # IO functions
-def io_create_root_data_folder() -> None:
-    if not os.path.exists(root_data_folder):
-        logging.info(f"Creating root data folder: {root_data_folder}")
-    else:
-        logging.info(f"Root data folder already exists: {root_data_folder}")
+def io_create_root_data_folder() -> bool:
+    """
+    Create root data folder and subfolders as defined in OutputPathType.
 
-    for folder in OutputPathType:
-        logging.info(f"Creating {folder.value} folder")
-        folder_path = os.path.join(root_data_folder, folder.value)
-        os.makedirs(folder_path, exist_ok=True)
+    Returns:
+        bool: True if all folders are created successfully, False otherwise.
+    """
+    try:
+        if not os.path.exists(root_data_folder):
+            os.makedirs(root_data_folder, exist_ok=True)
+            logging.info(f"Created root data folder: {root_data_folder}")
+        else:
+            logging.info(f"Root data folder already exists: {root_data_folder}")
+
+        for folder in OutputPathType:
+            folder_path = os.path.join(root_data_folder, folder.value)
+            os.makedirs(folder_path, exist_ok=True)
+            logging.info(f"Created {folder.value} folder")
+
+        return True
+    except Exception as e:
+        logging.error(f"Error in creating root data folder: {e}")
+        return False
 
 
-def io_clean_up_root_data_folder() -> None:
-    logging.info("Cleaning files")
-    shutil.rmtree(root_data_folder)
-    logging.info(f"Files from '{root_data_folder}' removed")
+def io_clean_up_root_data_folder() -> bool:
+    """
+    Clean up the root data folder by deleting it.
+
+    Returns:
+        bool: True if the folder is deleted successfully, False otherwise.
+    """
+    try:
+        if os.path.exists(root_data_folder):
+            shutil.rmtree(root_data_folder)
+            logging.info(f"Files from '{root_data_folder}' removed")
+            return True
+        else:
+            logging.warning(f"Root data folder '{root_data_folder}' does not exist.")
+            return False
+    except Exception as e:
+        logging.error(f"Error in cleaning up root data folder: {e}")
+        return False
+
+
+def io_write_local_to_s3(df: pl.DataFrame, local_path: str, s3_key: str) -> None:
+    logging.info("Writing to parquet")
+    # Need to generate root data folder to ensure it can be written out to
+    io_create_root_data_folder()
+    df.write_parquet(local_path)
+
+    logging.info("Writing to S3")
+    s3_client = boto3.client("s3")
+    s3_client.upload_file(
+        local_path,
+        bucket_name,
+        s3_key,
+        ExtraArgs={"ACL": "public-read"},
+    )
+    logging.info("Parquet file uploaded to S3 successfully")
+
+    io_clean_up_root_data_folder()
 
 
 def debug(func):
@@ -114,9 +161,7 @@ semantic_s3_key = create_output_path(
     FileLocation.S3,
 )
 
-landing_s3_http = create_output_path(
-    OutputPathType.LANDING, FileLocation.S3, as_http=True
-)
+landing_s3_http = create_output_path(OutputPathType.LANDING, FileLocation.S3, as_http=True)
 
 raw_s3_http = create_output_path(OutputPathType.RAW, FileLocation.S3, as_http=True)
 
@@ -165,7 +210,4 @@ additional_raw_columns = ["origin_country", "primary_key", "year_of_birth"]
 _base_column_names = _required_landing_column_names + additional_raw_columns
 base_columns = [camel_to_snake(col) for col in _base_column_names]
 
-base_renamed_columns = {
-    camel_to_snake(key): camel_to_snake(value)
-    for key, value in renamed_landing_column_names.items()
-}
+base_renamed_columns = {camel_to_snake(key): camel_to_snake(value) for key, value in renamed_landing_column_names.items()}

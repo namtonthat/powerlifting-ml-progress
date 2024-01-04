@@ -7,42 +7,30 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 
-if __name__ == "__main__":
-    logging.info("Loading data from S3")
-    s3 = boto3.client("s3")
-    df = pl.read_parquet(source=conf.landing_s3_http)
-    logging.info(f"Loaded {conf.landing_s3_http}")
+@conf.debug
+def filter_non_numeric_place(df: pl.DataFrame) -> pl.DataFrame:
+    return df.filter(pl.col("place").apply(lambda x: x.isnumeric(), return_dtype=pl.Boolean))
 
-    logging.info("Performing raw transformations")
-    # Filter out rows where the place is not numeric
-    filtered_df = (
-        df.filter(
-            pl.col("place").apply(lambda x: x.isnumeric(), return_dtype=pl.Boolean)
-        )
-        .drop_nulls(subset=conf.landing_column_names)
-        .unique()
-        .sort("date", descending=True)
-    )
-    logging.info(f"Row count (filtered_df): {len(filtered_df)}")
 
-    # Perform type casting in place
-    filtered_with_type_df = filtered_df.with_columns(
+def type_cast(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
         pl.col("date").str.strptime(pl.Date, "%Y-%m-%d").alias("date"),
         pl.col("place").cast(pl.Int64).alias("place"),
     )
 
-    # Create a year of birth to identify lifters
-    year_of_birth_df = filtered_with_type_df.with_columns(
-        (
-            pl.col("date").dt.strftime("%Y").cast(pl.Int32)
-            - pl.col("age").cast(pl.Int32)
-        ).alias("year_of_birth")
-    )
 
-    # Primary key column is snake case of name plus year of birth
-    # Deduplicate on primary key, date, and meet name
+def add_year_of_birth(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns((pl.col("date").dt.strftime("%Y").cast(pl.Int32) - pl.col("age").cast(pl.Int32)).alias("year_of_birth"))
+
+
+@conf.debug
+def add_primary_key(df: pl.DataFrame) -> pl.DataFrame:
+    """
+    Primary key column is snake case of name plus year of birth
+    Deduplicate on primary key, date, and meet name
+    """
     logging.info("Creating primary key")
-    primary_key_df = year_of_birth_df.with_columns(
+    primary_key_df = df.with_columns(
         pl.concat_str(
             [
                 pl.col("name").str.to_lowercase().str.replace(" ", "-"),
@@ -51,36 +39,58 @@ if __name__ == "__main__":
             ],
             separator="-",
         ).alias("primary_key")
-    ).unique(subset=["primary_key", "date", "meet_name"])
+    )
+
+    primary_key_df_filtered = primary_key_df.unique(subset=["primary_key", "date", "meet_name"])
+
+    return primary_key_df_filtered
+
+
+@conf.debug
+def create_origin_country_df(df: pl.DataFrame) -> pl.DataFrame:
+    lifter_country_df = df.groupby(["primary_key"]).agg(pl.first("meet_country").alias("origin_country"))
+    return lifter_country_df
+
+
+@conf.debug
+def add_origin_country(df: pl.DataFrame, lifter_country_df: pl.DataFrame) -> pl.DataFrame:
+    logging.info(f"Row count (df): {len(raw_df)}")
+    logging.info(f"Row count (lifter_country_df): {len(lifter_country_df)}")
+    return df.join(lifter_country_df, on="primary_key", how="inner")
+
+
+def test_counts(df_1, df_2):
+    logging.info(f"Row count (df_1): {len(df_1)}")
+    logging.info(f"Row count (df_2): {len(df_2)}")
+    assert len(df_1) == len(df_2)
+
+
+if __name__ == "__main__":
+    logging.info("Loading data from S3")
+    s3 = boto3.client("s3")
+    df = pl.read_parquet(source=conf.landing_s3_http)
+    logging.info(f"Loaded {conf.landing_s3_http}")
+
+    logging.info("Performing raw transformations")
+    # Filter out rows where the place is not numeric
+    filtered_df = filter_non_numeric_place(df)
+    type_cast_df = type_cast(filtered_df)
+
+    # Add columns
+    year_of_birth_df = add_year_of_birth(type_cast_df)
+    primary_key_df = add_primary_key(year_of_birth_df)
 
     # Find the first country that the powerlifter competed in and assume that is their country of origin
-    lifter_country_df = primary_key_df.groupby(["primary_key"]).agg(
-        pl.first("meet_country").alias("origin_country")
-    )
+    lifter_country_df = create_origin_country_df(primary_key_df)
 
     # Add the origin country to the primary key dataframe
-    raw_df = primary_key_df.join(lifter_country_df, on=["primary_key"])
-    logging.info("Added origin country to primary key dataframe")
-    logging.info(f"Row count (raw_df): {len(raw_df)}")
+    raw_df = add_origin_country(primary_key_df, lifter_country_df)
 
-    # Test counts
-    logging.info("Testing counts")
-    duplicates_on_primary_key: bool = len(raw_df) != len(primary_key_df)
-    logging.info(f"Duplicate primary key: {duplicates_on_primary_key}")
+    test_counts(raw_df, primary_key_df)
 
     # Write to parquet to s3
-    logging.info("Writing to parquet")
-    # Need to generate root data folder to ensure it can be written out to
-    conf.io_create_root_data_folder()
-    raw_df.write_parquet(conf.raw_local_path)
-
-    logging.info("Writing to S3")
-    s3_client = boto3.client("s3")
-    s3_client.upload_file(
+    conf.io_write_local_to_s3(
+        raw_df,
         conf.raw_local_path,
-        conf.bucket_name,
         conf.raw_s3_key,
-        ExtraArgs={"ACL": "public-read"},
     )
-
-    conf.io_clean_up_root_data_folder()
