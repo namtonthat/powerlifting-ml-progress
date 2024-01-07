@@ -3,6 +3,8 @@ from enum import Enum
 import logging
 import polars as pl
 
+logging.basicConfig(level=logging.INFO)
+
 
 class OutputPathType(Enum):
     EXTRACT = "extract"
@@ -22,6 +24,7 @@ zip_url = "https://openpowerlifting.gitlab.io/opl-csv/files/openpowerlifting-lat
 root_data_folder = "data"
 bucket_name = "powerlifting-ml-progress"
 parquet_file = "openpowerlifting-latest.parquet"
+reference_tables_local_folder_name = "reference-tables"
 
 # Magic numbers
 AGE_TOLERANCE_YEARS = 2  # used to determine if a lifter is the same person

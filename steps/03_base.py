@@ -2,10 +2,7 @@ import boto3
 import conf
 import common_io
 import polars as pl
-
 import logging
-
-logging.basicConfig(level=logging.INFO)
 
 
 # Transformations
@@ -92,6 +89,9 @@ if __name__ == "__main__":
     renamed_df = df.select(conf.base_columns).rename(conf.base_renamed_columns)
     ordered_df = order_by_primary_key_and_date(renamed_df)
     # cleansed_df = filter_for_raw_events(ordered_df)
+
+    logging.info("Build reference tables")
+    reference_table_files = os.listdir(conf.reference_table_local_file_path)
 
     logging.info("Performing feature engineering transformations")
 

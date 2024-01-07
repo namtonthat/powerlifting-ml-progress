@@ -2,10 +2,7 @@ import boto3
 import conf
 import polars as pl
 import common_io
-
 import logging
-
-logging.basicConfig(level=logging.INFO)
 
 
 @conf.debug

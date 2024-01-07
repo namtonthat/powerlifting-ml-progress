@@ -10,9 +10,6 @@ import polars as pl
 from jinja2 import Environment, FileSystemLoader
 
 
-logging.basicConfig(level=logging.INFO)
-
-
 def update_readme():
     current_date = datetime.datetime.now().strftime("%Y-%m-%d").replace("-", "--")
 
