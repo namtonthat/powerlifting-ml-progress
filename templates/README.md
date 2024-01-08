@@ -21,15 +21,19 @@ Jobs are orchestrated by [`dagster`](https://github.com/dagster-io/dagster) with
 graph LR
 
     A[extract-transform-load.yml]
-    B[01_load.py]
-    C[02_raw.py]
-    D[`dbt` transformations]
-    E[train machine learning model]
+    B[01_extract.py]
+    C[02_load.py]
+    D[03_raw.py]
+    E[03_base.py]
+    F[`dbt` transformations]
+    G[train machine learning model]
 
     A --> B
     B --> C
     C --> D
     D --> E
+    E --> F
+    F --> G
 ```
 
 ## 💡 Purpose

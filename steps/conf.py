@@ -24,7 +24,7 @@ zip_url = "https://openpowerlifting.gitlab.io/opl-csv/files/openpowerlifting-lat
 root_data_folder = "data"
 bucket_name = "powerlifting-ml-progress"
 parquet_file = "openpowerlifting-latest.parquet"
-reference_tables_local_folder_name = "reference-tables"
+reference_tables_local_folder_name = "reference-tables/csv"
 
 # Magic numbers
 AGE_TOLERANCE_YEARS = 2  # used to determine if a lifter is the same person

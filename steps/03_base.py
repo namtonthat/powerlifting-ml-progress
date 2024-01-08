@@ -3,6 +3,7 @@ import conf
 import common_io
 import polars as pl
 import logging
+import os
 
 
 # Transformations
@@ -80,6 +81,16 @@ def add_previous_powerlifting_records(df: pl.DataFrame) -> pl.DataFrame:
     )
 
 
+def convert_reference_tables_to_parquet(s3_client: boto3.client):
+    logging.info("Load reference tables into S3")
+    s3_reference_table_files = s3_client.list_objects_v2(
+        Bucket=conf.bucket_name,
+        Prefix=conf.reference_tables_local_folder_name,
+    )
+
+    reference_table_files = [file for file in s3_reference_table_files if file.endswith(".csv")]
+
+
 if __name__ == "__main__":
     logging.info("Loading data from S3")
     s3 = boto3.client("s3")
@@ -91,7 +102,7 @@ if __name__ == "__main__":
     # cleansed_df = filter_for_raw_events(ordered_df)
 
     logging.info("Build reference tables")
-    reference_table_files = os.listdir(conf.reference_table_local_file_path)
+    convert_reference_tables_to_parquet(s3)
 
     logging.info("Performing feature engineering transformations")
 
