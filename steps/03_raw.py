@@ -29,7 +29,7 @@ def add_age_rounded_up_half(df: pl.DataFrame) -> pl.DataFrame:
     Rounds ages ending in .0 to up to the next 0.5 year.
     Used that to calculate year of birth
     """
-    return df.with_columns(pl.when(pl.col("age").apply(lambda x: x % 1 == 0)).then(pl.col("age") + 0.5).otherwise(pl.col("age")).alias("age_rounded_up_half"))
+    return df.with_columns((pl.when(pl.col("age") % 1 == 0)).then(pl.col("age") + 0.5).otherwise(pl.col("age")).alias("age_rounded_up_half"))
 
 
 @conf.debug
@@ -99,7 +99,7 @@ def create_origin_country_df(df: pl.DataFrame) -> pl.DataFrame:
 def add_origin_country(df: pl.DataFrame, lifter_country_df: pl.DataFrame) -> pl.DataFrame:
     logging.info(f"Row count (df): {len(df)}")
     logging.info(f"Row count (lifter_country_df): {len(lifter_country_df)}")
-    return df.join(lifter_country_df, on="primary_key", how="inner")
+    return df.join(lifter_country_df, on="primary_key", how="left")
 
 
 def test_counts(df_1, df_2):
