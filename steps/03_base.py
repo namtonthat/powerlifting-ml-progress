@@ -4,6 +4,7 @@ import common_io
 import polars as pl
 import logging
 import os
+from typing import Iterator
 
 
 # Transformations
@@ -81,45 +82,70 @@ def add_previous_powerlifting_records(df: pl.DataFrame) -> pl.DataFrame:
     )
 
 
-def convert_reference_tables_to_parquet(s3_client: boto3.client):
-    logging.info("Load reference tables into S3")
-    s3_reference_table_files = s3_client.list_objects_v2(
-        Bucket=conf.bucket_name,
-        Prefix=conf.reference_tables_local_folder_name,
-    )
+def convert_reference_tables_to_parquet() -> Iterator[str]:
+    logging.info("Build reference tables")
 
-    reference_table_files = [file for file in s3_reference_table_files if file.endswith(".csv")]
+    reference_table_file_paths = [f"{conf.reference_tables_local_folder_name}/{file}" for file in os.listdir(conf.reference_tables_local_folder_name) if file.endswith("csv")]
+    common_io.io_create_root_data_folder()
+
+    for file in reference_table_file_paths:
+        logging.info(f"Converting {file} to parquet")
+        file_name = file.split(".csv")[0].split("/")[-1]
+        output_file_path = conf.create_output_file_path(
+            conf.OutputPathType.REFERENCE,
+            conf.FileLocation.LOCAL,
+            file_name=f"{file_name}.parquet",
+        )
+
+        reference_df = pl.read_csv(file)
+        reference_df.write_parquet(output_file_path)
+        yield output_file_path
+
+
+def upload_reference_tables_to_s3(s3_client: boto3.client, parquet_files: list[str]) -> None:
+    logging.info(f"Uploading {len(parquet_files)} reference tables to S3")
+
+    for file in parquet_files:
+        paruqet_file_name = file.split("/")[-1]
+        reference_s3_key = conf.create_output_file_path(conf.OutputPathType.REFERENCE, conf.FileLocation.S3, file_name=paruqet_file_name)
+
+        s3_client.upload_file(
+            Filename=file,
+            Bucket=conf.bucket_name,
+            Key=reference_s3_key,
+        )
+
+        logging.info(f"Uploaded {paruqet_file_name} to s3://{conf.bucket_name}/{reference_s3_key}")
 
 
 if __name__ == "__main__":
     logging.info("Loading data from S3")
     s3 = boto3.client("s3")
-    df = pl.read_parquet(source=conf.raw_s3_http)
+    upload_reference_tables_to_s3(s3, list(convert_reference_tables_to_parquet()))
 
-    logging.info("Performing base transformations")
-    renamed_df = df.select(conf.base_columns).rename(conf.base_renamed_columns)
-    ordered_df = order_by_primary_key_and_date(renamed_df)
-    # cleansed_df = filter_for_raw_events(ordered_df)
+    # df = pl.read_parquet(source=conf.raw_s3_http)
 
-    logging.info("Build reference tables")
-    convert_reference_tables_to_parquet(s3)
+    # logging.info("Performing base transformations")
+    # renamed_df = df.select(conf.base_columns).rename(conf.base_renamed_columns)
+    # ordered_df = order_by_primary_key_and_date(renamed_df)
+    # # cleansed_df = filter_for_raw_events(ordered_df)
 
-    logging.info("Performing feature engineering transformations")
+    # logging.info("Performing feature engineering transformations")
 
-    # Temporal
-    time_since_last_comp_df = add_time_since_last_comp(ordered_df)
-    temporal_df = add_temporal_features(time_since_last_comp_df)
+    # # Temporal
+    # time_since_last_comp_df = add_time_since_last_comp(ordered_df)
+    # temporal_df = add_temporal_features(time_since_last_comp_df)
 
-    # Meet
-    meet_type_df = add_meet_type(temporal_df)
-    generic_feature_engineering_df = add_generic_feature_engineering_columns(meet_type_df)
+    # # Meet
+    # meet_type_df = add_meet_type(temporal_df)
+    # generic_feature_engineering_df = add_generic_feature_engineering_columns(meet_type_df)
 
-    # Numerical
-    progress_df = add_powerlifting_progress(generic_feature_engineering_df)
-    fe_df = add_previous_powerlifting_records(progress_df)
+    # # Numerical
+    # progress_df = add_powerlifting_progress(generic_feature_engineering_df)
+    # fe_df = add_previous_powerlifting_records(progress_df)
 
-    common_io.io_write_from_local_to_s3(
-        fe_df,
-        conf.base_local_file_path,
-        conf.base_s3_key,
-    )
+    # common_io.io_write_from_local_to_s3(
+    #     fe_df,
+    #     conf.base_local_file_path,
+    #     conf.base_s3_key,
+    # )

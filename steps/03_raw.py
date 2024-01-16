@@ -29,7 +29,7 @@ def add_age_rounded_up_half(df: pl.DataFrame) -> pl.DataFrame:
     Rounds ages ending in .0 to up to the next 0.5 year.
     Used that to calculate year of birth
     """
-    return df.with_columns(pl.when(pl.col("age").apply(lambda x: x % 1 == 0)).then(pl.col("age") + 0.5).otherwise(pl.col("age")).alias("age_rounded_up_half"))
+    return df.with_columns((pl.when(pl.col("age") % 1 == 0)).then(pl.col("age") + 0.5).otherwise(pl.col("age")).alias("age_rounded_up_half"))
 
 
 @conf.debug
@@ -38,7 +38,7 @@ def add_event_year(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
-def add_year_of_birth(df: pl.DataFrame) -> pl.DataFrame:
+def add_birth_year(df: pl.DataFrame) -> pl.DataFrame:
     """
     Edge cases exist when the age ends in .0, so we round down to the nearest 0.5 year
     Test cases:
@@ -52,9 +52,9 @@ def add_year_of_birth(df: pl.DataFrame) -> pl.DataFrame:
     )
 
     # Use the average of the min and max birth year as a likely birth year
-    year_of_birth_df = min_max_birth_year_df.with_columns(((pl.col("min_birth_year") + pl.col("max_birth_year")) / 2).floor().cast(pl.Int32).alias("year_of_birth"))
+    birth_year_df = min_max_birth_year_df.with_columns(((pl.col("min_birth_year") + pl.col("max_birth_year")) / 2).floor().cast(pl.Int32).alias("birth_year"))
 
-    return year_of_birth_df
+    return birth_year_df
 
 
 @conf.debug
@@ -72,7 +72,7 @@ def add_primary_key(df: pl.DataFrame) -> pl.DataFrame:
             [
                 pl.col("name").str.to_lowercase().str.replace(" ", "-"),
                 pl.col("sex").str.to_lowercase(),
-                pl.col("year_of_birth").cast(pl.Utf8),
+                pl.col("birth_year").cast(pl.Utf8),
             ],
             separator="-",
         ).alias("primary_key")
@@ -99,7 +99,7 @@ def create_origin_country_df(df: pl.DataFrame) -> pl.DataFrame:
 def add_origin_country(df: pl.DataFrame, lifter_country_df: pl.DataFrame) -> pl.DataFrame:
     logging.info(f"Row count (df): {len(df)}")
     logging.info(f"Row count (lifter_country_df): {len(lifter_country_df)}")
-    return df.join(lifter_country_df, on="primary_key", how="inner")
+    return df.join(lifter_country_df, on="primary_key", how="left")
 
 
 def test_counts(df_1, df_2):
@@ -123,10 +123,10 @@ if __name__ == "__main__":
     # Add columns
     event_year_df = add_event_year(lowercase_df)
     age_rounded_up_half_df = add_age_rounded_up_half(event_year_df)
-    year_of_birth_df = add_year_of_birth(age_rounded_up_half_df)
+    birth_year_df = add_birth_year(age_rounded_up_half_df)
 
     # Create primary key
-    all_primary_key_df = add_primary_key(year_of_birth_df)
+    all_primary_key_df = add_primary_key(birth_year_df)
     primary_key_df = filter_for_unique_primary_key(all_primary_key_df)
 
     # Find the first country that the powerlifter competed in and assume that is their country of origin

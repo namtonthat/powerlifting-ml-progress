@@ -12,6 +12,7 @@ class OutputPathType(Enum):
     RAW = "raw"
     BASE = "base"
     SEMANTIC = "semantic"
+    REFERENCE = "reference-tables"
 
 
 class FileLocation(Enum):
@@ -24,7 +25,10 @@ zip_url = "https://openpowerlifting.gitlab.io/opl-csv/files/openpowerlifting-lat
 root_data_folder = "data"
 bucket_name = "powerlifting-ml-progress"
 parquet_file = "openpowerlifting-latest.parquet"
-reference_tables_local_folder_name = "reference-tables/csv"
+reference_tables_local_folder_name = "reference-tables"
+
+# Reference tables
+reference_tables_local_file_path_parquet = f"{root_data_folder}/{reference_tables_local_folder_name}"
 
 # Magic numbers
 AGE_TOLERANCE_YEARS = 2  # used to determine if a lifter is the same person
@@ -100,10 +104,12 @@ semantic_s3_key = create_output_file_path(
     FileLocation.S3,
 )
 
+
 landing_s3_http = create_output_file_path(OutputPathType.LANDING, FileLocation.S3, as_http=True)
 
 raw_s3_http = create_output_file_path(OutputPathType.RAW, FileLocation.S3, as_http=True)
 
+base_s3_http = create_output_file_path(OutputPathType.BASE, FileLocation.S3, as_http=True)
 
 # Columns
 # Landing
