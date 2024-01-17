@@ -123,29 +123,29 @@ if __name__ == "__main__":
     s3 = boto3.client("s3")
     upload_reference_tables_to_s3(s3, list(convert_reference_tables_to_parquet()))
 
-    # df = pl.read_parquet(source=conf.raw_s3_http)
+    df = pl.read_parquet(source=conf.raw_s3_http)
 
-    # logging.info("Performing base transformations")
-    # renamed_df = df.select(conf.base_columns).rename(conf.base_renamed_columns)
-    # ordered_df = order_by_primary_key_and_date(renamed_df)
-    # # cleansed_df = filter_for_raw_events(ordered_df)
+    logging.info("Performing base transformations")
+    renamed_df = df.select(conf.base_columns).rename(conf.base_renamed_columns)
+    ordered_df = order_by_primary_key_and_date(renamed_df)
+    # cleansed_df = filter_for_raw_events(ordered_df)
 
-    # logging.info("Performing feature engineering transformations")
+    logging.info("Performing feature engineering transformations")
 
-    # # Temporal
-    # time_since_last_comp_df = add_time_since_last_comp(ordered_df)
-    # temporal_df = add_temporal_features(time_since_last_comp_df)
+    # Temporal
+    time_since_last_comp_df = add_time_since_last_comp(ordered_df)
+    temporal_df = add_temporal_features(time_since_last_comp_df)
 
-    # # Meet
-    # meet_type_df = add_meet_type(temporal_df)
-    # generic_feature_engineering_df = add_generic_feature_engineering_columns(meet_type_df)
+    # Meet
+    meet_type_df = add_meet_type(temporal_df)
+    generic_feature_engineering_df = add_generic_feature_engineering_columns(meet_type_df)
 
-    # # Numerical
-    # progress_df = add_powerlifting_progress(generic_feature_engineering_df)
-    # fe_df = add_previous_powerlifting_records(progress_df)
+    # Numerical
+    progress_df = add_powerlifting_progress(generic_feature_engineering_df)
+    fe_df = add_previous_powerlifting_records(progress_df)
 
-    # common_io.io_write_from_local_to_s3(
-    #     fe_df,
-    #     conf.base_local_file_path,
-    #     conf.base_s3_key,
-    # )
+    common_io.io_write_from_local_to_s3(
+        fe_df,
+        conf.base_local_file_path,
+        conf.base_s3_key,
+    )
