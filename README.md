@@ -5,7 +5,7 @@
 [![extract-transform-load](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/extract-transform-load.yml/badge.svg)](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/extract-transform-load.yml)
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://powerlifting.streamlit.app)
 
-![Last Updated](https://img.shields.io/badge/Last%20Updated-2024--01--04-blue)
+![Last Updated](https://img.shields.io/badge/Last%20Updated-2024--01--26-blue)
 # :computer: Local Development
 
 Refer to the `Makefile` using: `make` from the command line.
@@ -21,15 +21,19 @@ Jobs are orchestrated by [`dagster`](https://github.com/dagster-io/dagster) with
 graph LR
 
     A[extract-transform-load.yml]
-    B[01_load.py]
-    C[02_raw.py]
-    D[`dbt` transformations]
-    E[train machine learning model]
+    B[01_extract.py]
+    C[02_load.py]
+    D[03_raw.py]
+    E[03_base.py]
+    F[`dbt` transformations]
+    G[train machine learning model]
 
     A --> B
     B --> C
     C --> D
     D --> E
+    E --> F
+    F --> G
 ```
 
 ## 💡 Purpose
