@@ -121,11 +121,14 @@ def upload_reference_tables_to_s3(s3_client: boto3.client, parquet_files: list[s
 if __name__ == "__main__":
     logging.info("Loading data from S3")
     s3 = boto3.client("s3")
-
-    logging.info("Build reference tables")
     upload_reference_tables_to_s3(s3, list(convert_reference_tables_to_parquet()))
 
     df = pl.read_parquet(source=conf.raw_s3_http)
+
+    logging.info("Performing base transformations")
+    renamed_df = df.select(conf.base_columns).rename(conf.base_renamed_columns)
+    ordered_df = order_by_primary_key_and_date(renamed_df)
+    # cleansed_df = filter_for_raw_events(ordered_df)
 
     logging.info("Performing feature engineering transformations")
 
