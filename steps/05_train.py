@@ -9,6 +9,7 @@ import polars as pl
 import conf
 import os
 import logging
+from dotenv import load_dotenv
 
 ## Perform XG Boost on data
 import xgboost as xgb
@@ -17,10 +18,16 @@ from sklearn.metrics import mean_squared_error
 import optuna
 import mlflow
 
+# MLFlow configurations
 mlflow.set_tracking_uri("sqlite:///mlruns.db")
 
-# Set the artifact backend
-os.environ["MLFLOW_S3_ENDPOINT_URL"] = "http://localhost:9000"
+load_dotenv(conf.env_file_path)
+# NOTE: MLFLOW_TRACKING_URI and MLFLOW_S3_ENDPOINT_URL are set by the load
+# Use MINIO_ROOT_USER / ROOT_PASSWORD as S3 credentials
+os.environ["AWS_ACCESS_KEY_ID"] = os.environ.get("MINIO_ROOT_USER")
+os.environ["AWS_SECRET_ACCESS_KEY"] = os.environ.get("MINIO_ROOT_PASSWORD")
+
+MAX_TRIALS = 250
 
 # override Optuna's default logging to ERROR only
 optuna.logging.set_verbosity(optuna.logging.ERROR)
@@ -240,7 +247,7 @@ if __name__ == "__main__":
 
         # Execute the hyperparameter optimization trials.
         # Note the addition of the `champion_callback` inclusion to control our logging
-        study.optimize(objective, n_trials=500, callbacks=[champion_callback])
+        study.optimize(objective, n_trials=MAX_TRIALS, callbacks=[champion_callback])
 
         mlflow.log_params(study.best_params)
         mlflow.log_metric("best_mse", study.best_value)
