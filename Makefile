@@ -8,3 +8,14 @@ help: # 🆘 Show help for each of the Makefile recipes.
 setup: # 🔧 Install packages required for local development
 	@echo "Installing packages required for local development"
 	@./scripts/setup.sh $(arch)
+
+start: # 🚀 Start ML tracking server
+	docker-compose up -d
+
+stop: # 🛑 Stop ML tracking server
+	docker-compose down
+
+restart: # 🔄 Restart ML tracking server
+	docker-compose down
+	docker-compose up -d
+

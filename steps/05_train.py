@@ -7,6 +7,7 @@ import math
 import seaborn as sns
 import polars as pl
 import conf
+import logging
 
 ## Perform XG Boost on data
 import xgboost as xgb
@@ -15,7 +16,7 @@ from sklearn.metrics import mean_squared_error
 import optuna
 import mlflow
 
-mlflow.set_tracking_uri("http://localhost:8080")
+mlflow.set_tracking_uri("postgresql+psycopg2://postgres:postgres@localhost/mlflow_db")
 
 # override Optuna's default logging to ERROR only
 optuna.logging.set_verbosity(optuna.logging.ERROR)
@@ -39,6 +40,10 @@ def get_or_create_experiment(experiment_name):
     if experiment := mlflow.get_experiment_by_name(experiment_name):
         return experiment.experiment_id
     else:
+        try:
+            mlflow.create_experiment(experiment_name, artifact_location=conf.artifact_location)
+        except MlflowException as e:
+            print(e)
         return mlflow.create_experiment(experiment_name)
 
 
@@ -173,7 +178,8 @@ if __name__ == "__main__":
     columns_to_exclude = ["name", "total", "date"]
 
     # Load data
-    base_df = pl.read_parquet(conf.base_s3_http)
+    logging.info("Loading data")
+    base_df = pl.read_parquet(conf.base_local_file_path)
 
     modelling_cols = [
         "name",
@@ -182,8 +188,8 @@ if __name__ == "__main__":
         "age_class",
         "sex",
         "total",
-        "time_since_last_comp",
-        "bodyweight_change",
+        # "time_since_last_comp",
+        # "bodyweight_change",
         "cumulative_comps",
         "meet_type",
         "previous_squat",
@@ -270,6 +276,7 @@ if __name__ == "__main__":
         model_uri = mlflow.get_artifact_uri(artifact_path)
 
     """
+    NOTES
     Use of MLFlow to track experiments
     XG Boost - Tree based modelling
     Low bias - high variance -> overfitting
