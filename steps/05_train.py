@@ -18,6 +18,7 @@ from sklearn.metrics import mean_squared_error
 import optuna
 import mlflow
 
+
 # MLFlow configurations
 mlflow.set_tracking_uri("sqlite:///mlruns.db")
 
@@ -28,6 +29,7 @@ os.environ["AWS_ACCESS_KEY_ID"] = os.environ.get("MINIO_ROOT_USER")
 os.environ["AWS_SECRET_ACCESS_KEY"] = os.environ.get("MINIO_ROOT_PASSWORD")
 
 MAX_TRIALS = 250
+
 
 # override Optuna's default logging to ERROR only
 optuna.logging.set_verbosity(optuna.logging.ERROR)
@@ -60,7 +62,6 @@ def get_or_create_experiment(experiment_name):
         logging.info("Creating new experiment: %s without artifact store", experiment_name)
         standard_experiment = mlflow.create_experiment(experiment_name)
         return standard_experiment
-
 
 def champion_callback(study, frozen_trial):
     """
@@ -196,6 +197,7 @@ if __name__ == "__main__":
     logging.info("Loading data")
     base_df = pl.read_parquet(conf.base_local_file_path)
 
+
     modelling_cols = [
         "name",
         "date",
@@ -205,6 +207,8 @@ if __name__ == "__main__":
         "total",
         # "time_since_last_comp",
         # "bodyweight_change",
+        "time_since_last_comp",
+        "bodyweight_change",
         "cumulative_comps",
         "meet_type",
         "previous_squat",
@@ -248,6 +252,7 @@ if __name__ == "__main__":
         # Execute the hyperparameter optimization trials.
         # Note the addition of the `champion_callback` inclusion to control our logging
         study.optimize(objective, n_trials=MAX_TRIALS, callbacks=[champion_callback])
+
 
         mlflow.log_params(study.best_params)
         mlflow.log_metric("best_mse", study.best_value)

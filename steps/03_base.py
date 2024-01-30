@@ -132,20 +132,20 @@ if __name__ == "__main__":
 
     logging.info("Performing feature engineering transformations")
 
-    # Temporal
-    time_since_last_comp_df = add_time_since_last_comp(ordered_df)
-    temporal_df = add_temporal_features(time_since_last_comp_df)
+    # # Temporal
+    # time_since_last_comp_df = add_time_since_last_comp(ordered_df)
+    # temporal_df = add_temporal_features(time_since_last_comp_df)
 
-    # Meet
-    meet_type_df = add_meet_type(temporal_df)
-    generic_feature_engineering_df = add_generic_feature_engineering_columns(meet_type_df)
+    # # Meet
+    # meet_type_df = add_meet_type(temporal_df)
+    # generic_feature_engineering_df = add_generic_feature_engineering_columns(meet_type_df)
 
-    # Numerical
-    progress_df = add_powerlifting_progress(generic_feature_engineering_df)
-    fe_df = add_previous_powerlifting_records(progress_df)
+    # # Numerical
+    # progress_df = add_powerlifting_progress(generic_feature_engineering_df)
+    # fe_df = add_previous_powerlifting_records(progress_df)
 
-    common_io.io_write_from_local_to_s3(
-        fe_df,
-        conf.base_local_file_path,
-        conf.base_s3_key,
-    )
+    # common_io.io_write_from_local_to_s3(
+    #     fe_df,
+    #     conf.base_local_file_path,
+    #     conf.base_s3_key,
+    # )
