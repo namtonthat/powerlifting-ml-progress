@@ -26,6 +26,11 @@ root_data_folder = "data"
 bucket_name = "powerlifting-ml-progress"
 parquet_file = "openpowerlifting-latest.parquet"
 reference_tables_local_folder_name = "reference-tables"
+env_file_path = ".env/project.env"
+
+# This is the name of the minio bucket created
+# TODO: Add sync script
+artifact_location = "s3://mlflow"
 
 # Reference tables
 reference_tables_local_file_path_parquet = f"{root_data_folder}/{reference_tables_local_folder_name}"

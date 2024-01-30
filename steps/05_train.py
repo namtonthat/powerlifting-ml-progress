@@ -7,6 +7,9 @@ import math
 import seaborn as sns
 import polars as pl
 import conf
+import os
+import logging
+from dotenv import load_dotenv
 
 ## Perform XG Boost on data
 import xgboost as xgb
@@ -15,7 +18,18 @@ from sklearn.metrics import mean_squared_error
 import optuna
 import mlflow
 
-mlflow.set_tracking_uri("http://localhost:8080")
+
+# MLFlow configurations
+mlflow.set_tracking_uri("sqlite:///mlruns.db")
+
+load_dotenv(conf.env_file_path)
+# NOTE: MLFLOW_TRACKING_URI and MLFLOW_S3_ENDPOINT_URL are set by the load
+# Use MINIO_ROOT_USER / ROOT_PASSWORD as S3 credentials
+os.environ["AWS_ACCESS_KEY_ID"] = os.environ.get("MINIO_ROOT_USER")
+os.environ["AWS_SECRET_ACCESS_KEY"] = os.environ.get("MINIO_ROOT_PASSWORD")
+
+MAX_TRIALS = 250
+
 
 # override Optuna's default logging to ERROR only
 optuna.logging.set_verbosity(optuna.logging.ERROR)
@@ -39,8 +53,15 @@ def get_or_create_experiment(experiment_name):
     if experiment := mlflow.get_experiment_by_name(experiment_name):
         return experiment.experiment_id
     else:
-        return mlflow.create_experiment(experiment_name)
+        try:
+            logging.info("Creating new experiment: %s with artifact location: %s", experiment_name, conf.artifact_location)
+            mlflow.create_experiment(experiment_name, artifact_location=conf.artifact_location)
+        except MlflowException as e:
+            print(e)
 
+        logging.info("Creating new experiment: %s without artifact store", experiment_name)
+        standard_experiment = mlflow.create_experiment(experiment_name)
+        return standard_experiment
 
 def champion_callback(study, frozen_trial):
     """
@@ -173,7 +194,9 @@ if __name__ == "__main__":
     columns_to_exclude = ["name", "total", "date"]
 
     # Load data
-    base_df = pl.read_parquet(conf.base_s3_http)
+    logging.info("Loading data")
+    base_df = pl.read_parquet(conf.base_local_file_path)
+
 
     modelling_cols = [
         "name",
@@ -182,6 +205,8 @@ if __name__ == "__main__":
         "age_class",
         "sex",
         "total",
+        # "time_since_last_comp",
+        # "bodyweight_change",
         "time_since_last_comp",
         "bodyweight_change",
         "cumulative_comps",
@@ -226,7 +251,8 @@ if __name__ == "__main__":
 
         # Execute the hyperparameter optimization trials.
         # Note the addition of the `champion_callback` inclusion to control our logging
-        study.optimize(objective, n_trials=500, callbacks=[champion_callback])
+        study.optimize(objective, n_trials=MAX_TRIALS, callbacks=[champion_callback])
+
 
         mlflow.log_params(study.best_params)
         mlflow.log_metric("best_mse", study.best_value)
@@ -270,6 +296,7 @@ if __name__ == "__main__":
         model_uri = mlflow.get_artifact_uri(artifact_path)
 
     """
+    NOTES
     Use of MLFlow to track experiments
     XG Boost - Tree based modelling
     Low bias - high variance -> overfitting
