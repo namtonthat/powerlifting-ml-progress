@@ -9,4 +9,4 @@
 *.parquet
 
 # Ignore all files from mlruns/ - these will be synced to S3
-./mlruns/*
+mlruns/*

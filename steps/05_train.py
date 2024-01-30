@@ -7,6 +7,7 @@ import math
 import seaborn as sns
 import polars as pl
 import conf
+import os
 import logging
 
 ## Perform XG Boost on data
@@ -16,7 +17,10 @@ from sklearn.metrics import mean_squared_error
 import optuna
 import mlflow
 
-mlflow.set_tracking_uri("postgresql+psycopg2://postgres:postgres@localhost/mlflow_db")
+mlflow.set_tracking_uri("sqlite:///mlruns.db")
+
+# Set the artifact backend
+os.environ["MLFLOW_S3_ENDPOINT_URL"] = "http://localhost:9000"
 
 # override Optuna's default logging to ERROR only
 optuna.logging.set_verbosity(optuna.logging.ERROR)
@@ -41,10 +45,14 @@ def get_or_create_experiment(experiment_name):
         return experiment.experiment_id
     else:
         try:
+            logging.info("Creating new experiment: %s with artifact location: %s", experiment_name, conf.artifact_location)
             mlflow.create_experiment(experiment_name, artifact_location=conf.artifact_location)
         except MlflowException as e:
             print(e)
-        return mlflow.create_experiment(experiment_name)
+
+        logging.info("Creating new experiment: %s without artifact store", experiment_name)
+        standard_experiment = mlflow.create_experiment(experiment_name)
+        return standard_experiment
 
 
 def champion_callback(study, frozen_trial):

@@ -28,6 +28,7 @@ parquet_file = "openpowerlifting-latest.parquet"
 reference_tables_local_folder_name = "reference-tables"
 
 # This is the name of the minio bucket created
+# TODO: Add sync script
 artifact_location = "s3://mlflow"
 
 # Reference tables
