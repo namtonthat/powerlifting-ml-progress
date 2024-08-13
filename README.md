@@ -5,7 +5,7 @@
 [![extract-transform-load](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/extract-transform-load.yml/badge.svg)](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/extract-transform-load.yml)
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://powerlifting.streamlit.app)
 
-![Last Updated](https://img.shields.io/badge/Last%20Updated-2024--08--09-blue)
+![Last Updated](https://img.shields.io/badge/Last%20Updated-2024--08--13-blue)
 # :computer: Local Development
 
 Refer to the `Makefile` using: `make` from the command line.
