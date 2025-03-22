@@ -18,4 +18,5 @@ if [ "$GITHUB_ACTIONS" = "true" ]; then
 else
   echo "showing the github_actions secret access key"
   tofu output -raw github_actions_secret_access_key
+  echo
 fi
