@@ -1,0 +1,6 @@
+[sqlfluff]
+dialect = duckdb
+exclude_rules = AM04
+
+[sqlfluff:rules:capitalisation.keywords]
+capitalisation_policy = lower
