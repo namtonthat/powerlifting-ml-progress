@@ -1,13 +1,14 @@
+import logging
+
 import boto3
+import common_io
 import conf
 import polars as pl
-import common_io
-import logging
 
 
 @conf.debug
 def filter_non_numeric_place(df: pl.DataFrame) -> pl.DataFrame:
-    return df.filter(pl.col("place").apply(lambda x: x.isnumeric(), return_dtype=pl.Boolean))
+    return df.filter(pl.col("place").str.isdigit())
 
 
 @conf.debug
