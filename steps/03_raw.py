@@ -8,7 +8,7 @@ import polars as pl
 
 @conf.debug
 def filter_non_numeric_place(df: pl.DataFrame) -> pl.DataFrame:
-    return df.filter(pl.col("place").str.isdigit())
+    return df.filter(pl.col("place").str.contains(r"^\d+$"))
 
 
 @conf.debug
