@@ -175,11 +175,9 @@ renamed_landing_column_names = {
 
 landing_column_names = [camel_to_snake(col) for col in _required_landing_column_names]
 
-# TODO: Remove this from the raw layer as it is not best practice
-# raw columns created from transformations
-additional_raw_columns = ["origin_country", "primary_key", "year_of_birth"]
+additional_raw_columns = ["origin_country", "primary_key", "birth_year"]
 
-# Base layer
+# Raw layer
 _raw_column_names = _required_landing_column_names + additional_raw_columns
 raw_columns = [camel_to_snake(col) for col in _raw_column_names]
 

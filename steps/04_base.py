@@ -236,7 +236,7 @@ def add_squat_deadlift_similarity(df: pl.DataFrame) -> pl.DataFrame:
 if __name__ == "__main__":
     logging.info("Loading %s S3", conf.raw_s3_http)
     s3 = boto3.client("s3")
-    df = pl.read_parquet(source=conf.raw_s3_http)
+    df = pl.read_parquet(source=conf.raw_local_file_path)
     logging.info("Creating reference tables")
     # common_io.upload_reference_tables_to_s3(s3, list(utils.convert_reference_tables_to_parquet()))
     best_lifters_by_year_df = calculate_proximity_reference_table(df)
@@ -250,7 +250,7 @@ if __name__ == "__main__":
     generic_df = add_generic_features(cleansed_df)
 
     # Temporal
-    temporal_df = add_temporal_features(cleansed_df)
+    temporal_df = add_temporal_features(generic_df)
 
     # Numerical
     _numerical_df = add_numerical_features(temporal_df)
