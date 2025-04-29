@@ -1,6 +1,7 @@
+import logging
 import re
 from enum import Enum
-import logging
+
 import polars as pl
 
 logging.basicConfig(level=logging.INFO)
@@ -91,6 +92,11 @@ base_local_file_path = create_output_file_path(
     FileLocation.LOCAL,
 )
 
+semantic_local_file_path = create_output_file_path(
+    OutputPathType.SEMANTIC,
+    FileLocation.LOCAL,
+)
+
 # S3 keys
 landing_s3_key = create_output_file_path(
     OutputPathType.LANDING,
@@ -110,11 +116,29 @@ semantic_s3_key = create_output_file_path(
 )
 
 
-landing_s3_http = create_output_file_path(OutputPathType.LANDING, FileLocation.S3, as_http=True)
+landing_s3_http = create_output_file_path(
+    OutputPathType.LANDING,
+    FileLocation.S3,
+    as_http=True,
+)
 
-raw_s3_http = create_output_file_path(OutputPathType.RAW, FileLocation.S3, as_http=True)
+raw_s3_http = create_output_file_path(
+    OutputPathType.RAW,
+    FileLocation.S3,
+    as_http=True,
+)
 
-base_s3_http = create_output_file_path(OutputPathType.BASE, FileLocation.S3, as_http=True)
+base_s3_http = create_output_file_path(
+    OutputPathType.BASE,
+    FileLocation.S3,
+    as_http=True,
+)
+
+semantic_s3_http = create_output_file_path(
+    OutputPathType.SEMANTIC,
+    FileLocation.S3,
+    as_http=True,
+)
 
 # Columns
 # Landing
