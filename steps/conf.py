@@ -33,9 +33,6 @@ env_file_path = ".env/project.env"
 # TODO: Add sync script
 artifact_location = "s3://mlflow"
 
-# Reference tables
-reference_tables_local_file_path_parquet = f"{root_data_folder}/{reference_tables_local_folder_name}"
-
 # Magic numbers
 AGE_TOLERANCE_YEARS = 2  # used to determine if a lifter is the same person
 DAYS_IN_YEAR = 365.25
@@ -181,7 +178,7 @@ landing_column_names = [camel_to_snake(col) for col in _required_landing_column_
 additional_raw_columns = ["origin_country", "primary_key", "year_of_birth"]
 
 # Base layer
-_base_column_names = _required_landing_column_names + additional_raw_columns
-base_columns = [camel_to_snake(col) for col in _base_column_names]
+_raw_column_names = _required_landing_column_names + additional_raw_columns
+raw_columns = [camel_to_snake(col) for col in _raw_column_names]
 
-base_renamed_columns = {camel_to_snake(key): camel_to_snake(value) for key, value in renamed_landing_column_names.items()}
+raw_renamed_columns = {camel_to_snake(key): camel_to_snake(value) for key, value in renamed_landing_column_names.items()}

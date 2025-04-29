@@ -21,14 +21,16 @@ def convert_reference_tables_to_parquet() -> Iterator[str]:
     Yields:
         Iterator[str]: Paths of the converted Parquet files.
     """
-    logging.info("Build reference tables")
+    logging.info("Building reference tables")
 
-    reference_table_file_paths = [f"{conf.reference_tables_local_folder_name}/{file}" for file in Path(conf.reference_tables_local_folder_name).iterdir() if file.is_file() and file.suffix == ".csv"]
+    reference_table_file_paths = [Path(file) for file in Path(conf.reference_tables_local_folder_name).iterdir() if file.is_file() and file.suffix == ".csv"]
     common_io.io_create_root_data_folder()
+
+    logging.debug(reference_table_file_paths)
 
     for file in reference_table_file_paths:
         logging.info(f"Converting {file} to parquet")
-        file_name = file.split(".csv")[0].split("/")[-1]
+        file_name = str(file).split(".csv")[0].split("/")[-1]
         output_file_path = conf.create_output_file_path(
             conf.OutputPathType.REFERENCE,
             conf.FileLocation.LOCAL,

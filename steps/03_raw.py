@@ -128,7 +128,9 @@ if __name__ == "__main__":
     lifter_country_df = create_origin_country_df(primary_key_df)
 
     # Add the origin country to the primary key dataframe
-    raw_df = add_origin_country(primary_key_df, lifter_country_df)
+    _raw_df = add_origin_country(primary_key_df, lifter_country_df)
+
+    raw_df = _raw_df.select(conf.raw_columns).rename(conf.raw_renamed_columns)
 
     utils.test_counts(raw_df, primary_key_df)
 

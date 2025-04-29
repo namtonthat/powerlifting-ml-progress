@@ -152,10 +152,8 @@ def add_previous_powerlifting_records(df: pl.DataFrame) -> pl.DataFrame:
 
 @conf.debug
 def add_numerical_features(df: pl.DataFrame) -> pl.DataFrame:
-    base_df = add_proximity_to_top_lifter(df)
-    progress_df = add_powerlifting_progress(base_df)
-    proximity_df = add_proximity_to_top_lifter(progress_df)
-    numeric_df = add_squat_deadlift_similarity(proximity_df)
+    progress_df = add_powerlifting_progress(df)
+    numeric_df = add_squat_deadlift_similarity(progress_df)
 
     return numeric_df
 
@@ -171,10 +169,25 @@ def add_weight_change(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
-def add_proximity_to_top_lifter(df: pl.DataFrame) -> pl.DataFrame:
-    top_lifter_df = df.group_by(["weight_class", "sex"]).agg(pl.max("elio_rating").alias("top_elio_rating"))
+def add_proximity_to_top_lifter(df: pl.DataFrame, top_lifter_df: pl.DataFrame) -> pl.DataFrame:
     df = df.join(top_lifter_df, on=["weight_class", "sex"], how="left")
-    return df.with_columns((pl.col("elio_rating") / pl.col("top_elio_rating")).alias("proximity_to_top_lifter"))
+    return df.with_columns((pl.col("total") / pl.col("top_total")).alias("proximity_to_top_lifter"))
+
+
+@conf.debug
+def calculate_proximity_reference_table(df: pl.DataFrame) -> pl.DataFrame:
+    """
+    Calculate the top total per weight_class, sex, and event_year to create a reference table
+    for proximity to top lifter by year.
+
+    Args:
+        df (pl.DataFrame): Input dataframe with 'weight_class', 'sex', 'event_year', and 'total' columns.
+
+    Returns:
+        pl.DataFrame: Reference table with columns ['weight_class', 'sex', 'event_year', 'top_total'].
+    """
+    reference_df = df.select(["weight_class", "sex", "event_year", "total"]).group_by(["weight_class", "sex", "event_year"]).agg(pl.max("total").alias("top_total"))
+    return reference_df
 
 
 def add_percentile_ranks(df: pl.DataFrame, score_col: str, group_cols: list[str]) -> pl.DataFrame:
@@ -224,13 +237,13 @@ def add_squat_deadlift_similarity(df: pl.DataFrame) -> pl.DataFrame:
 if __name__ == "__main__":
     logging.info("Loading %s S3", conf.raw_s3_http)
     s3 = boto3.client("s3")
-    common_io.upload_reference_tables_to_s3(s3, list(utils.convert_reference_tables_to_parquet()))
-
     df = pl.read_parquet(source=conf.raw_s3_http)
+    logging.info("Creating reference tables")
+    common_io.upload_reference_tables_to_s3(s3, list(utils.convert_reference_tables_to_parquet()))
+    best_lifters_by_year_df = calculate_proximity_reference_table(df)
 
     logging.info("Performing base transformations")
-    renamed_df = df.select(conf.base_columns).rename(conf.base_renamed_columns)
-    ordered_df = renamed_df.sort(by=["primary_key", "date"], descending=[False, False])
+    ordered_df = df.sort(by=["primary_key", "date"], descending=[False, False])
     cleansed_df = filter_for_raw_events(ordered_df)
 
     logging.info("Performing feature engineering transformations")
@@ -241,13 +254,14 @@ if __name__ == "__main__":
     temporal_df = add_temporal_features(cleansed_df)
 
     # Numerical
-    fe_df = add_numerical_features(temporal_df)
+    _numerical_df = add_numerical_features(temporal_df)
+    numeric_df = add_proximity_to_top_lifter(_numerical_df, best_lifters_by_year_df)
 
     # raw_df = add_percentile_ranks(raw_df)
     # raw_df = add_temporal_smoothing(raw_df)
 
     common_io.io_write_from_local_to_s3(
-        fe_df,
+        numeric_df,
         conf.base_local_file_path,
         conf.base_s3_key,
     )
