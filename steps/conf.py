@@ -147,6 +147,7 @@ _required_landing_column_names = [
     "Age",
     "AgeClass",
     "BodyweightKg",
+    "WeightClassKg",
     "Event",
     "MeetCountry",
     "Equipment",
@@ -164,11 +165,12 @@ _required_landing_column_names = [
 ]
 
 renamed_landing_column_names = {
+    "BodyweightKg": "bodyweight_kg",
     "Best3SquatKg": "squat",
     "Best3BenchKg": "bench",
     "Best3DeadliftKg": "deadlift",
     "TotalKg": "total",
-    "BodyweightKg": "bodyweight",
+    "WeightClassKg": "weight_class_kg",
 }
 
 landing_column_names = [camel_to_snake(col) for col in _required_landing_column_names]

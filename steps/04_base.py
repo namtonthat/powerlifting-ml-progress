@@ -4,7 +4,6 @@ import boto3
 import common_io
 import conf
 import polars as pl
-import utils
 
 
 # Transformations
@@ -170,23 +169,23 @@ def add_weight_change(df: pl.DataFrame) -> pl.DataFrame:
 
 @conf.debug
 def add_proximity_to_top_lifter(df: pl.DataFrame, top_lifter_df: pl.DataFrame) -> pl.DataFrame:
-    df = df.join(top_lifter_df, on=["weight_class", "sex"], how="left")
+    df = df.join(top_lifter_df, on=["weight_class_kg", "sex"], how="left")
     return df.with_columns((pl.col("total") / pl.col("top_total")).alias("proximity_to_top_lifter"))
 
 
 @conf.debug
 def calculate_proximity_reference_table(df: pl.DataFrame) -> pl.DataFrame:
     """
-    Calculate the top total per weight_class, sex, and event_year to create a reference table
+    Calculate the top total per weight_class_kg, sex, and event_year to create a reference table
     for proximity to top lifter by year.
 
     Args:
-        df (pl.DataFrame): Input dataframe with 'weight_class', 'sex', 'event_year', and 'total' columns.
+        df (pl.DataFrame): Input dataframe with 'weight_class_kg', 'sex', 'event_year', and 'total' columns.
 
     Returns:
-        pl.DataFrame: Reference table with columns ['weight_class', 'sex', 'event_year', 'top_total'].
+        pl.DataFrame: Reference table with columns ['weight_class_kg', 'sex', 'event_year', 'top_total'].
     """
-    reference_df = df.select(["weight_class", "sex", "event_year", "total"]).group_by(["weight_class", "sex", "event_year"]).agg(pl.max("total").alias("top_total"))
+    reference_df = df.select(["weight_class_kg", "sex", "event_year", "total"]).group_by(["weight_class_kg", "sex", "event_year"]).agg(pl.max("total").alias("top_total"))
     return reference_df
 
 
@@ -239,7 +238,7 @@ if __name__ == "__main__":
     s3 = boto3.client("s3")
     df = pl.read_parquet(source=conf.raw_s3_http)
     logging.info("Creating reference tables")
-    common_io.upload_reference_tables_to_s3(s3, list(utils.convert_reference_tables_to_parquet()))
+    # common_io.upload_reference_tables_to_s3(s3, list(utils.convert_reference_tables_to_parquet()))
     best_lifters_by_year_df = calculate_proximity_reference_table(df)
 
     logging.info("Performing base transformations")
