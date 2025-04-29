@@ -1,11 +1,10 @@
 import logging
-from pathlib import Path
-from typing import Iterator
 
 import boto3
 import common_io
 import conf
 import polars as pl
+import utils
 
 
 # Transformations
@@ -47,24 +46,6 @@ def filter_for_raw_events(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
-def add_time_since_last_comp(df: pl.DataFrame) -> pl.DataFrame:
-    """
-    Calculate the time elapsed since the last competition for each lifter.
-
-    Args:
-        df (pl.DataFrame): Input dataframe with a 'date' column and 'primary_key' identifying lifters.
-
-    Returns:
-        pl.DataFrame: DataFrame with additional columns for time since last competition in days and years.
-    """
-    time_since_last_comp_df = df.with_columns(((pl.col("date") - pl.col("date").shift(1)).over("primary_key")).alias("time_since_last_comp")).with_columns(
-        pl.col("time_since_last_comp").dt.total_days().alias("time_since_last_comp_days"),
-        (pl.col("time_since_last_comp").dt.total_days() / conf.DAYS_IN_YEAR).alias("time_since_last_comp_years"),
-    )
-    return time_since_last_comp_df
-
-
-@conf.debug
 def add_meet_type(df: pl.DataFrame) -> pl.DataFrame:
     """
     Assign a numeric meet type based on the meet name indicating the level of the competition:
@@ -94,9 +75,28 @@ def add_meet_type(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
+def add_time_since_last_comp(df: pl.DataFrame) -> pl.DataFrame:
+    """
+    Calculate the time elapsed since the last competition for each lifter.
+
+    Args:
+        df (pl.DataFrame): Input dataframe with a 'date' column and 'primary_key' identifying lifters.
+
+    Returns:
+        pl.DataFrame: DataFrame with additional columns for time since last competition in days and years.
+    """
+    time_since_last_comp_df = df.with_columns(((pl.col("date") - pl.col("date").shift(1)).over("primary_key")).alias("time_since_last_comp")).with_columns(
+        pl.col("time_since_last_comp").dt.total_days().alias("time_since_last_comp_days"),
+        (pl.col("time_since_last_comp").dt.total_days() / conf.DAYS_IN_YEAR).alias("time_since_last_comp_years"),
+    )
+    return time_since_last_comp_df
+
+
+@conf.debug
 def add_temporal_features(df: pl.DataFrame) -> pl.DataFrame:
     """
     Add temporal features to the dataframe:
+    - time_since_last_comp_days: days since last competition per lifter.
     - cumulative_comps: cumulative count of competitions per lifter.
     - tenure: cumulative sum of days since last competition per lifter.
 
@@ -106,14 +106,16 @@ def add_temporal_features(df: pl.DataFrame) -> pl.DataFrame:
     Returns:
         pl.DataFrame: DataFrame with added temporal feature columns.
     """
-    return df.with_columns(
+    time_since_last_comp_df = add_time_since_last_comp(df)
+
+    return time_since_last_comp_df.with_columns(
         pl.col("primary_key").cum_count().over("primary_key").alias("cumulative_comps"),
         pl.col("time_since_last_comp_days").cum_sum().over("primary_key").alias("tenure"),
     )
 
 
 @conf.debug
-def add_generic_feature_engineering_columns(df: pl.DataFrame) -> pl.DataFrame:
+def add_generic_features(df: pl.DataFrame) -> pl.DataFrame:
     """
     Add generic feature engineering columns, such as whether the meet country matches the lifter's origin country.
 
@@ -123,7 +125,8 @@ def add_generic_feature_engineering_columns(df: pl.DataFrame) -> pl.DataFrame:
     Returns:
         pl.DataFrame: DataFrame with added boolean column 'is_origin_country'.
     """
-    return df.with_columns(
+    meet_type_df = add_meet_type(df)
+    return meet_type_df.with_columns(
         (pl.col("meet_country") == pl.col("origin_country")).alias("is_origin_country"),
     )
 
@@ -147,63 +150,81 @@ def add_previous_powerlifting_records(df: pl.DataFrame) -> pl.DataFrame:
     )
 
 
-def convert_reference_tables_to_parquet() -> Iterator[str]:
+@conf.debug
+def add_numerical_features(df: pl.DataFrame) -> pl.DataFrame:
+    base_df = add_proximity_to_top_lifter(df)
+    progress_df = add_powerlifting_progress(base_df)
+    proximity_df = add_proximity_to_top_lifter(progress_df)
+    numeric_df = add_squat_deadlift_similarity(proximity_df)
+
+    return numeric_df
+
+
+@conf.debug
+def add_weight_change(df: pl.DataFrame) -> pl.DataFrame:
+    df = df.sort(by=["primary_key", "date"])
+    df = df.with_columns(
+        (pl.col("bodyweight") - pl.col("bodyweight").shift(1)).alias("weight_change_since_last_comp"),
+        (pl.col("bodyweight") - pl.first("bodyweight").over("primary_key")).alias("overall_weight_change"),
+    )
+    return df
+
+
+@conf.debug
+def add_proximity_to_top_lifter(df: pl.DataFrame) -> pl.DataFrame:
+    top_lifter_df = df.group_by(["weight_class", "sex"]).agg(pl.max("elio_rating").alias("top_elio_rating"))
+    df = df.join(top_lifter_df, on=["weight_class", "sex"], how="left")
+    return df.with_columns((pl.col("elio_rating") / pl.col("top_elio_rating")).alias("proximity_to_top_lifter"))
+
+
+def add_percentile_ranks(df: pl.DataFrame, score_col: str, group_cols: list[str]) -> pl.DataFrame:
     """
-    Convert all CSV reference tables in the configured local folder to Parquet format,
-    saving them to the local output folder.
-
-    Yields:
-        Iterator[str]: Paths of the converted Parquet files.
+    Add percentile rank column for the given score column grouped by group_cols.
     """
-    logging.info("Build reference tables")
+    percentile_col = f"{score_col}_percentile"
 
-    reference_table_file_paths = [f"{conf.reference_tables_local_folder_name}/{file}" for file in Path(conf.reference_tables_local_folder_name).iterdir() if file.is_file() and file.suffix == ".csv"]
-    common_io.io_create_root_data_folder()
+    # Calculate percentile rank within groups
+    df = df.with_columns(
+        pl.col(score_col).rank("average", descending=False).over(group_cols).alias(f"{score_col}_rank"),
+        pl.count().over(group_cols).alias(f"{score_col}_count"),
+    )
 
-    for file in reference_table_file_paths:
-        logging.info(f"Converting {file} to parquet")
-        file_name = file.split(".csv")[0].split("/")[-1]
-        output_file_path = conf.create_output_file_path(
-            conf.OutputPathType.REFERENCE,
-            conf.FileLocation.LOCAL,
-            file_name=f"{file_name}.parquet",
-        )
+    df = df.with_columns(((pl.col(f"{score_col}_rank") - 1) / (pl.col(f"{score_col}_count") - 1)).fill_null(0).alias(percentile_col))
 
-        reference_df = pl.read_csv(file)
-        reference_df.write_parquet(output_file_path)
-        yield output_file_path
+    # Drop intermediate columns
+    df = df.drop([f"{score_col}_rank", f"{score_col}_count"])
+
+    return df
 
 
-def upload_reference_tables_to_s3(s3_client: boto3.client, parquet_files: list[str]) -> None:
+def add_temporal_smoothing(df: pl.DataFrame, percentile_col: str, group_col: str, date_col: str, window_size: int = 3) -> pl.DataFrame:
     """
-    Upload Parquet reference tables to the configured S3 bucket.
-
-    Args:
-        s3_client (boto3.client): Boto3 S3 client instance.
-        parquet_files (list[str]): List of local Parquet file paths to upload.
-
-    Returns:
-        None
+    Add temporal smoothing (rolling mean) of percentile ranks per lifter over time.
     """
-    logging.info(f"Uploading {len(parquet_files)} reference tables to S3")
+    smoothed_col = f"{percentile_col}_smoothed"
 
-    for file in parquet_files:
-        paruqet_file_name = file.split("/")[-1]
-        reference_s3_key = conf.create_output_file_path(conf.OutputPathType.REFERENCE, conf.FileLocation.S3, file_name=paruqet_file_name)
+    df = df.sort([group_col, date_col])
 
-        s3_client.upload_file(
-            Filename=file,
-            Bucket=conf.bucket_name,
-            Key=reference_s3_key,
-        )
+    # Rolling mean with window size, min_periods=1 to handle start of series
+    df = df.with_columns(pl.col(percentile_col).rolling_mean(window_size, min_samples=1).over(group_col).alias(smoothed_col))
 
-        logging.info(f"Uploaded {paruqet_file_name} to s3://{conf.bucket_name}/{reference_s3_key}")
+    return df
+
+
+def add_squat_deadlift_similarity(df: pl.DataFrame) -> pl.DataFrame:
+    """
+    Add a metric for similarity between squat and deadlift.
+    We use ratio of min to max of squat and deadlift to get a value between 0 and 1.
+    Closer to 1 means more similar.
+    """
+    df = df.with_columns((pl.min_horizontal([pl.col("squat"), pl.col("deadlift")]) / pl.max_horizontal([pl.col("squat"), pl.col("deadlift")])).alias("squat_deadlift_similarity"))
+    return df
 
 
 if __name__ == "__main__":
     logging.info("Loading %s S3", conf.raw_s3_http)
     s3 = boto3.client("s3")
-    upload_reference_tables_to_s3(s3, list(convert_reference_tables_to_parquet()))
+    common_io.upload_reference_tables_to_s3(s3, list(utils.convert_reference_tables_to_parquet()))
 
     df = pl.read_parquet(source=conf.raw_s3_http)
 
@@ -213,18 +234,17 @@ if __name__ == "__main__":
     cleansed_df = filter_for_raw_events(ordered_df)
 
     logging.info("Performing feature engineering transformations")
+    # Generic
+    generic_df = add_generic_features(cleansed_df)
 
     # Temporal
-    time_since_last_comp_df = add_time_since_last_comp(ordered_df)
-    temporal_df = add_temporal_features(time_since_last_comp_df)
-
-    # Meet
-    meet_type_df = add_meet_type(temporal_df)
-    generic_feature_engineering_df = add_generic_feature_engineering_columns(meet_type_df)
+    temporal_df = add_temporal_features(cleansed_df)
 
     # Numerical
-    progress_df = add_powerlifting_progress(generic_feature_engineering_df)
-    fe_df = add_previous_powerlifting_records(progress_df)
+    fe_df = add_numerical_features(temporal_df)
+
+    # raw_df = add_percentile_ranks(raw_df)
+    # raw_df = add_temporal_smoothing(raw_df)
 
     common_io.io_write_from_local_to_s3(
         fe_df,
