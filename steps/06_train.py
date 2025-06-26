@@ -1,23 +1,24 @@
 """
 Machine Learning Training
 """
-from datetime import datetime
-import matplotlib.pyplot as plt
-import math
-import seaborn as sns
-import polars as pl
-import conf
-import os
+
 import logging
-from dotenv import load_dotenv
+import math
+import os
+from datetime import datetime
+
+import conf
+import matplotlib.pyplot as plt
+import mlflow
+import optuna
+import polars as pl
+import seaborn as sns
 
 ## Perform XG Boost on data
 import xgboost as xgb
-from sklearn.model_selection import train_test_split
+from dotenv import load_dotenv
 from sklearn.metrics import mean_squared_error
-import optuna
-import mlflow
-
+from sklearn.model_selection import train_test_split
 
 # MLFlow configurations
 mlflow.set_tracking_uri("sqlite:///mlruns.db")
@@ -56,12 +57,13 @@ def get_or_create_experiment(experiment_name):
         try:
             logging.info("Creating new experiment: %s with artifact location: %s", experiment_name, conf.artifact_location)
             mlflow.create_experiment(experiment_name, artifact_location=conf.artifact_location)
-        except MlflowException as e:
-            print(e)
+        except mlflow.MlflowException as e:
+            logging.error(e)
 
         logging.info("Creating new experiment: %s without artifact store", experiment_name)
         standard_experiment = mlflow.create_experiment(experiment_name)
         return standard_experiment
+
 
 def champion_callback(study, frozen_trial):
     """
@@ -81,9 +83,9 @@ def champion_callback(study, frozen_trial):
         study.set_user_attr("winner", study.best_value)
         if winner:
             improvement_percent = (abs(winner - study.best_value) / study.best_value) * 100
-            print(f"Trial {frozen_trial.number} achieved value: {frozen_trial.value} with " f"{improvement_percent: .4f}% improvement")
+            logging.info(f"Trial {frozen_trial.number} achieved value: {frozen_trial.value} with {improvement_percent: .4f}% improvement")
         else:
-            print(f"Initial trial {frozen_trial.number} achieved value: {frozen_trial.value}")
+            logging.info(f"Initial trial {frozen_trial.number} achieved value: {frozen_trial.value}")
 
 
 def objective(trial):
@@ -197,7 +199,6 @@ if __name__ == "__main__":
     logging.info("Loading data")
     base_df = pl.read_parquet(conf.base_local_file_path)
 
-
     modelling_cols = [
         "name",
         "date",
@@ -252,7 +253,6 @@ if __name__ == "__main__":
         # Execute the hyperparameter optimization trials.
         # Note the addition of the `champion_callback` inclusion to control our logging
         study.optimize(objective, n_trials=MAX_TRIALS, callbacks=[champion_callback])
-
 
         mlflow.log_params(study.best_params)
         mlflow.log_metric("best_mse", study.best_value)
