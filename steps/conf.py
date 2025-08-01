@@ -1,6 +1,7 @@
+import logging
 import re
 from enum import Enum
-import logging
+
 import polars as pl
 
 logging.basicConfig(level=logging.INFO)
@@ -31,9 +32,6 @@ env_file_path = ".env/project.env"
 # This is the name of the minio bucket created
 # TODO: Add sync script
 artifact_location = "s3://mlflow"
-
-# Reference tables
-reference_tables_local_file_path_parquet = f"{root_data_folder}/{reference_tables_local_folder_name}"
 
 # Magic numbers
 AGE_TOLERANCE_YEARS = 2  # used to determine if a lifter is the same person
@@ -91,6 +89,11 @@ base_local_file_path = create_output_file_path(
     FileLocation.LOCAL,
 )
 
+semantic_local_file_path = create_output_file_path(
+    OutputPathType.SEMANTIC,
+    FileLocation.LOCAL,
+)
+
 # S3 keys
 landing_s3_key = create_output_file_path(
     OutputPathType.LANDING,
@@ -110,11 +113,29 @@ semantic_s3_key = create_output_file_path(
 )
 
 
-landing_s3_http = create_output_file_path(OutputPathType.LANDING, FileLocation.S3, as_http=True)
+landing_s3_http = create_output_file_path(
+    OutputPathType.LANDING,
+    FileLocation.S3,
+    as_http=True,
+)
 
-raw_s3_http = create_output_file_path(OutputPathType.RAW, FileLocation.S3, as_http=True)
+raw_s3_http = create_output_file_path(
+    OutputPathType.RAW,
+    FileLocation.S3,
+    as_http=True,
+)
 
-base_s3_http = create_output_file_path(OutputPathType.BASE, FileLocation.S3, as_http=True)
+base_s3_http = create_output_file_path(
+    OutputPathType.BASE,
+    FileLocation.S3,
+    as_http=True,
+)
+
+semantic_s3_http = create_output_file_path(
+    OutputPathType.SEMANTIC,
+    FileLocation.S3,
+    as_http=True,
+)
 
 # Columns
 # Landing
@@ -126,6 +147,7 @@ _required_landing_column_names = [
     "Age",
     "AgeClass",
     "BodyweightKg",
+    "WeightClassKg",
     "Event",
     "MeetCountry",
     "Equipment",
@@ -143,21 +165,20 @@ _required_landing_column_names = [
 ]
 
 renamed_landing_column_names = {
+    "BodyweightKg": "bodyweight_kg",
     "Best3SquatKg": "squat",
     "Best3BenchKg": "bench",
     "Best3DeadliftKg": "deadlift",
     "TotalKg": "total",
-    "BodyweightKg": "bodyweight",
+    "WeightClassKg": "weight_class_kg",
 }
 
 landing_column_names = [camel_to_snake(col) for col in _required_landing_column_names]
 
-# TODO: Remove this from the raw layer as it is not best practice
-# raw columns created from transformations
-additional_raw_columns = ["origin_country", "primary_key", "year_of_birth"]
+additional_raw_columns = ["origin_country", "primary_key", "birth_year"]
 
-# Base layer
-_base_column_names = _required_landing_column_names + additional_raw_columns
-base_columns = [camel_to_snake(col) for col in _base_column_names]
+# Raw layer
+_raw_column_names = _required_landing_column_names + additional_raw_columns
+raw_columns = [camel_to_snake(col) for col in _raw_column_names]
 
-base_renamed_columns = {camel_to_snake(key): camel_to_snake(value) for key, value in renamed_landing_column_names.items()}
+raw_renamed_columns = {camel_to_snake(key): camel_to_snake(value) for key, value in renamed_landing_column_names.items()}
