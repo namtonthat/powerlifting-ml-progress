@@ -4,6 +4,7 @@ import boto3
 import common_io
 import conf
 import polars as pl
+import utils
 
 
 @conf.debug
@@ -90,7 +91,6 @@ def filter_for_unique_primary_key(df: pl.DataFrame) -> pl.DataFrame:
     return df.unique(subset=["primary_key", "date", "meet_name"])
 
 
-@conf.debug
 def create_origin_country_df(df: pl.DataFrame) -> pl.DataFrame:
     lifter_country_df = df.group_by(["primary_key"]).agg(pl.first("meet_country").alias("origin_country"))
     return lifter_country_df
@@ -98,19 +98,13 @@ def create_origin_country_df(df: pl.DataFrame) -> pl.DataFrame:
 
 @conf.debug
 def add_origin_country(df: pl.DataFrame, lifter_country_df: pl.DataFrame) -> pl.DataFrame:
-    logging.info(f"Row count (df): {len(df)}")
-    logging.info(f"Row count (lifter_country_df): {len(lifter_country_df)}")
+    logging.debug(f"Row count (df): {len(df)}")
+    logging.debug(f"Row count (lifter_country_df): {len(lifter_country_df)}")
     return df.join(lifter_country_df, on="primary_key", how="left")
 
 
-def test_counts(df_1, df_2):
-    logging.info(f"Row count (df_1): {len(df_1)}")
-    logging.info(f"Row count (df_2): {len(df_2)}")
-    assert len(df_1) == len(df_2)
-
-
 if __name__ == "__main__":
-    logging.info("Loading data from S3")
+    logging.info("Loading %s S3", conf.landing_s3_http)
     s3 = boto3.client("s3")
     df = pl.read_parquet(source=conf.landing_s3_http)
     logging.info(f"Loaded {conf.landing_s3_http}")
@@ -134,9 +128,11 @@ if __name__ == "__main__":
     lifter_country_df = create_origin_country_df(primary_key_df)
 
     # Add the origin country to the primary key dataframe
-    raw_df = add_origin_country(primary_key_df, lifter_country_df)
+    _raw_df = add_origin_country(primary_key_df, lifter_country_df)
 
-    test_counts(raw_df, primary_key_df)
+    raw_df = _raw_df.select(conf.raw_columns).rename(conf.raw_renamed_columns)
+
+    utils.test_counts(raw_df, primary_key_df)
 
     # Write to parquet to s3
     common_io.io_write_from_local_to_s3(
