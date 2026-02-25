@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import mlflow
 import numpy as np
 import optuna
+import pandas as pd
 import polars as pl
 import seaborn as sns
 import xgboost as xgb
@@ -89,7 +90,7 @@ def objective(trial):
         params = {
             "objective": "reg:squarederror",
             "eval_metric": "rmse",
-            "booster": trial.suggest_categorical("booster", ["gbtree", "dart"]),
+            "booster": "gbtree",
             "lambda": trial.suggest_float("lambda", 1e-8, 1.0, log=True),
             "alpha": trial.suggest_float("alpha", 1e-8, 1.0, log=True),
         }
@@ -105,7 +106,8 @@ def objective(trial):
 
         n_rounds = trial.suggest_int("num_boost_round", 200, 2000, step=100)
 
-        bst = xgb.train(params, dtrain, num_boost_round=n_rounds, evals=[(dval, "validation")], early_stopping_rounds=50, verbose_eval=False)
+        pruning_callback = optuna.integration.XGBoostPruningCallback(trial, "validation-rmse")
+        bst = xgb.train(params, dtrain, num_boost_round=n_rounds, evals=[(dval, "validation")], early_stopping_rounds=50, callbacks=[pruning_callback], verbose_eval=False)
         preds = bst.predict(dval)
         error = mean_squared_error(y_val, preds)
         val_rmse = math.sqrt(error)
@@ -301,15 +303,21 @@ if __name__ == "__main__":
     # Initiate the parent run and call the hyperparameter tuning child run logic
     with mlflow.start_run(experiment_id=experiment_id, run_name=run_name, nested=True):
         # Initialize the Optuna study
-        study = optuna.create_study(direction="minimize")
+        study = optuna.create_study(direction="minimize", pruner=optuna.pruners.MedianPruner(n_warmup_steps=50))
 
         # Execute the hyperparameter optimization trials.
         study.optimize(objective, n_trials=MAX_TRIALS, callbacks=[champion_callback])
+
+        n_pruned = len([t for t in study.trials if t.state == optuna.trial.TrialState.PRUNED])
+        n_complete = len([t for t in study.trials if t.state == optuna.trial.TrialState.COMPLETE])
+        logging.info("Optuna done — %d complete, %d pruned out of %d trials", n_complete, n_pruned, len(study.trials))
 
         mlflow.log_params(study.best_params)
         mlflow.log_metric("best_mse", study.best_value)
         mlflow.log_metric("best_rmse", math.sqrt(study.best_value))
         mlflow.log_metric("baseline_rmse", baseline_rmse)
+        mlflow.log_metric("n_pruned_trials", n_pruned)
+        mlflow.log_metric("n_complete_trials", n_complete)
 
         # Retrain final model on train+val with early stopping on val
         best_params = {k: v for k, v in study.best_params.items() if k != "num_boost_round"}
@@ -317,12 +325,9 @@ if __name__ == "__main__":
         best_params["eval_metric"] = "rmse"
         best_n_rounds = study.best_params.get("num_boost_round", 1000)
 
-        dtrain_full = xgb.DMatrix(
-            np.vstack([X_train.values, X_val.values]),
-            label=np.concatenate([y_train.values.ravel(), y_val.values.ravel()]),
-            feature_names=X_train.columns.tolist(),
-            enable_categorical=True,
-        )
+        X_train_val = pd.concat([X_train, X_val], ignore_index=True)
+        y_train_val = pd.concat([y_train, y_val], ignore_index=True)
+        dtrain_full = xgb.DMatrix(X_train_val, label=y_train_val, enable_categorical=True)
         # For final model, use the best n_rounds directly (already tuned with early stopping)
         model = xgb.train(best_params, dtrain_full, num_boost_round=best_n_rounds)
 
