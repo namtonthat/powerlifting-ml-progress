@@ -334,6 +334,72 @@ def add_elo_rating(df: pl.DataFrame) -> pl.DataFrame:
     )
 
 
+# --- Iteration 2: High-impact features ---
+
+
+@conf.debug
+def add_personal_best_features(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col("previous_total").cum_max().over("primary_key").alias("prev_personal_best_total"),
+    ).with_columns(
+        (pl.col("previous_total") / pl.col("prev_personal_best_total")).alias("prev_total_vs_pb"),
+        (pl.col("prev_personal_best_total") - pl.col("previous_total")).alias("prev_distance_from_pb"),
+    )
+
+
+@conf.debug
+def add_prev_progress_rate(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col("total_progress").shift(1).over("primary_key").alias("prev_total_progress"),
+        pl.col("total_progress").rolling_mean(window_size=3, min_samples=2).shift(1).over("primary_key").alias("prev_avg_progress_3"),
+    )
+
+
+@conf.debug
+def add_competition_density(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.when(pl.col("tenure") > 0).then(pl.col("cumulative_comps") / (pl.col("tenure") / conf.DAYS_IN_YEAR)).otherwise(None).alias("comps_per_year"),
+    )
+
+
+@conf.debug
+def add_rolling_variability(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col("total").rolling_std(window_size=3, min_samples=2).shift(1).over("primary_key").alias("prev_rolling_std_total_3"),
+    )
+
+
+@conf.debug
+def add_age_lifecycle_features(df: pl.DataFrame) -> pl.DataFrame:
+    return (
+        df.with_columns(
+            (pl.col("date").dt.year() - pl.col("year_of_birth")).alias("approx_age"),
+        )
+        .with_columns(
+            (pl.col("approx_age") - conf.PEAK_POWERLIFTING_AGE).alias("years_from_peak_age"),
+        )
+        .with_columns(
+            pl.col("years_from_peak_age").abs().alias("abs_years_from_peak_age"),
+        )
+    )
+
+
+@conf.debug
+def add_prev_absolute_change(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        (pl.col("previous_total") - pl.col("previous_total").shift(1).over("primary_key")).alias("prev_total_change_kg"),
+    )
+
+
+@conf.debug
+def add_interaction_features(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        (pl.col("previous_total") * pl.col("time_since_last_comp_years")).alias("prev_total_x_time_gap"),
+        (pl.col("previous_total") / pl.col("cumulative_comps")).alias("prev_total_per_comp"),
+        (pl.col("elo_rating") - pl.col("meet_field_elo")).alias("elo_gap_vs_field"),
+    )
+
+
 if __name__ == "__main__":
     df = (
         pl.read_parquet(source=conf.raw_s3_http)
@@ -354,21 +420,29 @@ if __name__ == "__main__":
         .pipe(add_relative_strength)
         .pipe(add_lift_ratios)
         .pipe(add_rolling_averages)
+        .pipe(add_rolling_variability)
         .pipe(add_percentile_rank)
         .pipe(add_previous_powerlifting_records)
         .pipe(add_previous_wilks)
+        .pipe(add_personal_best_features)
         .pipe(add_prev_lift_ratios)
         .pipe(add_prev_rolling_averages)
         .pipe(add_prev_percentile_rank)
         .pipe(add_prev_relative_strength)
         .pipe(add_prev_segment_comparison)
+        .pipe(add_prev_absolute_change)
         .pipe(add_elo_rating)
+        .pipe(add_age_lifecycle_features)
+        .pipe(add_competition_density)
         .pipe(add_powerlifting_progress)
     )
 
     # Guard: null out unreliable progress rates from back-to-back meets
     progress_cols = ["squat_progress", "bench_progress", "deadlift_progress", "total_progress", "wilks_progress"]
     df = df.with_columns(pl.when(pl.col("time_since_last_comp_days") < conf.MIN_DAYS_BETWEEN_COMPS).then(None).otherwise(pl.col(c)).alias(c) for c in progress_cols)
+
+    # Features that depend on guarded progress values
+    df = df.pipe(add_prev_progress_rate)
 
     common_io.io_write_from_local_to_s3(
         df,
