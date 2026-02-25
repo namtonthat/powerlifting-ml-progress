@@ -46,6 +46,21 @@ DAYS_IN_YEAR = 365.25
 MIN_COMPETITIONS = 3  # minimum comps required per lifter for modelling
 MIN_DAYS_BETWEEN_COMPS = 30  # avoid inflated progress rates from back-to-back meets
 
+# Training pipeline
+TEMPORAL_TRAIN_CUTOFF = 0.67
+TEMPORAL_VAL_CUTOFF = 0.75
+PEAK_POWERLIFTING_AGE = 29
+
+# Elo rating system
+ELO_INITIAL = 1500
+ELO_BASE_K = 32
+ELO_MEET_TYPE_MULTIPLIER = {
+    1: 1.5,  # international/world/commonwealth
+    2: 1.0,  # national
+    3: 0.8,  # state
+    4: 0.6,  # local
+}
+
 # Analysis constants
 CAREER_TRAJECTORY_TENURE_BUCKETS = [0, 180, 365, 730, 1095, 1825, 2555, 3650]  # days
 CAREER_TRAJECTORY_TENURE_LABELS = ["0-6mo", "6-12mo", "1-2yr", "2-3yr", "3-5yr", "5-7yr", "7-10yr"]

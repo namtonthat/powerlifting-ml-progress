@@ -37,7 +37,8 @@ def career_trajectory(df: pl.DataFrame) -> pl.DataFrame:
     breaks = conf.CAREER_TRAJECTORY_TENURE_BUCKETS
     labels = conf.CAREER_TRAJECTORY_TENURE_LABELS
     filtered = _base_filter(df).filter(pl.col("tenure").is_not_null())
-    bucketed = filtered.with_columns(pl.col("tenure").cut(breaks[1:], labels=labels).alias("tenure_bucket"))
+    cut_labels = [*labels, "10yr+"]
+    bucketed = filtered.with_columns(pl.col("tenure").cut(breaks[1:], labels=cut_labels).alias("tenure_bucket"))
     return (
         bucketed.group_by(["sex", "ipf_weight_class", "tenure_bucket"])
         .agg(

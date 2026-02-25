@@ -134,6 +134,37 @@ def add_ipf_weight_class(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
+def clean_federation_columns(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col("parent_federation").fill_null("Independent"),
+    )
+
+
+@conf.debug
+def add_segment_averages(df: pl.DataFrame) -> pl.DataFrame:
+    segment_stats = df.group_by(["sex", "ipf_weight_class"]).agg(
+        pl.col("total").mean().alias("segment_mean_total"),
+    )
+    return df.join(segment_stats, on=["sex", "ipf_weight_class"], how="left").with_columns(
+        (pl.col("total") / pl.col("segment_mean_total")).alias("total_vs_segment_mean"),
+    )
+
+
+@conf.debug
+def add_relative_strength(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        (pl.col("total") / pl.col("bodyweight")).alias("total_per_bw"),
+    )
+
+
+@conf.debug
+def add_previous_wilks(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col("wilks").shift(1).over("primary_key").alias("previous_wilks"),
+    )
+
+
+@conf.debug
 def add_bodyweight_change(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns((pl.col("bodyweight") - pl.col("bodyweight").shift(1)).over("primary_key").alias("bodyweight_change"))
 
@@ -164,11 +195,151 @@ def add_percentile_rank(df: pl.DataFrame) -> pl.DataFrame:
     )
 
 
+# --- ML-safe lagged features (fix data leakage) ---
+
+
+@conf.debug
+def add_prev_lift_ratios(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        (pl.col("previous_squat") / pl.col("previous_total")).alias("prev_squat_ratio"),
+        (pl.col("previous_bench") / pl.col("previous_total")).alias("prev_bench_ratio"),
+        (pl.col("previous_deadlift") / pl.col("previous_total")).alias("prev_deadlift_ratio"),
+    )
+
+
+@conf.debug
+def add_prev_rolling_averages(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col("rolling_avg_total_3").shift(1).over("primary_key").alias("prev_rolling_avg_total_3"),
+        pl.col("rolling_avg_squat_3").shift(1).over("primary_key").alias("prev_rolling_avg_squat_3"),
+        pl.col("rolling_avg_bench_3").shift(1).over("primary_key").alias("prev_rolling_avg_bench_3"),
+        pl.col("rolling_avg_deadlift_3").shift(1).over("primary_key").alias("prev_rolling_avg_deadlift_3"),
+    )
+
+
+@conf.debug
+def add_prev_percentile_rank(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        (pl.col("previous_total").rank("average").over("sex", "ipf_weight_class") / pl.col("previous_total").count().over("sex", "ipf_weight_class") * 100).alias("prev_total_percentile_rank"),
+    )
+
+
+@conf.debug
+def add_prev_relative_strength(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        (pl.col("previous_total") / pl.col("bodyweight")).alias("prev_total_per_bw"),
+    )
+
+
+@conf.debug
+def add_prev_segment_comparison(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        (pl.col("previous_total") / pl.col("segment_mean_total")).alias("prev_total_vs_segment_mean"),
+    )
+
+
+# --- Elo rating system ---
+
+
+@conf.debug
+def add_elo_rating(df: pl.DataFrame) -> pl.DataFrame:
+    """Field-based Elo rating adapted from tennis.
+
+    At each meet, lifters are rated against peers in their segment (sex + weight class).
+    The feature stored is the pre-meet Elo (no leakage).
+    """
+    elo_ratings: dict[str, float] = {}  # primary_key -> current elo
+
+    # Pre-allocate output lists
+    n = len(df)
+    out_elo = [None] * n
+    out_change = [None] * n
+    out_field = [None] * n
+
+    # Build a row-index map keyed by (meet_name, date)
+    meet_names = df["meet_name"].to_list()
+    dates = df["date"].to_list()
+    pkeys = df["primary_key"].to_list()
+    sexes = df["sex"].to_list()
+    weight_classes = df["ipf_weight_class"].to_list()
+    totals = df["total"].to_list()
+    meet_types = df["meet_type"].to_list()
+
+    # Group row indices by (meet_name, date), preserving chronological order
+    from collections import OrderedDict
+
+    meet_groups: OrderedDict[tuple, list[int]] = OrderedDict()
+    for i in range(n):
+        key = (meet_names[i], dates[i])
+        if key not in meet_groups:
+            meet_groups[key] = []
+        meet_groups[key].append(i)
+
+    # Sort meet groups chronologically
+    sorted_meets = sorted(meet_groups.items(), key=lambda x: x[0][1])
+
+    for (_meet_name, _date), row_indices in sorted_meets:
+        # Sub-group by segment (sex, ipf_weight_class)
+        segments: dict[tuple, list[int]] = {}
+        for i in row_indices:
+            seg_key = (sexes[i], weight_classes[i])
+            if seg_key not in segments:
+                segments[seg_key] = []
+            segments[seg_key].append(i)
+
+        for _seg_key, seg_indices in segments.items():
+            if len(seg_indices) < 2:
+                # Record pre-meet Elo but skip update for trivial segments
+                for i in seg_indices:
+                    pk = pkeys[i]
+                    pre_elo = elo_ratings.get(pk, conf.ELO_INITIAL)
+                    out_elo[i] = pre_elo
+                    out_field[i] = pre_elo  # field of 1
+                continue
+
+            # Collect pre-meet Elos
+            pre_elos = {}
+            for i in seg_indices:
+                pk = pkeys[i]
+                pre_elos[i] = elo_ratings.get(pk, conf.ELO_INITIAL)
+
+            field_avg = sum(pre_elos.values()) / len(pre_elos)
+
+            # Rank lifters by total within this meet+segment (percentile 0-1)
+            seg_totals = [(i, totals[i] if totals[i] is not None else 0.0) for i in seg_indices]
+            seg_totals.sort(key=lambda x: x[1])
+            num_lifters = len(seg_totals)
+            for rank_pos, (i, _total) in enumerate(seg_totals):
+                actual_score = rank_pos / (num_lifters - 1) if num_lifters > 1 else 0.5
+
+                lifter_elo = pre_elos[i]
+                expected_score = 1.0 / (1.0 + 10.0 ** ((field_avg - lifter_elo) / 400.0))
+
+                mt = meet_types[i] if meet_types[i] is not None else 4
+                k = conf.ELO_BASE_K * conf.ELO_MEET_TYPE_MULTIPLIER.get(mt, 0.6)
+                elo_change = k * (actual_score - expected_score)
+
+                out_elo[i] = lifter_elo
+                out_change[i] = elo_change
+                out_field[i] = field_avg
+
+                # Update Elo for future meets
+                pk = pkeys[i]
+                elo_ratings[pk] = lifter_elo + elo_change
+
+    return df.with_columns(
+        pl.Series("elo_rating", out_elo, dtype=pl.Float64),
+        pl.Series("elo_change", out_change, dtype=pl.Float64),
+        pl.Series("meet_field_elo", out_field, dtype=pl.Float64),
+    )
+
+
 if __name__ == "__main__":
     df = (
         pl.read_parquet(source=conf.raw_s3_http)
         .select(conf.base_columns)
         .rename(conf.base_renamed_columns)
+        .pipe(clean_federation_columns)
         .pipe(order_by_primary_key_and_date)
         .pipe(filter_for_raw_events)
         .pipe(remove_duplicate_names)
@@ -177,13 +348,22 @@ if __name__ == "__main__":
         .pipe(add_temporal_features)
         .pipe(add_meet_type)
         .pipe(add_ipf_weight_class)
+        .pipe(add_segment_averages)
         .pipe(add_generic_feature_engineering_columns)
         .pipe(add_bodyweight_change)
+        .pipe(add_relative_strength)
         .pipe(add_lift_ratios)
         .pipe(add_rolling_averages)
         .pipe(add_percentile_rank)
-        .pipe(add_powerlifting_progress)
         .pipe(add_previous_powerlifting_records)
+        .pipe(add_previous_wilks)
+        .pipe(add_prev_lift_ratios)
+        .pipe(add_prev_rolling_averages)
+        .pipe(add_prev_percentile_rank)
+        .pipe(add_prev_relative_strength)
+        .pipe(add_prev_segment_comparison)
+        .pipe(add_elo_rating)
+        .pipe(add_powerlifting_progress)
     )
 
     # Guard: null out unreliable progress rates from back-to-back meets
