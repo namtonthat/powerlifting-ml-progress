@@ -1,16 +1,18 @@
 #!/bin/bash
 
-set -e errexit
+set -e
 
-echo "create virtual env"
+echo "==> Creating virtual environment"
 uv venv --python 3.13.2
 
-echo "activating env"
+echo "==> Activating environment"
 source .venv/bin/activate
 
-echo "syncing all groups"
+echo "==> Installing dependencies"
 uv sync --all-groups
 
-echo "install precommit"
+echo "==> Installing pre-commit hooks"
 pre-commit clean
 pre-commit install
+
+echo "==> Setup complete. Run 'source .venv/bin/activate' to activate."

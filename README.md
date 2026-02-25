@@ -1,49 +1,68 @@
-# 💪🏋️‍♂️ Powerlifting ML Progress
+# Powerlifting ML Progress
 
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![python](https://img.shields.io/badge/Python-3.11-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
+[![python](https://img.shields.io/badge/Python-3.13-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![extract-transform-load](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/extract-transform-load.yml/badge.svg)](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/extract-transform-load.yml)
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://powerlifting.streamlit.app)
-
 ![Last Updated](https://img.shields.io/badge/Last%20Updated-2025--10--07-blue)
-# :computer: Local Development
 
-Refer to the `Makefile` using: `make` from the command line.
-## :wrench: Setup
-- `make setup` - creates a `virtualenv` and installs dependencies (via `pyenv` and `poetry` respectively) and then installs `precommit` for linting and code quality
+Analyzes [OpenPowerlifting](https://www.openpowerlifting.org/) data to estimate powerlifting progress over time using XGBoost. Includes an automated ETL pipeline, ML training with Optuna, MLflow tracking, and a [Streamlit dashboard](https://powerlifting.streamlit.app).
 
-# :gear: Data Model
-Refer to `.github/workflows/*.yml` files.
+## Quick Start
 
-Jobs are orchestrated by [`dagster`](https://github.com/dagster-io/dagster) with transformations done by `dbt`.
+```bash
+# Setup environment
+./scripts/setup.sh
+
+# Download public data (no AWS creds needed)
+./scripts/download-data.sh
+
+# Run Streamlit dashboard
+uv run streamlit run about.py
+```
+
+## Data Pipeline
 
 ```mermaid
 graph LR
-
-    A[extract-transform-load.yml]
-    B[01_extract.py]
-    C[02_load.py]
-    D[03_raw.py]
-    E[03_base.py]
-    F[`dbt` transformations]
-    G[train machine learning model]
-
-    A --> B
-    B --> C
-    C --> D
-    D --> E
-    E --> F
-    F --> G
+    A[01_extract.py] --> B[02_load.py]
+    B --> C[03_raw.py]
+    C --> D[03_base.py]
+    D --> E[04_describe.py]
+    D --> F[04_analyses.py]
+    D --> G[05_train.py]
 ```
 
-## 💡 Purpose
+Runs automatically via GitHub Actions on Tuesdays and Fridays. Data is public at `s3://powerlifting-ml-progress/`.
 
-This repository analyzes publicly available data from the `OpenPowerlifting` database to estimate how much progress a powerlifter could make over time.
+## Local Development
 
-## 📊 Data
+```bash
+make setup          # Create venv, install deps, pre-commit
+make start          # Start MinIO (ML artifact storage)
+make stop           # Stop MinIO
+```
 
-The data used in this repository is sourced from the `OpenPowerlifting` database, which contains information on powerlifting competitions, lifters, and their performances. You can download the necessary data from `s3://powerlifting-ml-progress/landing/openpowerlifting-latest.parquet` file.
+**Run pipeline steps individually** (requires AWS credentials):
 
-##  References
+```bash
+uv run python steps/01_extract.py   # Download OpenPowerlifting data
+uv run python steps/02_load.py      # Upload reference tables to S3
+uv run python steps/03_raw.py       # Raw layer transformations
+uv run python steps/03_base.py      # Feature engineering
+uv run python steps/04_describe.py  # Summary statistics
+uv run python steps/04_analyses.py  # Advanced analytics
+uv run python steps/05_train.py     # XGBoost training
+```
 
-- `OpenPowerlifting` database: [https://www.openpowerlifting.org/](https://www.openpowerlifting.org/)
+**Analyse data locally** (no AWS credentials needed):
+
+```bash
+./scripts/download-data.sh           # Download public parquet files
+uv run python                        # Then use polars to explore
+```
+
+```python
+import polars as pl
+df = pl.read_parquet("data/base/openpowerlifting-latest.parquet")
+```

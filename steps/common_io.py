@@ -2,11 +2,12 @@
 A set of common IO functions to be used across all steps.
 """
 
-import os
 import logging
 import shutil
-import conf
+from pathlib import Path
 
+import boto3
+import conf
 import polars as pl
 
 
@@ -19,15 +20,16 @@ def io_create_root_data_folder() -> bool:
         bool: True if all folders are created successfully, False otherwise.
     """
     try:
-        if not os.path.exists(conf.root_data_folder):
-            os.makedirs(conf.root_data_folder, exist_ok=True)
+        root = Path(conf.root_data_folder)
+        if not root.exists():
+            root.mkdir(parents=True, exist_ok=True)
             logging.info(f"Created root data folder: {conf.root_data_folder}")
         else:
             logging.info(f"Root data folder already exists: {conf.root_data_folder}")
 
         for folder in conf.OutputPathType:
-            folder_path = os.path.join(conf.root_data_folder, folder.value)
-            os.makedirs(folder_path, exist_ok=True)
+            folder_path = root / folder.value
+            folder_path.mkdir(parents=True, exist_ok=True)
             logging.info(f"Created {folder.value} folder")
 
         return True
@@ -44,7 +46,7 @@ def io_remove_root_data_folder() -> bool:
         bool: True if the folder is deleted successfully, False otherwise.
     """
     try:
-        if os.path.exists(conf.root_data_folder):
+        if Path(conf.root_data_folder).exists():
             shutil.rmtree(conf.root_data_folder)
             logging.info(f"Files from '{conf.root_data_folder}' removed")
             return True
@@ -66,15 +68,14 @@ def io_write_from_local_to_s3(df: pl.DataFrame, local_path: str, s3_key: str, de
     io_create_root_data_folder()
     df.write_parquet(local_path)
 
-    # logging.info("Writing to S3")
-    # s3_client = boto3.client("s3")
-    # s3_client.upload_file(
-    #     local_path,
-    #     conf.bucket_name,
-    #     s3_key,
-    #     ExtraArgs={"ACL": "public-read"},
-    # )
-    # logging.info("Parquet file uploaded to S3 successfully")
+    logging.info("Writing to S3")
+    s3_client = boto3.client("s3")
+    s3_client.upload_file(
+        local_path,
+        conf.bucket_name,
+        s3_key,
+    )
+    logging.info("Parquet file uploaded to S3 successfully")
 
     if debug:
         logging.info(f"Parquet file can be found at: {local_path}")

@@ -1,6 +1,5 @@
 import logging
 
-import boto3
 import common_io
 import conf
 import polars as pl
@@ -111,34 +110,25 @@ def test_counts(df_1, df_2):
 
 if __name__ == "__main__":
     logging.info("Loading data from S3")
-    s3 = boto3.client("s3")
-    df = pl.read_parquet(source=conf.landing_s3_http)
-    logging.info(f"Loaded {conf.landing_s3_http}")
+    logging.info(f"Source: {conf.landing_s3_http}")
 
-    logging.info("Performing raw transformations")
-    # Filter out rows where the place is not numeric
-    filtered_df = filter_non_numeric_place(df)
-    type_cast_df = type_cast(filtered_df)
-    lowercase_df = to_lowercase(type_cast_df)
+    df = (
+        pl.read_parquet(source=conf.landing_s3_http)
+        .pipe(filter_non_numeric_place)
+        .pipe(type_cast)
+        .pipe(to_lowercase)
+        .pipe(add_event_year)
+        .pipe(add_age_rounded_up_half)
+        .pipe(add_birth_year)
+        .pipe(add_primary_key)
+        .pipe(filter_for_unique_primary_key)
+    )
 
-    # Add columns
-    event_year_df = add_event_year(lowercase_df)
-    age_rounded_up_half_df = add_age_rounded_up_half(event_year_df)
-    birth_year_df = add_birth_year(age_rounded_up_half_df)
+    # Origin country requires a self-join, breaks the chain
+    lifter_country_df = create_origin_country_df(df)
+    raw_df = add_origin_country(df, lifter_country_df)
+    test_counts(raw_df, df)
 
-    # Create primary key
-    all_primary_key_df = add_primary_key(birth_year_df)
-    primary_key_df = filter_for_unique_primary_key(all_primary_key_df)
-
-    # Find the first country that the powerlifter competed in and assume that is their country of origin
-    lifter_country_df = create_origin_country_df(primary_key_df)
-
-    # Add the origin country to the primary key dataframe
-    raw_df = add_origin_country(primary_key_df, lifter_country_df)
-
-    test_counts(raw_df, primary_key_df)
-
-    # Write to parquet to s3
     common_io.io_write_from_local_to_s3(
         raw_df,
         conf.raw_local_file_path,

@@ -1,12 +1,13 @@
-import conf
 import datetime
-import common_io
 import io
 import logging
-import requests
 import zipfile
+from pathlib import Path
 
+import common_io
+import conf
 import polars as pl
+import requests
 from jinja2 import Environment, FileSystemLoader
 
 
@@ -25,7 +26,7 @@ def update_readme():
     )
 
     # Save the rendered contents to README.md
-    with open("README.md", "w") as readme_file:
+    with Path("README.md").open("w") as readme_file:
         readme_file.write(updated_contents)
 
     logging.info("README.md updated")

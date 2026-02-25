@@ -7,8 +7,10 @@ data "aws_iam_policy_document" "github_actions_policy" {
   statement {
     sid = "S3ReadAccess"
     actions = [
-      "s3:*",
-      "s3-object-lambda:*"
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:ListBucket",
+      "s3:DeleteObject",
     ]
     resources = [
       "arn:aws:s3:::${var.aws_s3_bucket}",

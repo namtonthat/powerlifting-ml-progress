@@ -1,23 +1,24 @@
 """
 Machine Learning Training
 """
-from datetime import datetime
-import matplotlib.pyplot as plt
-import math
-import seaborn as sns
-import polars as pl
-import conf
-import os
+
 import logging
-from dotenv import load_dotenv
+import math
+import os
+from datetime import datetime
+
+import conf
+import matplotlib.pyplot as plt
+import mlflow
+import optuna
+import polars as pl
+import seaborn as sns
 
 ## Perform XG Boost on data
 import xgboost as xgb
+from dotenv import load_dotenv
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
-import optuna
-import mlflow
-
 
 # MLFlow configurations
 mlflow.set_tracking_uri("sqlite:///mlruns.db")
@@ -52,16 +53,14 @@ def get_or_create_experiment(experiment_name):
 
     if experiment := mlflow.get_experiment_by_name(experiment_name):
         return experiment.experiment_id
-    else:
-        try:
-            logging.info("Creating new experiment: %s with artifact location: %s", experiment_name, conf.artifact_location)
-            mlflow.create_experiment(experiment_name, artifact_location=conf.artifact_location)
-        except MlflowException as e:
-            print(e)
 
+    try:
+        logging.info("Creating new experiment: %s with artifact location: %s", experiment_name, conf.artifact_location)
+        return mlflow.create_experiment(experiment_name, artifact_location=conf.artifact_location)
+    except mlflow.exceptions.MlflowException:
         logging.info("Creating new experiment: %s without artifact store", experiment_name)
-        standard_experiment = mlflow.create_experiment(experiment_name)
-        return standard_experiment
+        return mlflow.create_experiment(experiment_name)
+
 
 def champion_callback(study, frozen_trial):
     """
@@ -81,9 +80,9 @@ def champion_callback(study, frozen_trial):
         study.set_user_attr("winner", study.best_value)
         if winner:
             improvement_percent = (abs(winner - study.best_value) / study.best_value) * 100
-            print(f"Trial {frozen_trial.number} achieved value: {frozen_trial.value} with " f"{improvement_percent: .4f}% improvement")
+            logging.info(f"Trial {frozen_trial.number} achieved value: {frozen_trial.value} with {improvement_percent: .4f}% improvement")
         else:
-            print(f"Initial trial {frozen_trial.number} achieved value: {frozen_trial.value}")
+            logging.info(f"Initial trial {frozen_trial.number} achieved value: {frozen_trial.value}")
 
 
 def objective(trial):
@@ -92,7 +91,7 @@ def objective(trial):
         params = {
             "objective": "reg:squarederror",
             "eval_metric": "rmse",
-            "booster": trial.suggest_categorical("booster", ["gbtree", "gblinear", "dart"]),
+            "booster": trial.suggest_categorical("booster", ["gbtree", "dart"]),
             "lambda": trial.suggest_float("lambda", 1e-8, 1.0, log=True),
             "alpha": trial.suggest_float("alpha", 1e-8, 1.0, log=True),
         }
@@ -190,13 +189,16 @@ def plot_residuals(model, dvalid, valid_y, save_path=None):
 
 if __name__ == "__main__":
     RANDOM_SEED = 7
+    TARGET = "total_progress"
     test_size = 0.33
-    columns_to_exclude = ["name", "total", "date"]
+    columns_to_exclude = ["name", "date", TARGET]
 
     # Load data
     logging.info("Loading data")
     base_df = pl.read_parquet(conf.base_local_file_path)
 
+    # Filter: drop rows without progress (first comp per lifter) and outliers
+    base_df = base_df.filter(pl.col(TARGET).is_not_null() & pl.col(TARGET).is_finite() & (pl.col(TARGET).abs() < 200))
 
     modelling_cols = [
         "name",
@@ -204,23 +206,24 @@ if __name__ == "__main__":
         "bodyweight",
         "age_class",
         "sex",
-        "total",
-        # "time_since_last_comp",
-        # "bodyweight_change",
-        "time_since_last_comp",
+        "ipf_weight_class",
+        "time_since_last_comp_years",
         "bodyweight_change",
         "cumulative_comps",
+        "tenure",
         "meet_type",
+        "is_origin_country",
         "previous_squat",
         "previous_bench",
         "previous_deadlift",
         "previous_total",
+        TARGET,
     ]
 
     modelling_df = base_df.select(modelling_cols)
 
     # Namings
-    run_name = "first_attempt"
+    run_name = "total_progress_v2"
     today_date = datetime.today().strftime("%Y-%m-%d")
     experiment_id = get_or_create_experiment(today_date)
 
@@ -234,29 +237,45 @@ if __name__ == "__main__":
     for col in X.select_dtypes(include="object").columns:
         X[col] = X[col].astype("category")
 
-    y = modelling_df.select(["total"]).to_pandas()
+    y = modelling_df.select([TARGET]).to_pandas()
 
     # split data into train and test sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=RANDOM_SEED)
+
+    # Baseline: predict segment mean (overall mean) for comparison
+    baseline_pred = y_train.mean().values[0]
+    baseline_mse = mean_squared_error(y_test, [baseline_pred] * len(y_test))
+    baseline_rmse = math.sqrt(baseline_mse)
+    logging.info("Baseline RMSE (predict mean): %.4f", baseline_rmse)
 
     # convert data into DMatrix format
     dtrain = xgb.DMatrix(X_train, label=y_train, enable_categorical=True)
     dtest = xgb.DMatrix(X_test, y_test, enable_categorical=True)
 
-    # define a logging callback that will report on only new challenger parameter configurations if a
-    # trial has usurped the state of 'best conditions'   # Initiate the parent run and call the hyperparameter tuning child run logic
+    # Initiate the parent run and call the hyperparameter tuning child run logic
     with mlflow.start_run(experiment_id=experiment_id, run_name=run_name, nested=True):
         # Initialize the Optuna study
         study = optuna.create_study(direction="minimize")
 
         # Execute the hyperparameter optimization trials.
-        # Note the addition of the `champion_callback` inclusion to control our logging
         study.optimize(objective, n_trials=MAX_TRIALS, callbacks=[champion_callback])
-
 
         mlflow.log_params(study.best_params)
         mlflow.log_metric("best_mse", study.best_value)
         mlflow.log_metric("best_rmse", math.sqrt(study.best_value))
+        mlflow.log_metric("baseline_rmse", baseline_rmse)
+
+        # Log a fit model instance
+        model = xgb.train(study.best_params, dtrain)
+
+        # Compute additional metrics on test set
+        test_preds = model.predict(dtest)
+        test_mae = mean_absolute_error(y_test, test_preds)
+        test_r2 = r2_score(y_test, test_preds)
+        mlflow.log_metric("test_mae", test_mae)
+        mlflow.log_metric("test_r2", test_r2)
+        logging.info("Model RMSE: %.4f | MAE: %.4f | R²: %.4f", math.sqrt(study.best_value), test_mae, test_r2)
+        logging.info("RMSE lift over baseline: %.4f", baseline_rmse - math.sqrt(study.best_value))
 
         # Log tags
         mlflow.set_tags(
@@ -264,36 +283,32 @@ if __name__ == "__main__":
                 "project": "powerlifting-ml-progress",
                 "optimizer_engine": "optuna",
                 "model_family": "xgboost",
-                "feature_set_version": 1,
+                "feature_set_version": 2,
+                "target": TARGET,
+                "min_competitions": conf.MIN_COMPETITIONS,
+                "min_days_between_comps": conf.MIN_DAYS_BETWEEN_COMPS,
             }
         )
 
-        # Log a fit model instance
-        model = xgb.train(study.best_params, dtrain)
+        # Log artifacts (plots + model) — requires artifact store (MinIO)
+        try:
+            importances = plot_feature_importance(model, booster=study.best_params.get("booster"))
+            mlflow.log_figure(figure=importances, artifact_file="feature_importances.png")
 
-        # Log the correlation plot
-        # mlflow.log_figure(figure=correlation_plot, artifact_file="correlation_plot.png")
+            residuals = plot_residuals(model, dtest, y_test)
+            mlflow.log_figure(figure=residuals, artifact_file="residuals.png")
 
-        # Log the feature importances plot
-        importances = plot_feature_importance(model, booster=study.best_params.get("booster"))
-        mlflow.log_figure(figure=importances, artifact_file="feature_importances.png")
-
-        # Log the residuals plot
-        # residuals = plot_residuals(model, dtest, y_test)
-        # mlflow.log_figure(figure=residuals, artifact_file="residuals.png")
-
-        artifact_path = "model"
-
-        mlflow.xgboost.log_model(
-            xgb_model=model,
-            artifact_path=artifact_path,
-            input_example=X_train.iloc[[0]],
-            model_format="ubj",
-            metadata={"model_data_version": 1},
-        )
-
-        # Get the logged model uri so that we can load it from the artifact store
-        model_uri = mlflow.get_artifact_uri(artifact_path)
+            artifact_path = "model"
+            mlflow.xgboost.log_model(
+                xgb_model=model,
+                artifact_path=artifact_path,
+                input_example=X_train.iloc[[0]],
+                model_format="ubj",
+                metadata={"model_data_version": 2},
+            )
+            model_uri = mlflow.get_artifact_uri(artifact_path)
+        except Exception as e:
+            logging.warning("Artifact logging failed (is MinIO running?): %s", e)
 
     """
     NOTES

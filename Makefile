@@ -14,6 +14,9 @@ setup: # 🔧 Install packages required for local development
 	@echo "Installing packages required for local development"
 	@./scripts/setup.sh $(arch)
 
+download-data: # 📥 Download public data files (no AWS creds needed)
+	@./scripts/download-data.sh
+
 start: # 🚀 Start ML tracking server
 	docker-compose up -d
 
@@ -23,4 +26,3 @@ stop: # 🛑 Stop ML tracking server
 restart: # 🔄 Restart ML tracking server
 	docker-compose down
 	docker-compose up -d
-
