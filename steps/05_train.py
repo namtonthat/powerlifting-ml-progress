@@ -31,7 +31,7 @@ MAX_TRIALS = 250
 
 
 # override Optuna's default logging to ERROR only
-optuna.logging.set_verbosity(optuna.logging.ERROR)
+optuna.logging.set_verbosity(optuna.logging.INFO)
 
 
 def get_or_create_experiment(experiment_name):
@@ -84,7 +84,8 @@ def champion_callback(study, frozen_trial):
 
 
 def objective(trial):
-    with mlflow.start_run(nested=True):
+    trial_name = f"trial_{trial.number:03d}"
+    with mlflow.start_run(nested=True, run_name=trial_name):
         params = {
             "objective": "reg:squarederror",
             "eval_metric": "rmse",
@@ -107,10 +108,19 @@ def objective(trial):
         bst = xgb.train(params, dtrain, num_boost_round=n_rounds, evals=[(dval, "validation")], early_stopping_rounds=50, verbose_eval=False)
         preds = bst.predict(dval)
         error = mean_squared_error(y_val, preds)
+        val_rmse = math.sqrt(error)
+        val_mae = mean_absolute_error(y_val, preds)
+        val_r2 = r2_score(y_val, preds)
 
         mlflow.log_params(params)
+        mlflow.log_param("num_boost_round", n_rounds)
+        mlflow.log_param("n_features", dtrain.num_col())
         mlflow.log_metric("mse", error)
-        mlflow.log_metric("rmse", math.sqrt(error))
+        mlflow.log_metric("rmse", val_rmse)
+        mlflow.log_metric("mae", val_mae)
+        mlflow.log_metric("r2", val_r2)
+        mlflow.set_tag("booster", params["booster"])
+        mlflow.set_tag("trial_number", trial.number)
 
     return error
 
@@ -189,6 +199,7 @@ def plot_residuals(model, dvalid, valid_y, save_path=None):
 
 if __name__ == "__main__":
     RANDOM_SEED = 7
+    FEATURE_SET_VERSION = 5
     TARGET = "total_progress"
     columns_to_exclude = ["name", "date", TARGET]
 
@@ -239,7 +250,7 @@ if __name__ == "__main__":
     modelling_df = base_df.select(modelling_cols)
 
     # Namings
-    run_name = "total_progress_v5"
+    run_name = f"total_progress_v{FEATURE_SET_VERSION}"
     today_date = datetime.today().strftime("%Y-%m-%d")
     experiment_id = get_or_create_experiment(today_date)
 
@@ -321,11 +332,30 @@ if __name__ == "__main__":
         test_rmse = math.sqrt(test_mse)
         test_mae = mean_absolute_error(y_test, test_preds)
         test_r2 = r2_score(y_test, test_preds)
-        mlflow.log_metric("test_rmse", test_rmse)
-        mlflow.log_metric("test_mae", test_mae)
-        mlflow.log_metric("test_r2", test_r2)
-        logging.info("Model RMSE: %.4f | MAE: %.4f | R²: %.4f", test_rmse, test_mae, test_r2)
-        logging.info("RMSE lift over baseline: %.4f", baseline_rmse - test_rmse)
+        test_median_ae = float(np.median(np.abs(y_test.values.ravel() - test_preds)))
+
+        mlflow.log_metrics(
+            {
+                "test_mse": test_mse,
+                "test_rmse": test_rmse,
+                "test_mae": test_mae,
+                "test_r2": test_r2,
+                "test_median_ae": test_median_ae,
+                "baseline_rmse": baseline_rmse,
+                "rmse_lift_over_baseline": baseline_rmse - test_rmse,
+                "n_train": len(X_train),
+                "n_val": len(X_val),
+                "n_test": len(X_test),
+                "n_features": len(X_train.columns),
+            }
+        )
+
+        logging.info("=" * 60)
+        logging.info("FINAL MODEL RESULTS")
+        logging.info("=" * 60)
+        logging.info("Test RMSE: %.4f | MAE: %.4f | Median AE: %.4f | R²: %.4f", test_rmse, test_mae, test_median_ae, test_r2)
+        logging.info("Baseline RMSE: %.4f | RMSE lift: %.4f", baseline_rmse, baseline_rmse - test_rmse)
+        logging.info("Features: %d | Train: %d | Val: %d | Test: %d", len(X_train.columns), len(X_train), len(X_val), len(X_test))
 
         # Log tags
         mlflow.set_tags(
@@ -333,29 +363,63 @@ if __name__ == "__main__":
                 "project": "powerlifting-ml-progress",
                 "optimizer_engine": "optuna",
                 "model_family": "xgboost",
-                "feature_set_version": 5,
+                "feature_set_version": FEATURE_SET_VERSION,
                 "target": TARGET,
                 "min_competitions": conf.MIN_COMPETITIONS,
                 "min_days_between_comps": conf.MIN_DAYS_BETWEEN_COMPS,
                 "split_method": "temporal",
+                "train_cutoff": str(train_cutoff),
+                "val_cutoff": str(val_cutoff),
+                "best_booster": study.best_params.get("booster"),
+                "best_n_rounds": study.best_params.get("num_boost_round"),
             }
         )
 
+        # Feature importance analysis — log top features to help guide feature selection
+        importance_scores = model.get_score(importance_type="gain")
+        if importance_scores:
+            sorted_features = sorted(importance_scores.items(), key=lambda x: x[1], reverse=True)
+            logging.info("-" * 60)
+            logging.info("TOP FEATURES BY GAIN:")
+            for rank, (feat, gain) in enumerate(sorted_features[:15], 1):
+                logging.info("  %2d. %-35s gain=%.1f", rank, feat, gain)
+                mlflow.log_metric(f"feature_gain_{feat}", gain)
+
+            # Log feature list as a tag for easy filtering
+            top_5_features = ",".join(f[0] for f in sorted_features[:5])
+            mlflow.set_tag("top_5_features", top_5_features)
+
+            # Log features with zero importance (candidates for removal)
+            all_features = set(X_train.columns)
+            used_features = set(importance_scores.keys())
+            unused_features = all_features - used_features
+            if unused_features:
+                logging.info("UNUSED FEATURES (zero gain): %s", ", ".join(sorted(unused_features)))
+                mlflow.set_tag("unused_features", ",".join(sorted(unused_features)))
+
         # Per-segment RMSE evaluation
+        logging.info("-" * 60)
+        logging.info("PER-SEGMENT RMSE:")
         for sex_val in X_test["sex"].cat.categories:
             mask = X_test["sex"] == sex_val
             if mask.sum() >= 50:
                 seg_rmse = math.sqrt(mean_squared_error(y_test[mask], test_preds[mask]))
+                seg_r2 = r2_score(y_test[mask], test_preds[mask])
                 mlflow.log_metric(f"rmse_sex_{sex_val}", seg_rmse)
-                logging.info("RMSE sex=%s (n=%d): %.4f", sex_val, mask.sum(), seg_rmse)
+                mlflow.log_metric(f"r2_sex_{sex_val}", seg_r2)
+                logging.info("  sex=%s (n=%d): RMSE=%.4f R²=%.4f", sex_val, mask.sum(), seg_rmse, seg_r2)
 
         wc_counts = X_test["ipf_weight_class"].value_counts()
         top_wcs = wc_counts[wc_counts >= 50].index
         for wc_val in top_wcs:
             mask = X_test["ipf_weight_class"] == wc_val
             seg_rmse = math.sqrt(mean_squared_error(y_test[mask], test_preds[mask]))
+            seg_r2 = r2_score(y_test[mask], test_preds[mask])
             mlflow.log_metric(f"rmse_wc_{str(wc_val).replace('+', '_plus')}", seg_rmse)
-            logging.info("RMSE wc=%s (n=%d): %.4f", wc_val, mask.sum(), seg_rmse)
+            mlflow.log_metric(f"r2_wc_{str(wc_val).replace('+', '_plus')}", seg_r2)
+            logging.info("  wc=%s (n=%d): RMSE=%.4f R²=%.4f", wc_val, mask.sum(), seg_rmse, seg_r2)
+
+        logging.info("=" * 60)
 
         # Log artifacts (plots + model) — requires artifact store (MinIO)
         try:
@@ -371,7 +435,7 @@ if __name__ == "__main__":
                 artifact_path=artifact_path,
                 input_example=X_train.iloc[[0]],
                 model_format="ubj",
-                metadata={"model_data_version": 5},
+                metadata={"model_data_version": FEATURE_SET_VERSION},
             )
             model_uri = mlflow.get_artifact_uri(artifact_path)
         except Exception as e:
