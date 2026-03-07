@@ -142,12 +142,15 @@ def clean_federation_columns(df: pl.DataFrame) -> pl.DataFrame:
 
 @conf.debug
 def add_segment_averages(df: pl.DataFrame) -> pl.DataFrame:
-    segment_stats = df.group_by(["sex", "ipf_weight_class"]).agg(
-        pl.col("total").mean().alias("segment_mean_total"),
-    )
-    return df.join(segment_stats, on=["sex", "ipf_weight_class"], how="left").with_columns(
+    """Expanding mean within segment (sex + weight class) sorted by date.
+    Uses shift(1) so current row's total is excluded (no data leakage)."""
+    df = df.sort(["sex", "ipf_weight_class", "date"])
+    df = df.with_columns(
+        (pl.col("total").cum_sum().shift(1).over("sex", "ipf_weight_class") / pl.col("total").cum_count().shift(1).over("sex", "ipf_weight_class")).alias("segment_mean_total"),
+    ).with_columns(
         (pl.col("total") / pl.col("segment_mean_total")).alias("total_vs_segment_mean"),
     )
+    return df.sort(["primary_key", "date"])
 
 
 @conf.debug
@@ -400,6 +403,49 @@ def add_interaction_features(df: pl.DataFrame) -> pl.DataFrame:
     )
 
 
+# --- v8 features ---
+
+
+@conf.debug
+def add_time_gap_category(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.when(pl.col("time_since_last_comp_days") <= conf.TIME_GAP_SHORT_UPPER)
+        .then(conf.TIME_GAP_CATEGORIES["short"])
+        .when(pl.col("time_since_last_comp_days") <= conf.TIME_GAP_MEDIUM_UPPER)
+        .then(conf.TIME_GAP_CATEGORIES["medium"])
+        .otherwise(conf.TIME_GAP_CATEGORIES["long"])
+        .alias("time_gap_category"),
+    )
+
+
+@conf.debug
+def add_log_experience(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col("cumulative_comps").log().alias("log_cumulative_comps"),
+    )
+
+
+@conf.debug
+def add_years_competing(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        (pl.col("tenure") / conf.DAYS_IN_YEAR).alias("years_competing"),
+    )
+
+
+@conf.debug
+def add_pct_change_total(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.when(pl.col("previous_total") > 0).then((pl.col("total") - pl.col("previous_total")) / pl.col("previous_total") * 100).otherwise(None).alias("pct_change_total"),
+    )
+
+
+@conf.debug
+def add_prev_pct_change(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col("pct_change_total").shift(1).over("primary_key").alias("prev_pct_change"),
+    )
+
+
 if __name__ == "__main__":
     df = (
         pl.read_parquet(source=conf.raw_s3_http)
@@ -411,7 +457,10 @@ if __name__ == "__main__":
         .pipe(remove_duplicate_names)
         .pipe(filter_minimum_competitions)
         .pipe(add_time_since_last_comp)
+        .pipe(add_time_gap_category)
         .pipe(add_temporal_features)
+        .pipe(add_log_experience)
+        .pipe(add_years_competing)
         .pipe(add_meet_type)
         .pipe(add_ipf_weight_class)
         .pipe(add_segment_averages)
@@ -434,15 +483,18 @@ if __name__ == "__main__":
         .pipe(add_elo_rating)
         .pipe(add_age_lifecycle_features)
         .pipe(add_competition_density)
+        .pipe(add_interaction_features)
         .pipe(add_powerlifting_progress)
+        .pipe(add_pct_change_total)
     )
 
     # Guard: null out unreliable progress rates from back-to-back meets
-    progress_cols = ["squat_progress", "bench_progress", "deadlift_progress", "total_progress", "wilks_progress"]
+    progress_cols = ["squat_progress", "bench_progress", "deadlift_progress", "total_progress", "wilks_progress", "pct_change_total"]
     df = df.with_columns(pl.when(pl.col("time_since_last_comp_days") < conf.MIN_DAYS_BETWEEN_COMPS).then(None).otherwise(pl.col(c)).alias(c) for c in progress_cols)
 
     # Features that depend on guarded progress values
     df = df.pipe(add_prev_progress_rate)
+    df = df.pipe(add_prev_pct_change)
 
     common_io.io_write_from_local_to_s3(
         df,

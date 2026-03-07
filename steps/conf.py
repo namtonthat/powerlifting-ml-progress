@@ -50,6 +50,9 @@ MIN_DAYS_BETWEEN_COMPS = 30  # avoid inflated progress rates from back-to-back m
 TEMPORAL_TRAIN_CUTOFF = 0.67
 TEMPORAL_VAL_CUTOFF = 0.75
 PEAK_POWERLIFTING_AGE = 29
+TIME_GAP_SHORT_UPPER = 90
+TIME_GAP_MEDIUM_UPPER = 365
+TIME_GAP_CATEGORIES = {"short": 1, "medium": 2, "long": 3}
 
 # Elo rating system
 ELO_INITIAL = 1500

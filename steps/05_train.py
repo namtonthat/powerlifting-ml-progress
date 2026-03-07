@@ -28,7 +28,7 @@ load_dotenv(conf.env_file_path)
 os.environ["AWS_ACCESS_KEY_ID"] = os.environ.get("MINIO_ROOT_USER")
 os.environ["AWS_SECRET_ACCESS_KEY"] = os.environ.get("MINIO_ROOT_PASSWORD")
 
-MAX_TRIALS = 250
+MAX_TRIALS = 500
 
 
 # override Optuna's default logging to ERROR only
@@ -201,43 +201,67 @@ def plot_residuals(model, dvalid, valid_y, save_path=None):
 
 if __name__ == "__main__":
     RANDOM_SEED = 7
-    FEATURE_SET_VERSION = 5
-    TARGET = "total_progress"
+    FEATURE_SET_VERSION = 8
+    TARGET = "pct_change_total"
     columns_to_exclude = ["name", "date", TARGET]
 
     # Load data
     logging.info("Loading data")
     base_df = pl.read_parquet(conf.base_local_file_path)
 
-    # Filter: drop rows without progress (first comp per lifter) and outliers
-    base_df = base_df.filter(pl.col(TARGET).is_not_null() & pl.col(TARGET).is_finite() & (pl.col(TARGET).abs() < 200))
+    # Filter: drop rows without progress (first comp per lifter)
+    base_df = base_df.filter(pl.col(TARGET).is_not_null() & pl.col(TARGET).is_finite())
+
+    # Tighter time gap filter: require >= 55 days between comps for reliable progress rates
+    base_df = base_df.filter(pl.col("time_since_last_comp_years") >= 0.15)
+
+    # Winsorize target to p1/p99 instead of hard clip — reduces outlier influence while keeping data
+    p1 = base_df[TARGET].quantile(0.01)
+    p99 = base_df[TARGET].quantile(0.99)
+    base_df = base_df.with_columns(pl.col(TARGET).clip(p1, p99))
+
+    # Encode categoricals as numeric features
+    AGE_CLASS_MAP = {
+        "5-12": 9.0,
+        "13-15": 14.0,
+        "16-17": 16.5,
+        "18-19": 18.5,
+        "20-23": 21.5,
+        "24-34": 29.0,
+        "35-39": 37.0,
+        "40-44": 42.0,
+        "45-49": 47.0,
+        "50-54": 52.0,
+        "55-59": 57.0,
+        "60-64": 62.0,
+        "65-69": 67.0,
+        "70-74": 72.0,
+        "75-79": 77.0,
+        "80-999": 85.0,
+    }
+    base_df = base_df.with_columns(
+        pl.col("sex").replace_strict({"M": 1, "F": 0, "Mx": 0}, return_dtype=pl.Int32).alias("sex_encoded"),
+        pl.col("age_class").replace_strict(AGE_CLASS_MAP, return_dtype=pl.Float64).alias("age_class_encoded"),
+        pl.col("ipf_weight_class").str.replace(r"\+", "").str.replace("unknown", "0").cast(pl.Float64).alias("ipf_wc_numeric"),
+        pl.col("is_origin_country").cast(pl.Int32).alias("is_origin_country_int"),
+    )
 
     modelling_cols = [
         "name",
         "date",
         "bodyweight",
-        "age_class",
-        "sex",
-        "ipf_weight_class",
-        "federation",
+        "age_class_encoded",
+        "sex_encoded",
+        "ipf_wc_numeric",
         "parent_federation",
         "time_since_last_comp_years",
         "bodyweight_change",
         "cumulative_comps",
         "tenure",
-        "meet_type",
-        "is_origin_country",
-        "prev_squat_ratio",
-        "prev_bench_ratio",
-        "prev_deadlift_ratio",
-        "prev_rolling_avg_total_3",
-        "prev_rolling_avg_squat_3",
-        "prev_rolling_avg_bench_3",
-        "prev_rolling_avg_deadlift_3",
+        "is_origin_country_int",
         "prev_total_percentile_rank",
         "prev_total_per_bw",
         "segment_mean_total",
-        "prev_total_vs_segment_mean",
         "previous_squat",
         "previous_bench",
         "previous_deadlift",
@@ -245,14 +269,30 @@ if __name__ == "__main__":
         "previous_wilks",
         "elo_rating",
         "elo_change",
-        "meet_field_elo",
+        # v6: high-impact features
+        "prev_distance_from_pb",
+        "prev_total_progress",
+        "prev_avg_progress_3",
+        "comps_per_year",
+        "prev_rolling_std_total_3",
+        "approx_age",
+        "abs_years_from_peak_age",
+        "prev_total_change_kg",
+        # v7: interaction features
+        "prev_total_x_time_gap",
+        "prev_total_per_comp",
+        # v8: new features
+        "log_cumulative_comps",
+        "years_competing",
+        "prev_pct_change",
+        "time_gap_category",
         TARGET,
     ]
 
     modelling_df = base_df.select(modelling_cols)
 
     # Namings
-    run_name = f"total_progress_v{FEATURE_SET_VERSION}"
+    run_name = f"pct_change_total_v{FEATURE_SET_VERSION}"
     today_date = datetime.today().strftime("%Y-%m-%d")
     experiment_id = get_or_create_experiment(today_date)
 
@@ -326,6 +366,8 @@ if __name__ == "__main__":
         best_n_rounds = study.best_params.get("num_boost_round", 1000)
 
         X_train_val = pd.concat([X_train, X_val], ignore_index=True)
+        for col in X_train_val.select_dtypes(include="object").columns:
+            X_train_val[col] = X_train_val[col].astype("category")
         y_train_val = pd.concat([y_train, y_val], ignore_index=True)
         dtrain_full = xgb.DMatrix(X_train_val, label=y_train_val, enable_categorical=True)
         # For final model, use the best n_rounds directly (already tuned with early stopping)
@@ -405,23 +447,23 @@ if __name__ == "__main__":
         # Per-segment RMSE evaluation
         logging.info("-" * 60)
         logging.info("PER-SEGMENT RMSE:")
-        for sex_val in X_test["sex"].cat.categories:
-            mask = X_test["sex"] == sex_val
+        for sex_val, sex_label in [(1, "M"), (0, "F")]:
+            mask = X_test["sex_encoded"] == sex_val
             if mask.sum() >= 50:
                 seg_rmse = math.sqrt(mean_squared_error(y_test[mask], test_preds[mask]))
                 seg_r2 = r2_score(y_test[mask], test_preds[mask])
-                mlflow.log_metric(f"rmse_sex_{sex_val}", seg_rmse)
-                mlflow.log_metric(f"r2_sex_{sex_val}", seg_r2)
-                logging.info("  sex=%s (n=%d): RMSE=%.4f R²=%.4f", sex_val, mask.sum(), seg_rmse, seg_r2)
+                mlflow.log_metric(f"rmse_sex_{sex_label}", seg_rmse)
+                mlflow.log_metric(f"r2_sex_{sex_label}", seg_r2)
+                logging.info("  sex=%s (n=%d): RMSE=%.4f R²=%.4f", sex_label, mask.sum(), seg_rmse, seg_r2)
 
-        wc_counts = X_test["ipf_weight_class"].value_counts()
+        wc_counts = X_test["ipf_wc_numeric"].value_counts()
         top_wcs = wc_counts[wc_counts >= 50].index
         for wc_val in top_wcs:
-            mask = X_test["ipf_weight_class"] == wc_val
+            mask = X_test["ipf_wc_numeric"] == wc_val
             seg_rmse = math.sqrt(mean_squared_error(y_test[mask], test_preds[mask]))
             seg_r2 = r2_score(y_test[mask], test_preds[mask])
-            mlflow.log_metric(f"rmse_wc_{str(wc_val).replace('+', '_plus')}", seg_rmse)
-            mlflow.log_metric(f"r2_wc_{str(wc_val).replace('+', '_plus')}", seg_r2)
+            mlflow.log_metric(f"rmse_wc_{int(wc_val)}", seg_rmse)
+            mlflow.log_metric(f"r2_wc_{int(wc_val)}", seg_r2)
             logging.info("  wc=%s (n=%d): RMSE=%.4f R²=%.4f", wc_val, mask.sum(), seg_rmse, seg_r2)
 
         logging.info("=" * 60)
