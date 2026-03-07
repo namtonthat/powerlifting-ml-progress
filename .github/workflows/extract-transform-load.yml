@@ -31,7 +31,7 @@ jobs:
       - name: Set up `python`
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ env.python-version }}
+          python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install the latest version of `uv`
         uses: astral-sh/setup-uv@v5
