@@ -201,9 +201,9 @@ def plot_residuals(model, dvalid, valid_y, save_path=None):
 
 if __name__ == "__main__":
     RANDOM_SEED = 7
-    FEATURE_SET_VERSION = 8
+    FEATURE_SET_VERSION = 9
     TARGET = "pct_change_total"
-    columns_to_exclude = ["name", "date", TARGET]
+    columns_to_exclude = ["name", "date", "primary_key", TARGET]
 
     # Load data
     logging.info("Loading data")
@@ -286,6 +286,14 @@ if __name__ == "__main__":
         "years_competing",
         "prev_pct_change",
         "time_gap_category",
+        # v9: identity column for predictions parquet (v11)
+        "primary_key",
+        # v9: DOTS-parallel features
+        "previous_dots",
+        "prev_pct_change_dots",
+        "prev_dots_vs_pb",
+        "prev_distance_from_pb_dots",
+        "prev_rolling_avg_dots_3",
         TARGET,
     ]
 
