@@ -19,6 +19,16 @@ dependencies = [
   "xgboost>=3.0.0",
 ]
 
+[dependency-groups]
+dev = [
+  "pytest>=8.3.0",
+  "pytest-cov>=5.0.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["steps"]
+testpaths = ["tests"]
+
 [tool.ruff]
 line-length = 200
 
