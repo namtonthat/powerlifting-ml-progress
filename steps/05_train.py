@@ -84,49 +84,6 @@ def champion_callback(study, frozen_trial):
             logging.info(f"Initial trial {frozen_trial.number} achieved value: {frozen_trial.value}")
 
 
-def objective(trial):
-    trial_name = f"trial_{trial.number:03d}"
-    with mlflow.start_run(nested=True, run_name=trial_name):
-        params = {
-            "objective": "reg:squarederror",
-            "eval_metric": "rmse",
-            "booster": "gbtree",
-            "lambda": trial.suggest_float("lambda", 1e-8, 1.0, log=True),
-            "alpha": trial.suggest_float("alpha", 1e-8, 1.0, log=True),
-        }
-
-        if params["booster"] in ("gbtree", "dart"):
-            params["max_depth"] = trial.suggest_int("max_depth", 3, 12)
-            params["eta"] = trial.suggest_float("eta", 1e-8, 1.0, log=True)
-            params["gamma"] = trial.suggest_float("gamma", 1e-8, 1.0, log=True)
-            params["grow_policy"] = trial.suggest_categorical("grow_policy", ["depthwise", "lossguide"])
-            params["subsample"] = trial.suggest_float("subsample", 0.5, 1.0)
-            params["colsample_bytree"] = trial.suggest_float("colsample_bytree", 0.3, 1.0)
-            params["min_child_weight"] = trial.suggest_int("min_child_weight", 1, 30)
-
-        n_rounds = trial.suggest_int("num_boost_round", 200, 2000, step=100)
-
-        pruning_callback = optuna.integration.XGBoostPruningCallback(trial, "validation-rmse")
-        bst = xgb.train(params, dtrain, num_boost_round=n_rounds, evals=[(dval, "validation")], early_stopping_rounds=50, callbacks=[pruning_callback], verbose_eval=False)
-        preds = bst.predict(dval)
-        error = mean_squared_error(y_val, preds)
-        val_rmse = math.sqrt(error)
-        val_mae = mean_absolute_error(y_val, preds)
-        val_r2 = r2_score(y_val, preds)
-
-        mlflow.log_params(params)
-        mlflow.log_param("num_boost_round", n_rounds)
-        mlflow.log_param("n_features", dtrain.num_col())
-        mlflow.log_metric("mse", error)
-        mlflow.log_metric("rmse", val_rmse)
-        mlflow.log_metric("mae", val_mae)
-        mlflow.log_metric("r2", val_r2)
-        mlflow.set_tag("booster", params["booster"])
-        mlflow.set_tag("trial_number", trial.number)
-
-    return error
-
-
 def plot_feature_importance(model, booster):
     """|
     Plots feature importance for an XGBoost model.
@@ -199,26 +156,31 @@ def plot_residuals(model, dvalid, valid_y, save_path=None):
     return fig
 
 
-if __name__ == "__main__":
-    RANDOM_SEED = 7
-    FEATURE_SET_VERSION = 10
-    TARGET = "pct_change_total"
-    columns_to_exclude = ["name", "date", "primary_key", TARGET]
+def train_for_target(target_col: str, feature_set_version: int, base_df: pl.DataFrame) -> None:
+    """Train an XGBoost model for a single target column.
 
-    # Load data
-    logging.info("Loading data")
-    base_df = pl.read_parquet(conf.base_local_file_path)
+    Parameters
+    ----------
+    target_col:
+        Name of the target column (e.g. ``"pct_change_total"`` or ``"pct_change_dots"``).
+    feature_set_version:
+        Integer version tag used in run naming and feature-importance snapshot keys.
+    base_df:
+        Pre-loaded base DataFrame (caller owns this; pass a clone per target so each
+        head can apply its own filtering/winsorization independently).
+    """
+    columns_to_exclude = ["name", "date", "primary_key", target_col]
 
     # Filter: drop rows without progress (first comp per lifter)
-    base_df = base_df.filter(pl.col(TARGET).is_not_null() & pl.col(TARGET).is_finite())
+    base_df = base_df.filter(pl.col(target_col).is_not_null() & pl.col(target_col).is_finite())
 
     # Tighter time gap filter: require >= 55 days between comps for reliable progress rates
     base_df = base_df.filter(pl.col("time_since_last_comp_years") >= 0.15)
 
     # Winsorize target to p1/p99 instead of hard clip — reduces outlier influence while keeping data
-    p1 = base_df[TARGET].quantile(0.01)
-    p99 = base_df[TARGET].quantile(0.99)
-    base_df = base_df.with_columns(pl.col(TARGET).clip(p1, p99))
+    p1 = base_df[target_col].quantile(0.01)
+    p99 = base_df[target_col].quantile(0.99)
+    base_df = base_df.with_columns(pl.col(target_col).clip(p1, p99))
 
     # Encode categoricals as numeric features
     AGE_CLASS_MAP = {
@@ -316,13 +278,13 @@ if __name__ == "__main__":
         # v10: potential x context
         "starting_tier_x_years_competing",
         "max_tier_x_time_gap",
-        TARGET,
+        target_col,
     ]
 
     modelling_df = base_df.select(modelling_cols)
 
     # Namings
-    run_name = f"pct_change_total_v{FEATURE_SET_VERSION}"
+    run_name = f"{target_col}_v{feature_set_version}"
     today_date = datetime.today().strftime("%Y-%m-%d")
     experiment_id = get_or_create_experiment(today_date)
 
@@ -352,7 +314,7 @@ if __name__ == "__main__":
         X = df.select(pl.exclude(columns_to_exclude)).to_pandas()
         for col in X.select_dtypes(include="object").columns:
             X[col] = X[col].astype("category")
-        y = df.select([TARGET]).to_pandas()
+        y = df.select([target_col]).to_pandas()
         return X, y
 
     X_train, y_train = prepare_Xy(train_df)
@@ -370,8 +332,53 @@ if __name__ == "__main__":
     dval = xgb.DMatrix(X_val, label=y_val, enable_categorical=True)
     dtest = xgb.DMatrix(X_test, label=y_test, enable_categorical=True)
 
+    # objective is defined here so it closes over the per-target dtrain/dval/y_val
+    def objective(trial):
+        trial_name = f"trial_{trial.number:03d}"
+        with mlflow.start_run(nested=True, run_name=trial_name):
+            params = {
+                "objective": "reg:squarederror",
+                "eval_metric": "rmse",
+                "booster": "gbtree",
+                "lambda": trial.suggest_float("lambda", 1e-8, 1.0, log=True),
+                "alpha": trial.suggest_float("alpha", 1e-8, 1.0, log=True),
+            }
+
+            if params["booster"] in ("gbtree", "dart"):
+                params["max_depth"] = trial.suggest_int("max_depth", 3, 12)
+                params["eta"] = trial.suggest_float("eta", 1e-8, 1.0, log=True)
+                params["gamma"] = trial.suggest_float("gamma", 1e-8, 1.0, log=True)
+                params["grow_policy"] = trial.suggest_categorical("grow_policy", ["depthwise", "lossguide"])
+                params["subsample"] = trial.suggest_float("subsample", 0.5, 1.0)
+                params["colsample_bytree"] = trial.suggest_float("colsample_bytree", 0.3, 1.0)
+                params["min_child_weight"] = trial.suggest_int("min_child_weight", 1, 30)
+
+            n_rounds = trial.suggest_int("num_boost_round", 200, 2000, step=100)
+
+            pruning_callback = optuna.integration.XGBoostPruningCallback(trial, "validation-rmse")
+            bst = xgb.train(params, dtrain, num_boost_round=n_rounds, evals=[(dval, "validation")], early_stopping_rounds=50, callbacks=[pruning_callback], verbose_eval=False)
+            preds = bst.predict(dval)
+            error = mean_squared_error(y_val, preds)
+            val_rmse = math.sqrt(error)
+            val_mae = mean_absolute_error(y_val, preds)
+            val_r2 = r2_score(y_val, preds)
+
+            mlflow.log_params(params)
+            mlflow.log_param("num_boost_round", n_rounds)
+            mlflow.log_param("n_features", dtrain.num_col())
+            mlflow.log_metric("mse", error)
+            mlflow.log_metric("rmse", val_rmse)
+            mlflow.log_metric("mae", val_mae)
+            mlflow.log_metric("r2", val_r2)
+            mlflow.set_tag("booster", params["booster"])
+            mlflow.set_tag("trial_number", trial.number)
+
+        return error
+
     # Initiate the parent run and call the hyperparameter tuning child run logic
     with mlflow.start_run(experiment_id=experiment_id, run_name=run_name, nested=True):
+        mlflow.set_tag("target", target_col)
+
         # Initialize the Optuna study
         study = optuna.create_study(direction="minimize", pruner=optuna.pruners.MedianPruner(n_warmup_steps=50))
 
@@ -440,8 +447,8 @@ if __name__ == "__main__":
                 "project": "powerlifting-ml-progress",
                 "optimizer_engine": "optuna",
                 "model_family": "xgboost",
-                "feature_set_version": FEATURE_SET_VERSION,
-                "target": TARGET,
+                "feature_set_version": feature_set_version,
+                "target": target_col,
                 "min_competitions": conf.MIN_COMPETITIONS,
                 "min_days_between_comps": conf.MIN_DAYS_BETWEEN_COMPS,
                 "split_method": "temporal",
@@ -477,7 +484,7 @@ if __name__ == "__main__":
             if snapshot_path.exists():
                 prior_snapshot = json.loads(snapshot_path.read_text())
 
-            prior_version_key = str(FEATURE_SET_VERSION - 1)
+            prior_version_key = str(feature_set_version - 1)
             prior_top_15 = prior_snapshot.get(prior_version_key, [])
             if prior_top_15:
                 dropped_out = set(prior_top_15) - set(current_top_15)
@@ -489,7 +496,7 @@ if __name__ == "__main__":
                 mlflow.set_tag("features_dropped_from_top15", ",".join(sorted(dropped_out)))
                 mlflow.set_tag("features_new_in_top15", ",".join(sorted(new_entries)))
 
-            prior_snapshot[str(FEATURE_SET_VERSION)] = current_top_15
+            prior_snapshot[str(feature_set_version)] = current_top_15
             snapshot_path.parent.mkdir(parents=True, exist_ok=True)
             snapshot_path.write_text(json.dumps(prior_snapshot, indent=2))
 
@@ -552,8 +559,17 @@ if __name__ == "__main__":
                 artifact_path=artifact_path,
                 input_example=X_train.iloc[[0]],
                 model_format="ubj",
-                metadata={"model_data_version": FEATURE_SET_VERSION},
+                metadata={"model_data_version": feature_set_version},
             )
-            model_uri = mlflow.get_artifact_uri(artifact_path)
+            mlflow.get_artifact_uri(artifact_path)
         except Exception as e:
             logging.warning("Artifact logging failed (is MinIO running?): %s", e)
+
+
+if __name__ == "__main__":
+    base_df = pl.read_parquet(conf.base_local_file_path)
+    for target_col in ["pct_change_total", "pct_change_dots"]:
+        logging.info("=" * 70)
+        logging.info("TRAINING HEAD: %s", target_col)
+        logging.info("=" * 70)
+        train_for_target(target_col, feature_set_version=11, base_df=base_df.clone())
