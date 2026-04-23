@@ -9,6 +9,8 @@ def raw_module():
     import importlib.util
 
     spec = importlib.util.spec_from_file_location("raw_module", "steps/03_raw.py")
+    assert spec is not None
+    assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
