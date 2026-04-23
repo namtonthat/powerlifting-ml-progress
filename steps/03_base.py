@@ -757,6 +757,12 @@ if __name__ == "__main__":
         .pipe(add_interaction_features)
         .pipe(add_powerlifting_progress)
         .pipe(add_pct_change_total)
+        .pipe(add_first_comp_features)
+        .pipe(add_first_comp_percentile)
+        .pipe(add_dots_growth_trend)
+        .pipe(add_early_growth_rate)
+        .pipe(add_tier_features)
+        .pipe(add_comps_above_tier)
     )
 
     # Guard: null out unreliable progress rates from back-to-back meets
@@ -767,6 +773,8 @@ if __name__ == "__main__":
     df = df.pipe(add_prev_progress_rate)
     df = df.pipe(add_prev_pct_change)
     df = df.pipe(add_prev_pct_change_dots)
+    df = df.pipe(add_rolling_career_features)
+    df = df.pipe(add_potential_interactions)
 
     common_io.io_write_from_local_to_s3(
         df,
