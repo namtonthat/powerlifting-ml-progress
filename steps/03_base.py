@@ -630,6 +630,21 @@ def add_tier_features(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
+def add_comps_above_tier(df: pl.DataFrame) -> pl.DataFrame:
+    """One column per tier lower bound: count of prior comps at or above it.
+
+    Uses previous_dots (shift(1)) so strictly comps 1..k-1.
+    """
+    thresholds = {
+        "comps_above_intermediate_so_far": 200.0,
+        "comps_above_advanced_so_far": 300.0,
+        "comps_above_elite_so_far": 400.0,
+        "comps_above_world_class_so_far": 500.0,
+    }
+    return df.with_columns([pl.col("previous_dots").ge(thr).cast(pl.Int64).fill_null(0).cum_sum().over("primary_key").alias(name) for name, thr in thresholds.items()])
+
+
+@conf.debug
 def add_prev_absolute_change(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         (pl.col("previous_total") - pl.col("previous_total").shift(1).over("primary_key")).alias("prev_total_change_kg"),

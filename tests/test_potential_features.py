@@ -207,3 +207,19 @@ def test_tiers_climbed_so_far_non_negative(base_module, synthetic_3_lifter_5_com
     vals = out["tiers_climbed_so_far"].drop_nulls().to_list()
     for v in vals:
         assert v >= 0
+
+
+def test_comps_above_elite_counts_prior_comps_only(base_module, synthetic_3_lifter_5_comp):
+    """L3 hits Elite (400+) from comp 1; comps_above_elite_so_far should count prior only."""
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
+    df = base_module.add_previous_dots(df)
+    out = base_module.add_comps_above_tier(df).sort(["primary_key", "date"])
+
+    l3 = out.filter(pl.col("primary_key") == "L3").sort("date")
+    # L3 dots: 420, 432, 444, 456, 468 — all Elite (400+, under 500)
+    # comp 1: 0 prior comps
+    # comp 2: 1 prior comp (420) >= 400
+    # comp 5: 4 prior comps, all >= 400
+    assert l3["comps_above_elite_so_far"][0] == 0
+    assert l3["comps_above_elite_so_far"][1] == 1
+    assert l3["comps_above_elite_so_far"][4] == 4
