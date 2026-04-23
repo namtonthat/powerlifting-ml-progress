@@ -444,6 +444,33 @@ if __name__ == "__main__":
             top_5_features = ",".join(f[0] for f in sorted_features[:5])
             mlflow.set_tag("top_5_features", top_5_features)
 
+            # Feature-importance delta across versions (spec: fail loudly on rank shifts)
+            import json
+            from pathlib import Path
+
+            snapshot_path = Path(conf.top_features_snapshot_local)
+            current_top_15 = [f[0] for f in sorted_features[:15]]
+
+            prior_snapshot = {}
+            if snapshot_path.exists():
+                prior_snapshot = json.loads(snapshot_path.read_text())
+
+            prior_version_key = str(FEATURE_SET_VERSION - 1)
+            prior_top_15 = prior_snapshot.get(prior_version_key, [])
+            if prior_top_15:
+                dropped_out = set(prior_top_15) - set(current_top_15)
+                new_entries = set(current_top_15) - set(prior_top_15)
+                logging.info("-" * 60)
+                logging.info("FEATURE IMPORTANCE DELTA vs v%s:", prior_version_key)
+                logging.info("  Dropped from top-15: %s", sorted(dropped_out) or "(none)")
+                logging.info("  New in top-15: %s", sorted(new_entries) or "(none)")
+                mlflow.set_tag("features_dropped_from_top15", ",".join(sorted(dropped_out)))
+                mlflow.set_tag("features_new_in_top15", ",".join(sorted(new_entries)))
+
+            prior_snapshot[str(FEATURE_SET_VERSION)] = current_top_15
+            snapshot_path.parent.mkdir(parents=True, exist_ok=True)
+            snapshot_path.write_text(json.dumps(prior_snapshot, indent=2))
+
             # Log features with zero importance (candidates for removal)
             all_features = set(X_train.columns)
             used_features = set(importance_scores.keys())

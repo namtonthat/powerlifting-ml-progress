@@ -136,6 +136,9 @@ base_local_file_path = create_output_file_path(
     OutputPathType.BASE,
     FileLocation.LOCAL,
 )
+# Snapshot of top-15 features by gain, per feature set version.
+# Used by the regression guard to flag importance rank shifts.
+top_features_snapshot_local = create_output_file_path(OutputPathType.BASE, FileLocation.LOCAL, file_name="top_features_by_version.json")
 
 # S3 keys
 landing_s3_key = create_output_file_path(
