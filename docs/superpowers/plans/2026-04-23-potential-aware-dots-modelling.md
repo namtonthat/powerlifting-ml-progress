@@ -526,45 +526,34 @@ git commit -m "feat(raw): filter rows with bodyweight outside Konertz DOTS valid
 
 ### Task 2.1: Inspect raw data for `Dots` column
 
-**Files:**
-- Create: `scripts/inspect_dots_column.py` (throwaway — not committed)
+**Files:** (none — inline command only)
 
-- [ ] **Step 1: Create inspection script**
+- [ ] **Step 1: Inline schema inspection**
 
-Write to `scripts/inspect_dots_column.py`:
-
-```python
-"""Throwaway: check if OpenPowerlifting raw parquet has a Dots column."""
-
-import polars as pl
-
-# Use S3 HTTP URL from conf
-from conf import raw_s3_http
-
-schema = pl.read_parquet_schema(raw_s3_http)
-print("Columns:", sorted(schema.keys()))
-print("Has Dots?", "Dots" in schema or "dots" in schema)
-if "Dots" in schema:
-    print("Dots dtype:", schema["Dots"])
-```
-
-Run: `uv run python scripts/inspect_dots_column.py`
-
-- [ ] **Step 2: Record finding**
-
-Check output. Two branches:
-
-**Branch A: `Dots` column exists** → skip Task 2.2, add `dots` to renames in `03_raw.py` instead. Note in journey doc.
-
-**Branch B: `Dots` column missing** → proceed to Task 2.2 (implement formula locally).
-
-- [ ] **Step 3: Delete throwaway script**
+Run from project root:
 
 ```bash
-rm scripts/inspect_dots_column.py
+uv run python -c "
+import sys
+sys.path.insert(0, 'steps')
+import polars as pl
+import conf
+schema = pl.read_parquet_schema(conf.raw_s3_http)
+cols = sorted(schema.keys())
+print('Has Dots?', 'dots' in cols or 'Dots' in cols)
+if 'dots' in cols:
+    print('dtype:', schema['dots'])
+elif 'Dots' in cols:
+    print('dtype:', schema['Dots'])
+"
 ```
 
-(Don't commit it.)
+Expected: prints `Has Dots? True` or `False`.
+
+- [ ] **Step 2: Record finding and branch**
+
+- **Branch A — column exists** → proceed to Task 2.2 Branch A (surface into raw rename map, add smoke test vs. reference calculator).
+- **Branch B — column missing** → proceed to Task 2.2 Branch B (compute locally via Konertz formula).
 
 ---
 
@@ -575,6 +564,7 @@ rm scripts/inspect_dots_column.py
 **Files:**
 - Modify: `steps/conf.py`
 - Modify: `steps/03_raw.py`
+- Create: `tests/test_dots_source_smoke.py`
 
 - [ ] **Step 1: Add `Dots` to required landing columns**
 
@@ -611,11 +601,45 @@ def test_raw_output_has_dots_column_after_rename(raw_module):
 Run: `uv run pytest tests/test_raw_filters.py::test_raw_output_has_dots_column_after_rename -v`
 Expected: PASS (filters don't drop columns).
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 3: Add DOTS source reference smoke test**
+
+Create `tests/test_dots_source_smoke.py`. This is the Branch A analog of Branch B's formula test — spot-check ≥10 real rows against an independent reference calculator (https://www.liftercalc.com or https://dotscalculator.online/) before trusting the upstream column.
+
+```python
+"""Smoke test: OpenPowerlifting's Dots column agrees with reference calculators.
+
+Run manually after initial raw layer creation. Pick ≥10 rows spanning both sexes
+and a range of bodyweights/totals. For each row:
+  1. Note the upstream `dots` value.
+  2. Compute DOTS for the same (sex, bodyweight, total) using liftercalc.com.
+  3. Assert agreement within 1.0 DOTS (allows rounding differences).
+
+Marking this test `@pytest.mark.manual` keeps it out of CI until reference values
+are populated.
+"""
+import pytest
+
+
+@pytest.mark.manual
+@pytest.mark.parametrize(
+    "sex,bw,total,expected_dots",
+    [
+        # Fill with actual values from raw parquet + liftercalc.com reference.
+        # Example placeholder row (replace with real data before running):
+        # ("M", 83.0, 700.0, 471.5),
+    ],
+)
+def test_dots_source_matches_liftercalc_reference(sex, bw, total, expected_dots):
+    # Compare the specific row in raw parquet to expected_dots within tolerance.
+    # Implementation reads conf.raw_s3_http, filters to the row, asserts match.
+    pytest.skip("Populate parametrize table with real (sex, bw, total, expected) values first.")
+```
+
+- [ ] **Step 4: Commit**
 
 ```bash
-git add steps/conf.py tests/test_raw_filters.py
-git commit -m "feat(raw): surface Dots column from OpenPowerlifting source"
+git add steps/conf.py tests/test_raw_filters.py tests/test_dots_source_smoke.py
+git commit -m "feat(raw): surface Dots column + reference smoke test"
 ```
 
 **Branch B — compute DOTS locally:**
@@ -895,7 +919,7 @@ Expected: all PASS.
 
 - [ ] **Step 3: Wire new DOTS features into `03_base.py` pipeline**
 
-In the `__main__` block, after the existing `add_previous_wilks` pipe, add:
+**Part A — inside the `.pipe(...)` chain** (in the `__main__` block, after `.pipe(add_previous_wilks)`). These produce pre-guard values:
 
 ```python
 .pipe(add_previous_dots)
@@ -906,7 +930,7 @@ In the `__main__` block, after the existing `add_previous_wilks` pipe, add:
 .pipe(add_dots_personal_best)
 ```
 
-Then update the progress_cols null-guard block (around line 492):
+**Part B — update the progress-cols null-guard list** (currently around line 492 — `progress_cols = [...]`). Add `dots_progress` and `pct_change_dots` to the list so back-to-back comps null them out alongside the existing columns:
 
 ```python
 progress_cols = [
@@ -916,7 +940,16 @@ progress_cols = [
 ]
 ```
 
-After the progress-guard, add `.pipe(add_prev_pct_change_dots)` in the "features that depend on guarded progress values" block (next to the existing `add_prev_pct_change` call).
+**Part C — post-guard block** (the "Features that depend on guarded progress values" lines at the end of `03_base.py`'s `__main__`, currently `df = df.pipe(add_prev_progress_rate)` and `df = df.pipe(add_prev_pct_change)`). Add a **new statement** (not a chain link):
+
+```python
+# Features that depend on guarded progress values
+df = df.pipe(add_prev_progress_rate)
+df = df.pipe(add_prev_pct_change)
+df = df.pipe(add_prev_pct_change_dots)   # NEW — must be post-guard
+```
+
+This MUST be a statement-level `df = df.pipe(...)` call on its own line, not inside the chained `.pipe()` sequence above. Reason: `prev_pct_change_dots` reads `pct_change_dots`, which is only null-guarded after the guard block runs.
 
 - [ ] **Step 4: Run ALL tests**
 
@@ -1007,11 +1040,13 @@ git commit -m "test: add parametrised leakage guard for previous_* features"
 **Files:**
 - Modify: `steps/05_train.py`
 
-- [ ] **Step 1: Add DOTS columns to modelling_cols**
+- [ ] **Step 1: Add DOTS columns + primary_key to modelling_cols**
 
-In `steps/05_train.py`, find the `modelling_cols` list (around line 249). Add:
+In `steps/05_train.py`, find the `modelling_cols` list (around line 249). Add **`"primary_key"`** (needed by v11's predictions parquet) and the new DOTS features:
 
 ```python
+# v9: identity column for predictions parquet (v11)
+"primary_key",
 # v9: DOTS-parallel features
 "previous_dots",
 "prev_pct_change_dots",
@@ -1022,25 +1057,99 @@ In `steps/05_train.py`, find the `modelling_cols` list (around line 249). Add:
 
 Keep existing Wilks features.
 
-- [ ] **Step 2: Update `FEATURE_SET_VERSION`**
+- [ ] **Step 2: Ensure primary_key is excluded from training features**
+
+Find `columns_to_exclude = ["name", "date", TARGET]` (around line 206). Add `"primary_key"`:
+
+```python
+columns_to_exclude = ["name", "date", "primary_key", TARGET]
+```
+
+This keeps `primary_key` in the frame for downstream split metadata but out of the training X matrix.
+
+- [ ] **Step 3: Update `FEATURE_SET_VERSION`**
 
 Change `FEATURE_SET_VERSION = 8` to `FEATURE_SET_VERSION = 9`.
 
-- [ ] **Step 3: Verify the script parses (static check)**
+- [ ] **Step 4: Verify the script parses (static check)**
 
 Run: `uv run python -c "import ast; ast.parse(open('steps/05_train.py').read())"`
 Expected: no output (no syntax error).
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 5: Commit**
 
 ```bash
 git add steps/05_train.py
-git commit -m "feat(train): wire DOTS features into v9 modelling_cols"
+git commit -m "feat(train): wire DOTS features + primary_key into v9 modelling_cols"
 ```
 
 ---
 
-### Task 3.2: Run the v9 pipeline end-to-end
+### Task 3.2: Feature-importance delta logging
+
+Spec requires: *"Feature-importance delta logged: features that were top-15 in the prior version but fell out are flagged."* Implemented once in v9 so it runs for every subsequent version automatically.
+
+**Files:**
+- Modify: `steps/05_train.py`
+- Modify: `steps/conf.py`
+
+- [ ] **Step 1: Add path constant for top-15 snapshot**
+
+In `steps/conf.py`:
+
+```python
+# Snapshot of top-15 features by gain, per feature set version.
+# Used by the regression guard to flag importance rank shifts.
+top_features_snapshot_local = create_output_file_path(OutputPathType.BASE, FileLocation.LOCAL, file_name="top_features_by_version.json")
+```
+
+- [ ] **Step 2: Add delta-logging helper in `05_train.py`**
+
+After the existing "TOP FEATURES BY GAIN" block (~line 430), add:
+
+```python
+import json
+from pathlib import Path
+
+snapshot_path = Path(conf.top_features_snapshot_local)
+current_top_15 = [f[0] for f in sorted_features[:15]]
+
+# Load prior snapshots
+prior_snapshot = {}
+if snapshot_path.exists():
+    prior_snapshot = json.loads(snapshot_path.read_text())
+
+# Delta vs. previous version
+prior_version_key = str(FEATURE_SET_VERSION - 1)
+prior_top_15 = prior_snapshot.get(prior_version_key, [])
+if prior_top_15:
+    dropped_out = set(prior_top_15) - set(current_top_15)
+    new_entries = set(current_top_15) - set(prior_top_15)
+    logging.info("-" * 60)
+    logging.info("FEATURE IMPORTANCE DELTA vs v%s:", prior_version_key)
+    logging.info("  Dropped from top-15: %s", sorted(dropped_out) or "(none)")
+    logging.info("  New in top-15: %s", sorted(new_entries) or "(none)")
+    mlflow.set_tag("features_dropped_from_top15", ",".join(sorted(dropped_out)))
+    mlflow.set_tag("features_new_in_top15", ",".join(sorted(new_entries)))
+
+# Save current snapshot
+prior_snapshot[str(FEATURE_SET_VERSION)] = current_top_15
+snapshot_path.parent.mkdir(parents=True, exist_ok=True)
+snapshot_path.write_text(json.dumps(prior_snapshot, indent=2))
+```
+
+Note: `FEATURE_SET_VERSION` is accessible as a module-level name in `05_train.py` v9; once `train_for_target(...)` exists (Phase 9), replace the reference with the function parameter.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add steps/05_train.py steps/conf.py
+git commit -m "feat(train): log top-15 feature-importance delta across versions"
+```
+
+---
+
+### Task 3.3: Run the v9 pipeline end-to-end
 
 - [ ] **Step 1: Run steps 1→3_raw**
 
@@ -1088,7 +1197,7 @@ If v9 R² >= 0.331, proceed.
 
 ---
 
-### Task 3.3: Update `data_science_journey.md` with v9 entry
+### Task 3.4: Update `data_science_journey.md` with v9 entry
 
 **Files:**
 - Modify: `data_science_journey.md`
@@ -1186,9 +1295,8 @@ def test_first_comp_total_per_bw(base_module, synthetic_3_lifter_5_comp):
 
 
 def test_first_comp_age_constant_per_lifter(base_module, synthetic_3_lifter_5_comp):
-    df = synthetic_3_lifter_5_comp.with_columns(
-        (pl.col("date").dt.year() - pl.col("year_of_birth")).alias("approx_age"),
-    ).sort(["primary_key", "date"])
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
+    df = base_module.add_age_lifecycle_features(df)
     out = base_module.add_first_comp_features(df)
     l1 = out.filter(pl.col("primary_key") == "L1").sort("date")
     # L1 first comp 2020-06-01, yob 1995 → age 25, constant across comps
@@ -1211,12 +1319,23 @@ def add_first_comp_features(df: pl.DataFrame) -> pl.DataFrame:
 
     These are 'birth certificate' features — they never change for a given
     lifter, encoding starting strength and age.
+
+    Precondition: input sorted by (primary_key, date); `approx_age` column
+    already present (produced by add_age_lifecycle_features).
     """
-    return df.with_columns(
+    # Each `.first().over("primary_key")` call must be scoped independently.
+    # The `over()` wraps a single aggregation, so combine them via .with_columns
+    # as separate expressions, then compute the ratio in a second pass.
+    df = df.with_columns(
         pl.col("dots").first().over("primary_key").alias("first_comp_dots"),
-        (pl.col("total").first() / pl.col("bodyweight").first()).over("primary_key").alias("first_comp_total_per_bw"),
+        pl.col("total").first().over("primary_key").alias("_first_comp_total"),
+        pl.col("bodyweight").first().over("primary_key").alias("_first_comp_bw"),
         pl.col("approx_age").first().over("primary_key").alias("first_comp_age"),
     )
+    df = df.with_columns(
+        (pl.col("_first_comp_total") / pl.col("_first_comp_bw")).alias("first_comp_total_per_bw"),
+    )
+    return df.drop(["_first_comp_total", "_first_comp_bw"])
 ```
 
 Note: requires `approx_age` to exist first — `add_first_comp_features` must be called **after** `add_age_lifecycle_features` in the pipeline.
@@ -1319,6 +1438,23 @@ def test_best_growth_rate_so_far_null_until_comp_3(base_module, synthetic_3_lift
     assert l1["best_growth_rate_so_far"][1] is None
     # comp 3: prior pct_change_dots values = {null, ~7.5} → max=7.5
     assert l1["best_growth_rate_so_far"][2] is not None
+
+
+def test_best_growth_rate_so_far_does_not_leak_across_lifters(base_module, synthetic_3_lifter_5_comp):
+    """Critical: shift(1) and cum_max must both be scoped to primary_key.
+
+    If either op leaks across lifters, L3's (Elite, big growth) values would
+    pollute L1's (Beginner, small growth) comp-2 feature value.
+    """
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
+    df = base_module.add_previous_dots(df)
+    df = base_module.add_pct_change_dots(df)
+    out = base_module.add_rolling_career_features(df).sort(["primary_key", "date"])
+
+    # L1 comp 2 best_growth_rate_so_far must be null (only 1 prior pct_change value, and that's null).
+    # If shift leaks from L3's last row, this becomes non-null.
+    l1 = out.filter(pl.col("primary_key") == "L1").sort("date")
+    assert l1["best_growth_rate_so_far"][1] is None, "Shift leaked across lifter boundary"
 ```
 
 - [ ] **Step 2: Run — FAIL** (`add_rolling_career_features` undefined)
@@ -1328,15 +1464,24 @@ def test_best_growth_rate_so_far_null_until_comp_3(base_module, synthetic_3_lift
 ```python
 @conf.debug
 def add_rolling_career_features(df: pl.DataFrame) -> pl.DataFrame:
-    """Career-so-far features: max, best growth rate, trend slope.
+    """Career-so-far features: max DOTS, best growth rate.
 
-    All use shift(1) or previous_* inputs so current comp is strictly excluded.
+    Both use inputs that are already shifted (`previous_dots`) or explicitly
+    scoped inside the `over()` partition so the current comp is strictly
+    excluded.
+
+    Precondition: input sorted by (primary_key, date).
     """
+    # previous_dots is already shift(1) → cum_max.over(pk) gives max of comps 1..k-1.
+    # For best_growth_rate_so_far, shift and cum_max must BOTH be scoped to primary_key
+    # to avoid leaking across lifter boundaries.
     return df.with_columns(
         pl.col("previous_dots").cum_max().over("primary_key").alias("max_dots_so_far"),
-        pl.col("pct_change_dots").shift(1).cum_max().over("primary_key").alias("best_growth_rate_so_far"),
+        pl.col("pct_change_dots").shift(1).over("primary_key").cum_max().over("primary_key").alias("best_growth_rate_so_far"),
     )
 ```
+
+**Why the double `.over("primary_key")`:** Polars evaluates `.shift(1)` without a window context by shifting the entire frame, which crosses lifter boundaries. Applying `.over("primary_key")` to the shift scopes it. Then `.cum_max()` also needs `.over("primary_key")` or it will cumulate across lifters. Both operations must be partitioned.
 
 - [ ] **Step 4: Run — PASS**
 
@@ -1386,6 +1531,8 @@ def test_dots_growth_trend_null_until_comp_3(base_module, synthetic_3_lifter_5_c
 
 - [ ] **Step 3: Implement in `03_base.py`**
 
+Implementation splits into three materialisation stages so Polars has concrete columns to reference when chaining expanding aggregates. Inline chaining of `when/then/otherwise` + `cum_sum().over(...)` + division into a `pl.when(...)` gate is fragile — evaluation order across masked expressions is not guaranteed stable, so we materialise each intermediate into the frame.
+
 ```python
 @conf.debug
 def add_dots_growth_trend(df: pl.DataFrame) -> pl.DataFrame:
@@ -1393,39 +1540,45 @@ def add_dots_growth_trend(df: pl.DataFrame) -> pl.DataFrame:
 
     Uses all prior (non-null previous_dots) points for each lifter. Null until
     at least 2 prior points exist (comp 3 onward).
+
+    Precondition: input sorted by (primary_key, date).
     """
-    # Days since first comp — used as x-axis for regression
+    # Stage 1: materialise days-from-first-comp as an honest column.
     df = df.with_columns(
         (pl.col("date") - pl.col("date").first().over("primary_key")).dt.total_days().alias("_days_from_first"),
     )
 
-    # Polars doesn't have built-in rolling-slope. Compute as Cov(x,y)/Var(x)
-    # over an expanding window of previous_dots.
-    # Using shift + cum aggregates: at comp k, use all previous_dots at comps 1..k-1.
-    x = pl.col("_days_from_first")
-    y = pl.col("previous_dots")
+    # Stage 2: masked x/y, counts, and expanding sums — one call, all scoped to primary_key.
+    df = df.with_columns(
+        pl.when(pl.col("previous_dots").is_not_null()).then(pl.col("_days_from_first")).otherwise(None).alias("_x_masked"),
+        pl.when(pl.col("previous_dots").is_not_null()).then(pl.col("previous_dots")).otherwise(None).alias("_y_masked"),
+    )
+    df = df.with_columns(
+        pl.col("previous_dots").is_not_null().cast(pl.Int64).cum_sum().over("primary_key").alias("_n"),
+        pl.col("_x_masked").cum_sum().over("primary_key").alias("_x_sum"),
+        pl.col("_y_masked").cum_sum().over("primary_key").alias("_y_sum"),
+        (pl.col("_x_masked") * pl.col("_y_masked")).cum_sum().over("primary_key").alias("_xy_sum"),
+        (pl.col("_x_masked") * pl.col("_x_masked")).cum_sum().over("primary_key").alias("_xx_sum"),
+    )
 
-    # Count non-null y so far (expanding)
-    n = y.is_not_null().cast(pl.Int64).cum_sum().over("primary_key")
+    # Stage 3: compute means → cov/var → slope, with the n>=2 AND var>0 gate.
+    df = df.with_columns(
+        (pl.col("_x_sum") / pl.col("_n")).alias("_x_mean"),
+        (pl.col("_y_sum") / pl.col("_n")).alias("_y_mean"),
+    )
+    df = df.with_columns(
+        (pl.col("_xy_sum") - pl.col("_n") * pl.col("_x_mean") * pl.col("_y_mean")).alias("_cov"),
+        (pl.col("_xx_sum") - pl.col("_n") * pl.col("_x_mean") * pl.col("_x_mean")).alias("_var"),
+    )
+    df = df.with_columns(
+        pl.when((pl.col("_n") >= 2) & (pl.col("_var") > 0))
+        .then(pl.col("_cov") / pl.col("_var"))
+        .otherwise(None)
+        .alias("dots_growth_trend"),
+    )
 
-    # Expanding mean of x (masked to rows where y is non-null)
-    x_masked = pl.when(y.is_not_null()).then(x).otherwise(None)
-    y_masked = y
-
-    x_sum = x_masked.cum_sum().over("primary_key")
-    y_sum = y_masked.cum_sum().over("primary_key")
-    x_mean = x_sum / n
-    y_mean = y_sum / n
-
-    xy_sum = (x_masked * y_masked).cum_sum().over("primary_key")
-    xx_sum = (x_masked * x_masked).cum_sum().over("primary_key")
-
-    cov = xy_sum - n * x_mean * y_mean
-    var = xx_sum - n * x_mean * x_mean
-
-    slope = pl.when((n >= 2) & (var > 0)).then(cov / var).otherwise(None).alias("dots_growth_trend")
-
-    return df.with_columns(slope).drop("_days_from_first")
+    # Drop scratch columns
+    return df.drop(["_days_from_first", "_x_masked", "_y_masked", "_n", "_x_sum", "_y_sum", "_xy_sum", "_xx_sum", "_x_mean", "_y_mean", "_cov", "_var"])
 ```
 
 - [ ] **Step 4: Run — PASS**
@@ -1480,6 +1633,25 @@ def test_early_growth_rate_uses_no_current_comp_dots(base_module, synthetic_3_li
     v2 = out2.filter(pl.col("primary_key") == "L1").sort("date")["early_growth_rate_dots_per_year"][3]
 
     assert v1 == v2, "early_growth_rate must not depend on current comp's dots"
+
+
+def test_early_growth_rate_null_when_years_between_zero(base_module):
+    """Guard: if comp 1 and comp 3 fall on the same date (years_between == 0),
+    the feature must be null, not ±inf (divide-by-zero protection)."""
+    from datetime import date
+
+    df = pl.DataFrame(
+        [
+            # Degenerate case: comps 1, 2, 3 all on same day
+            {"primary_key": "X", "date": date(2024, 1, 1), "dots": 300.0, "cumulative_comps": 1},
+            {"primary_key": "X", "date": date(2024, 1, 1), "dots": 310.0, "cumulative_comps": 2},
+            {"primary_key": "X", "date": date(2024, 1, 1), "dots": 320.0, "cumulative_comps": 3},
+            {"primary_key": "X", "date": date(2024, 2, 1), "dots": 330.0, "cumulative_comps": 4},
+        ]
+    )
+    out = base_module.add_early_growth_rate(df)
+    # Comp 4's value should be null (years_between == 0 between comp 1 and comp 3)
+    assert out["early_growth_rate_dots_per_year"][3] is None
 ```
 
 - [ ] **Step 2: Run — FAIL**
@@ -1494,26 +1666,40 @@ def add_early_growth_rate(df: pl.DataFrame) -> pl.DataFrame:
     Broadcast as constant from cumulative_comps == 4 onward. Null for comps 1–3.
     Critical: uses dots *at* comp 3, so must be unavailable until comp 4 to avoid
     leaking into the comp-3 target.
+
+    Guards: null when years_between <= 0 (same-day comp 1 and comp 3, which
+    technically shouldn't happen after MIN_DAYS_BETWEEN_COMPS filter but is
+    defensive).
+
+    Precondition: input sorted by (primary_key, date).
     """
-    # Gather each lifter's comp-1 and comp-3 dots + dates
-    comp_rows = df.with_columns(
-        pl.col("cumulative_comps").over("primary_key").alias("_cc"),
+    # Materialise an alias of cumulative_comps to keep expressions readable.
+    df = df.with_columns(pl.col("cumulative_comps").alias("_cc"))
+
+    # Per-lifter comp-1 and comp-3 snapshots. Using when/then + max.over() is
+    # a classic Polars idiom for "pick the value from one row and broadcast":
+    # only one row per lifter has _cc == 1 (or == 3), so max() just returns it.
+    df = df.with_columns(
+        pl.when(pl.col("_cc") == 1).then(pl.col("date")).otherwise(None).max().over("primary_key").alias("_c1_date"),
+        pl.when(pl.col("_cc") == 1).then(pl.col("dots")).otherwise(None).max().over("primary_key").alias("_c1_dots"),
+        pl.when(pl.col("_cc") == 3).then(pl.col("date")).otherwise(None).max().over("primary_key").alias("_c3_date"),
+        pl.when(pl.col("_cc") == 3).then(pl.col("dots")).otherwise(None).max().over("primary_key").alias("_c3_dots"),
     )
 
-    # Per-lifter comp-1 dots/date and comp-3 dots/date
-    comp1_date = pl.when(pl.col("_cc") == 1).then(pl.col("date")).otherwise(None).max().over("primary_key").alias("_c1_date")
-    comp1_dots = pl.when(pl.col("_cc") == 1).then(pl.col("dots")).otherwise(None).max().over("primary_key").alias("_c1_dots")
-    comp3_date = pl.when(pl.col("_cc") == 3).then(pl.col("date")).otherwise(None).max().over("primary_key").alias("_c3_date")
-    comp3_dots = pl.when(pl.col("_cc") == 3).then(pl.col("dots")).otherwise(None).max().over("primary_key").alias("_c3_dots")
+    df = df.with_columns(
+        ((pl.col("_c3_date") - pl.col("_c1_date")).dt.total_days() / conf.DAYS_IN_YEAR).alias("_years_between"),
+    )
 
-    df2 = comp_rows.with_columns(comp1_date, comp1_dots, comp3_date, comp3_dots)
+    # Guard against divide-by-zero: if years_between <= 0, produce null, not inf.
+    raw_rate = pl.when(pl.col("_years_between") > 0).then(
+        (pl.col("_c3_dots") - pl.col("_c1_dots")) / pl.col("_years_between"),
+    ).otherwise(None)
 
-    years_between = (pl.col("_c3_date") - pl.col("_c1_date")).dt.total_days() / conf.DAYS_IN_YEAR
-    raw_rate = (pl.col("_c3_dots") - pl.col("_c1_dots")) / years_between
-
-    return df2.with_columns(
+    df = df.with_columns(
         pl.when(pl.col("_cc") >= 4).then(raw_rate).otherwise(None).alias("early_growth_rate_dots_per_year"),
-    ).drop(["_cc", "_c1_date", "_c1_dots", "_c3_date", "_c3_dots"])
+    )
+
+    return df.drop(["_cc", "_c1_date", "_c1_dots", "_c3_date", "_c3_dots", "_years_between"])
 ```
 
 - [ ] **Step 4: Run — PASS**
@@ -1624,7 +1810,7 @@ git commit -m "feat(conf): add DOTS_TIERS + helpers (community convention)"
 def test_starting_tier_matches_first_comp_dots(base_module, synthetic_3_lifter_5_comp):
     df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
     df = base_module.add_previous_dots(df)
-    df = df.with_columns((pl.col("date").dt.year() - pl.col("year_of_birth")).alias("approx_age"))
+    df = base_module.add_age_lifecycle_features(df)  # produces approx_age, years_from_peak_age, abs_years_from_peak_age
     df = base_module.add_first_comp_features(df)
     out = base_module.add_tier_features(df).sort(["primary_key", "date"])
 
@@ -1636,7 +1822,7 @@ def test_starting_tier_matches_first_comp_dots(base_module, synthetic_3_lifter_5
 def test_prev_tier_uses_previous_dots(base_module, synthetic_3_lifter_5_comp):
     df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
     df = base_module.add_previous_dots(df)
-    df = df.with_columns((pl.col("date").dt.year() - pl.col("year_of_birth")).alias("approx_age"))
+    df = base_module.add_age_lifecycle_features(df)  # produces approx_age, years_from_peak_age, abs_years_from_peak_age
     df = base_module.add_first_comp_features(df)
     out = base_module.add_tier_features(df).sort(["primary_key", "date"])
 
@@ -1650,7 +1836,7 @@ def test_prev_tier_uses_previous_dots(base_module, synthetic_3_lifter_5_comp):
 def test_tiers_climbed_so_far_non_negative(base_module, synthetic_3_lifter_5_comp):
     df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
     df = base_module.add_previous_dots(df)
-    df = df.with_columns((pl.col("date").dt.year() - pl.col("year_of_birth")).alias("approx_age"))
+    df = base_module.add_age_lifecycle_features(df)  # produces approx_age, years_from_peak_age, abs_years_from_peak_age
     df = base_module.add_first_comp_features(df)
     out = base_module.add_tier_features(df).sort(["primary_key", "date"])
     vals = out["tiers_climbed_so_far"].drop_nulls().to_list()
@@ -1819,36 +2005,165 @@ git commit -m "feat(base): add potential × context interaction features"
 
 ---
 
-### Task 7.2: Wire Group A/B/C/D into `03_base.py` pipeline
+### Task 7.2: Extend global leakage guard to `first_comp_*` and `*_so_far`
+
+Spec requires the leakage guard to cover `prev_*`, `first_comp_*`, and `*_so_far` features. Task 2.5 covered `prev_*`; this task extends it now that all v10 features exist.
+
+**Files:**
+- Modify: `tests/test_leakage_guard.py`
+
+- [ ] **Step 1: Append `first_comp_*` constant-per-lifter assertion**
+
+```python
+@pytest.mark.parametrize(
+    "feature_col",
+    ["first_comp_dots", "first_comp_total_per_bw", "first_comp_age"],
+)
+def test_first_comp_feature_constant_per_lifter(base_module, synthetic_3_lifter_5_comp, feature_col):
+    """first_comp_* features must be constant per lifter (no per-row drift)."""
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
+    df = base_module.add_age_lifecycle_features(df)
+    out = base_module.add_first_comp_features(df)
+    unique_counts = out.group_by("primary_key").agg(pl.col(feature_col).n_unique())
+    assert (unique_counts[feature_col] <= 1).all()
+
+
+def test_first_comp_feature_matches_lifter_first_row(base_module, synthetic_3_lifter_5_comp):
+    """Value across all rows must equal the value computed from that lifter's comp 1 data."""
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
+    df = base_module.add_age_lifecycle_features(df)
+    out = base_module.add_first_comp_features(df).sort(["primary_key", "date"])
+
+    for lifter in ["L1", "L2", "L3"]:
+        lifter_df = out.filter(pl.col("primary_key") == lifter).sort("date")
+        # first_comp_dots should equal dots at row 0 for each lifter
+        assert lifter_df["first_comp_dots"][0] == lifter_df["dots"][0]
+        assert (lifter_df["first_comp_dots"] == lifter_df["first_comp_dots"][0]).all()
+```
+
+- [ ] **Step 2: Append `*_so_far` uses-only-prior-comps assertion**
+
+```python
+@pytest.mark.parametrize(
+    "feature_col,source_col,expected_fn_name",
+    [
+        ("max_dots_so_far", "dots", "cum_max_shift1"),
+        ("max_tier_so_far", "prev_tier", "cum_max"),
+    ],
+)
+def test_so_far_feature_uses_only_prior_comps(base_module, synthetic_3_lifter_5_comp, feature_col, source_col, expected_fn_name):
+    """Verify that *_so_far value at comp k matches an expected cum aggregation
+    applied to the source column restricted to comps 1..k-1.
+    """
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
+    df = base_module.add_previous_dots(df)
+    df = base_module.add_pct_change_dots(df)
+    df = base_module.add_age_lifecycle_features(df)
+    df = base_module.add_first_comp_features(df)
+    df = base_module.add_tier_features(df)
+    out = base_module.add_rolling_career_features(df).sort(["primary_key", "date"])
+
+    for lifter in ["L1", "L2", "L3"]:
+        lifter_df = out.filter(pl.col("primary_key") == lifter).sort("date")
+        source_vals = lifter_df[source_col].to_list()
+        feat_vals = lifter_df[feature_col].to_list()
+
+        # Comp 1: no prior data → must be null
+        assert feat_vals[0] is None, f"{lifter} {feature_col}[0] must be null"
+
+        # Comp k >= 2: feature[k] must equal max of source_vals[0..k-1] (dropping nulls)
+        for k in range(1, len(source_vals)):
+            prior = [v for v in source_vals[:k] if v is not None]
+            if not prior:
+                assert feat_vals[k] is None
+            elif expected_fn_name == "cum_max_shift1":
+                # max over shift-1 source — equivalent to max of values at comps 1..k-1
+                assert feat_vals[k] == max(prior), f"{lifter} {feature_col}[{k}] wrong"
+            elif expected_fn_name == "cum_max":
+                assert feat_vals[k] == max(prior), f"{lifter} {feature_col}[{k}] wrong"
+```
+
+- [ ] **Step 3: Run — expect PASS**
+
+Run: `uv run pytest tests/test_leakage_guard.py -v`
+Expected: all PASS (6 from Task 2.5 + 4 from this task).
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add tests/test_leakage_guard.py
+git commit -m "test(leakage): extend global guard to first_comp_* and *_so_far features"
+```
+
+---
+
+### Task 7.3: Wire Group A/B/C/D into `03_base.py` pipeline
 
 **Files:**
 - Modify: `steps/03_base.py`
 
 - [ ] **Step 1: Insert new pipes into the `__main__` block**
 
-Find the existing `__main__` pipeline. Order matters:
-- `add_first_comp_features` → needs `approx_age` → must come **after** `add_age_lifecycle_features`
-- `add_first_comp_percentile` → needs `first_comp_dots` + `ipf_weight_class` → after `add_first_comp_features` and `add_ipf_weight_class`
-- `add_rolling_career_features` → needs `previous_dots`, `pct_change_dots` → after `add_pct_change_dots`
-- `add_dots_growth_trend` → needs `previous_dots` → after `add_previous_dots`
-- `add_early_growth_rate` → needs `cumulative_comps`, `dots`, `date` → after `add_temporal_features`
-- `add_tier_features` → needs `first_comp_dots`, `previous_dots` → after `add_first_comp_features`
-- `add_comps_above_tier` → needs `previous_dots` → after `add_previous_dots`
-- `add_potential_interactions` → needs `starting_tier`, `years_competing`, `max_tier_so_far`, `time_since_last_comp_years` → last
+Dependencies between the new feature functions dictate ordering:
 
-Insert pattern:
+| Function | Requires |
+|----------|---------|
+| `add_first_comp_features` | `approx_age` (from `add_age_lifecycle_features`) |
+| `add_first_comp_percentile` | `first_comp_dots`, `ipf_weight_class` |
+| `add_rolling_career_features` | `previous_dots`, `pct_change_dots` (**guarded**) |
+| `add_dots_growth_trend` | `previous_dots`, `date` |
+| `add_early_growth_rate` | `cumulative_comps`, `dots`, `date` |
+| `add_tier_features` | `first_comp_dots`, `previous_dots` |
+| `add_comps_above_tier` | `previous_dots` |
+| `add_potential_interactions` | `starting_tier`, `years_competing`, `max_tier_so_far`, `time_since_last_comp_years` |
+
+Two pipes use *guarded* `pct_change_dots` (i.e., nulled for back-to-back comps) — those must go in the **post-guard block**, not the chain. The others go in the chain.
+
+**Before (end of v9 `__main__` block in `03_base.py`):**
 
 ```python
-# After all existing pipes, before common_io.io_write...
-.pipe(add_first_comp_features)
-.pipe(add_first_comp_percentile)
-.pipe(add_rolling_career_features)
-.pipe(add_dots_growth_trend)
-.pipe(add_early_growth_rate)
-.pipe(add_tier_features)
-.pipe(add_comps_above_tier)
-.pipe(add_potential_interactions)
+    .pipe(add_powerlifting_progress)
+    .pipe(add_pct_change_total)
+)
+
+# Guard: null out unreliable progress rates from back-to-back meets
+progress_cols = [...]
+df = df.with_columns(...)
+
+# Features that depend on guarded progress values
+df = df.pipe(add_prev_progress_rate)
+df = df.pipe(add_prev_pct_change)
+df = df.pipe(add_prev_pct_change_dots)
 ```
+
+**After (v10 — inserted pipes marked with `# NEW`):**
+
+```python
+    .pipe(add_powerlifting_progress)
+    .pipe(add_pct_change_total)
+    .pipe(add_first_comp_features)            # NEW — Group A (needs approx_age)
+    .pipe(add_first_comp_percentile)          # NEW — Group A
+    .pipe(add_dots_growth_trend)              # NEW — Group B (uses previous_dots, pre-guard OK)
+    .pipe(add_early_growth_rate)              # NEW — Group B (uses dots directly, comp-4 gated)
+    .pipe(add_tier_features)                  # NEW — Group C
+    .pipe(add_comps_above_tier)               # NEW — Group C
+)
+
+# Guard: null out unreliable progress rates from back-to-back meets
+progress_cols = [...]  # includes pct_change_dots from v9
+df = df.with_columns(...)
+
+# Features that depend on guarded progress values
+df = df.pipe(add_prev_progress_rate)
+df = df.pipe(add_prev_pct_change)
+df = df.pipe(add_prev_pct_change_dots)
+df = df.pipe(add_rolling_career_features)     # NEW — Group B (uses guarded pct_change_dots)
+df = df.pipe(add_potential_interactions)      # NEW — Group D (uses starting_tier from add_tier_features + years_competing which is early in chain)
+```
+
+**Why `add_rolling_career_features` is post-guard:** it computes `best_growth_rate_so_far` from `pct_change_dots`. If placed pre-guard, the "best" growth rate would include spuriously large values from back-to-back meets (e.g., 2 comps within 3 days produce huge pct_change values when divided by a near-zero time gap).
+
+**Why `add_potential_interactions` is post-guard:** `starting_tier` and `max_tier_so_far` come from `add_tier_features` (pre-guard, fine), but it's cleanest to keep all "aggregation/interaction" features together at the end of the script for readability.
 
 - [ ] **Step 2: Re-run test suite**
 
@@ -2133,23 +2448,36 @@ mlflow.log_metrics(
 logging.info("Normalised RMSE: %.4f | Spearman ρ: %.4f", test_rmse_normalised, test_spearman_rho)
 ```
 
-- [ ] **Step 3: Add regression guard**
+- [ ] **Step 3: Add regression guard that fails loudly**
 
-At the end of `train_for_target`, compare current R² to the last recorded R² for this head from MLflow. (For the first v11 run, compare against v10 — hardcode a sentinel or read from the v10 tag.) If drop > 0.02, log a loud warning:
+Spec requires the guard to "fail loudly" — not just log. Implementation raises `SystemExit(1)` so the training script exits non-zero, which also surfaces the failure via CI or shell exit code.
+
+Thresholds live in `conf.py` (not `05_train.py`) as a single source of truth across versions; the engineer updates them after each successful run.
+
+First, add to `steps/conf.py`:
 
 ```python
-# Regression guard (spec requirement)
-PRIOR_R2_THRESHOLDS = {
-    "pct_change_total": 0.00,   # updated per journey doc; start permissive
-    "pct_change_dots":  0.00,
+# Per-head best-known R² thresholds. Update after each successful training run.
+# A new run that drops >0.02 below these values trips the regression guard.
+PRIOR_BEST_R2 = {
+    "pct_change_total": 0.0,  # update to v11's actual R² after first successful v11 run
+    "pct_change_dots":  0.0,  # first v11 run is baseline for this head
 }
-prior = PRIOR_R2_THRESHOLDS.get(target_col, 0.0)
-if prior > 0 and test_r2 < prior - 0.02:
-    logging.error("REGRESSION GUARD TRIPPED: R² %.4f vs prior %.4f (drop > 0.02)", test_r2, prior)
-    mlflow.set_tag("regression_guard", "TRIPPED")
+REGRESSION_GUARD_TOLERANCE = 0.02
 ```
 
-After each release, the engineer updates `PRIOR_R2_THRESHOLDS` to the latest known-good R² per head.
+Then in `train_for_target` (`05_train.py`), at the end after `test_r2` is computed:
+
+```python
+prior = conf.PRIOR_BEST_R2.get(target_col, 0.0)
+if prior > 0 and test_r2 < prior - conf.REGRESSION_GUARD_TOLERANCE:
+    msg = f"REGRESSION GUARD TRIPPED for {target_col}: R² {test_r2:.4f} vs prior best {prior:.4f} (drop > {conf.REGRESSION_GUARD_TOLERANCE})"
+    logging.error(msg)
+    mlflow.set_tag("regression_guard", "TRIPPED")
+    raise SystemExit(1)
+```
+
+On the very first v11 run both thresholds are 0.0, so the guard is a no-op until baselines are recorded in Task 11.2. After that, the guard protects against silent regressions.
 
 - [ ] **Step 4: Run a quick pipeline smoke (full run happens in Task 9.4)**
 
@@ -2205,22 +2533,29 @@ model_predictions_v11_s3_http = create_output_file_path(OutputPathType.BASE, Fil
 
 - [ ] **Step 4: In `05_train.py`, accumulate predictions across heads and write parquet**
 
-Outside the per-target loop, accumulate predictions. Restructure the `__main__` block so after both heads run, the test-set predictions and starting_tier are merged into one parquet:
+Outside the per-target loop, accumulate predictions. Restructure the `__main__` block so after both heads run, the test-set predictions and starting_tier are merged into one parquet.
+
+**Critical gotcha:** each head filters out rows where its own target is null (e.g., `pct_change_total.is_not_null()`). DOTS and kg targets can be null on different rows (a row might have a valid kg change but a null DOTS change if `previous_dots` is null). So the two heads' test splits may not align. The merge MUST happen on `(primary_key, date)` via join, not by row position.
 
 ```python
 if __name__ == "__main__":
     base_df = pl.read_parquet(conf.base_local_file_path)
-    predictions_by_head = {}
-    test_meta = None  # captures primary_key/date/starting_tier once
+    head_preds = {}
     for target_col in ["pct_change_total", "pct_change_dots"]:
-        preds_df, meta_df = train_for_target(target_col, feature_set_version=11, base_df=base_df.clone())
-        predictions_by_head[target_col] = preds_df
-        test_meta = meta_df  # same split → same meta
+        preds_df = train_for_target(target_col, feature_set_version=11, base_df=base_df.clone())
+        head_preds[target_col] = preds_df  # columns: primary_key, date, starting_tier, pred
 
-    combined = test_meta.with_columns(
-        predictions_by_head["pct_change_total"]["pred"].alias("pred_pct_change_total"),
-        predictions_by_head["pct_change_dots"]["pred"].alias("pred_pct_change_dots"),
-    )
+    # Outer-join on (primary_key, date) — rows unique to one head get null for the other
+    kg = head_preds["pct_change_total"].rename({"pred": "pred_pct_change_total"})
+    dots = head_preds["pct_change_dots"].rename({"pred": "pred_pct_change_dots"}).select(["primary_key", "date", "pred_pct_change_dots"])
+    combined = kg.join(dots, on=["primary_key", "date"], how="outer")
+
+    # Log row-count divergence as data-quality checkpoint
+    n_kg_only = combined.filter(pl.col("pred_pct_change_dots").is_null()).height
+    n_dots_only = combined.filter(pl.col("pred_pct_change_total").is_null()).height
+    n_both = combined.filter(pl.col("pred_pct_change_total").is_not_null() & pl.col("pred_pct_change_dots").is_not_null()).height
+    logging.info("Predictions overlap — kg-only: %d, dots-only: %d, both: %d", n_kg_only, n_dots_only, n_both)
+
     common_io.io_write_from_local_to_s3(
         combined,
         conf.model_predictions_v11_local,
@@ -2228,9 +2563,16 @@ if __name__ == "__main__":
     )
 ```
 
-`train_for_target` must be updated to return `(preds_df, meta_df)`:
-- `preds_df` = `pl.DataFrame({"pred": test_preds})` (one column, row-aligned with test set)
-- `meta_df` = `pl.DataFrame({"primary_key": ..., "date": ..., "starting_tier": ...})` built from the test split pre-drop
+`train_for_target` must be updated to return a single `preds_df` with columns `[primary_key, date, starting_tier, pred]`. Build it inside the function after `test_preds` is computed:
+
+```python
+# Inside train_for_target, after test_preds = model.predict(dtest)
+test_meta_df = test_df.select(["primary_key", "date", "starting_tier"])
+preds_df = test_meta_df.with_columns(pl.Series("pred", test_preds))
+return preds_df
+```
+
+Note: `test_df` is the polars DataFrame from the pre-split stage before `prepare_Xy` converts to pandas. `starting_tier` is available from v10's features.
 
 - [ ] **Step 5: Commit**
 
@@ -2410,32 +2752,54 @@ git commit -m "docs(journey): v11 dual-head kg + DOTS results"
 
 ---
 
-### Task 11.2: Update PRIOR_R2_THRESHOLDS baseline
+### Task 11.2: Update PRIOR_BEST_R2 baseline in conf.py
 
 **Files:**
-- Modify: `steps/05_train.py`
+- Modify: `steps/conf.py`
 
 - [ ] **Step 1: Replace placeholder thresholds with actual v11 values**
 
+Edit `steps/conf.py`:
+
 ```python
-PRIOR_R2_THRESHOLDS = {
+PRIOR_BEST_R2 = {
     "pct_change_total": <actual v11 R² for kg head>,
     "pct_change_dots":  <actual v11 R² for DOTS head>,
 }
 ```
 
+Copy the exact values from `v11_run.log` / the `test_r2` MLflow metric for each head.
+
 - [ ] **Step 2: Commit**
 
 ```bash
-git add steps/05_train.py
-git commit -m "chore(train): lock regression guard thresholds to v11 baseline"
+git add steps/conf.py
+git commit -m "chore(conf): lock PRIOR_BEST_R2 regression-guard thresholds to v11 baseline"
 ```
 
 ---
 
 ## Plan self-review
 
-- **Spec coverage:** each spec section has at least one task (v9 filters → Phase 1; DOTS integration → Phase 2; global leakage guard → Task 2.5; v10 Groups A–D → Phases 4–7; v10 per-tier slice eval → Task 8.1; v11 dual-head → Phase 9; v11 predictions + dashboard → Phases 9–10; journey entries → each phase end).
-- **Placeholder scan:** journey-doc templates contain `X` values to fill from actual runs — these are not "TBD/TODO" but required placeholders for log-extracted numbers. No other placeholders.
-- **Type consistency:** `starting_tier` is always ordinal 0–4; feature function names are consistent across tests and impl. `pct_change_dots` and `pred_pct_change_dots` naming consistent.
-- **Known conditional branch:** Task 2.2 has two branches depending on Task 2.1 finding — explicitly structured so either path terminates cleanly.
+- **Spec coverage:** every spec requirement has at least one task:
+  - v9 filters → Phase 1 (Tasks 1.2–1.4)
+  - DOTS integration → Phase 2 (Tasks 2.1–2.4)
+  - Global leakage guard → Task 2.5 (`prev_*`) + Task 7.2 (`first_comp_*`, `*_so_far`)
+  - v10 Groups A–D → Phases 4–7
+  - v10 per-tier slice eval → Task 8.1
+  - Feature-importance delta log → Task 3.2 (runs every version)
+  - v11 dual-head → Phase 9
+  - v11 predictions artifact + dashboard → Phases 9–10
+  - Regression guard (fails loudly) → Task 9.2 (raises SystemExit)
+  - Journey entries → Tasks 3.4, 8.2, 11.1
+  - Baseline threshold update → Task 11.2
+- **Placeholder scan:** journey-doc templates contain `X` values to fill from actual runs and `<actual v11 R²>` in Task 11.2 — these are required runtime placeholders for log-extracted numbers, not TBD/TODOs.
+- **Type consistency:** `starting_tier` always ordinal 0–4; feature function names consistent across tests and impl; `pct_change_dots` and `pred_pct_change_dots` naming consistent; `PRIOR_BEST_R2` lives in `conf.py` (single source of truth).
+- **Leakage correctness (from review):**
+  - `early_growth_rate_dots_per_year` — broadcast from comp 4 onward (comp 3 would use comp-3 dots, leaking into comp-3 target); zero-guard on `years_between`.
+  - `best_growth_rate_so_far` — `.shift(1).over(pk).cum_max().over(pk)` (both ops partitioned) prevents cross-lifter leakage.
+  - `dots_growth_trend` — three-stage materialisation (days-from-first → masked sums → slope) instead of fragile inline expression chaining.
+  - `first_comp_*` features — constant-per-lifter invariant asserted in Task 7.2 extension of leakage guard.
+  - `add_prev_pct_change_dots` wiring — explicit post-guard statement, not inside `.pipe(...)` chain.
+- **Predictions-parquet merge (from review):** two heads' test splits may differ (different target-null rows). Merge via outer join on `(primary_key, date)` with row-count-divergence logged.
+- **Conditional branches:** Task 2.2 has Branch A / Branch B — both terminate cleanly with equivalent commit messages and downstream integration.
