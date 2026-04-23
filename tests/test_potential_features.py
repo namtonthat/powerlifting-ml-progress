@@ -223,3 +223,17 @@ def test_comps_above_elite_counts_prior_comps_only(base_module, synthetic_3_lift
     assert l3["comps_above_elite_so_far"][0] == 0
     assert l3["comps_above_elite_so_far"][1] == 1
     assert l3["comps_above_elite_so_far"][4] == 4
+
+
+def test_starting_tier_x_years_competing_multiplies_inputs(base_module):
+    df = pl.DataFrame(
+        {
+            "starting_tier": [1, 2, 3],
+            "years_competing": [2.0, 5.0, 10.0],
+            "max_tier_so_far": [1, 3, 3],
+            "time_since_last_comp_years": [0.5, 1.0, 2.0],
+        }
+    )
+    out = base_module.add_potential_interactions(df)
+    assert out["starting_tier_x_years_competing"].to_list() == [2.0, 10.0, 30.0]
+    assert out["max_tier_x_time_gap"].to_list() == [0.5, 3.0, 6.0]

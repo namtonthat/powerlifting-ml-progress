@@ -645,6 +645,14 @@ def add_comps_above_tier(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
+def add_potential_interactions(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        (pl.col("starting_tier") * pl.col("years_competing")).alias("starting_tier_x_years_competing"),
+        (pl.col("max_tier_so_far") * pl.col("time_since_last_comp_years")).alias("max_tier_x_time_gap"),
+    )
+
+
+@conf.debug
 def add_prev_absolute_change(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         (pl.col("previous_total") - pl.col("previous_total").shift(1).over("primary_key")).alias("prev_total_change_kg"),
