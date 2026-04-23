@@ -29,6 +29,9 @@ dev = [
 pythonpath = ["steps"]
 testpaths = ["tests"]
 
+[tool.pyright]
+extraPaths = ["steps"]
+
 [tool.ruff]
 line-length = 200
 
