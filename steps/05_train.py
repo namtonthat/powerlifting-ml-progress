@@ -17,6 +17,7 @@ import polars as pl
 import seaborn as sns
 import xgboost as xgb
 from dotenv import load_dotenv
+from scipy.stats import spearmanr
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 # MLFlow configurations
@@ -418,6 +419,9 @@ def train_for_target(target_col: str, feature_set_version: int, base_df: pl.Data
         test_r2 = r2_score(y_test, test_preds)
         test_median_ae = float(np.median(np.abs(y_test.values.ravel() - test_preds)))
 
+        test_rmse_normalised = test_rmse / float(y_test.values.std())
+        test_spearman_rho, _ = spearmanr(y_test.values.ravel(), test_preds)
+
         mlflow.log_metrics(
             {
                 "test_mse": test_mse,
@@ -425,6 +429,8 @@ def train_for_target(target_col: str, feature_set_version: int, base_df: pl.Data
                 "test_mae": test_mae,
                 "test_r2": test_r2,
                 "test_median_ae": test_median_ae,
+                "test_rmse_normalised": test_rmse_normalised,
+                "test_spearman_rho": float(test_spearman_rho),
                 "baseline_rmse": baseline_rmse,
                 "rmse_lift_over_baseline": baseline_rmse - test_rmse,
                 "n_train": len(X_train),
@@ -439,6 +445,7 @@ def train_for_target(target_col: str, feature_set_version: int, base_df: pl.Data
         logging.info("=" * 60)
         logging.info("Test RMSE: %.4f | MAE: %.4f | Median AE: %.4f | R²: %.4f", test_rmse, test_mae, test_median_ae, test_r2)
         logging.info("Baseline RMSE: %.4f | RMSE lift: %.4f", baseline_rmse, baseline_rmse - test_rmse)
+        logging.info("Normalised RMSE: %.4f | Spearman r: %.4f", test_rmse_normalised, test_spearman_rho)
         logging.info("Features: %d | Train: %d | Val: %d | Test: %d", len(X_train.columns), len(X_train), len(X_val), len(X_test))
 
         # Log tags
@@ -564,6 +571,13 @@ def train_for_target(target_col: str, feature_set_version: int, base_df: pl.Data
             mlflow.get_artifact_uri(artifact_path)
         except Exception as e:
             logging.warning("Artifact logging failed (is MinIO running?): %s", e)
+
+        prior = conf.PRIOR_BEST_R2.get(target_col, 0.0)
+        if prior > 0 and test_r2 < prior - conf.REGRESSION_GUARD_TOLERANCE:
+            msg = f"REGRESSION GUARD TRIPPED for {target_col}: R² {test_r2:.4f} vs prior best {prior:.4f} (drop > {conf.REGRESSION_GUARD_TOLERANCE})"
+            logging.error(msg)
+            mlflow.set_tag("regression_guard", "TRIPPED")
+            raise SystemExit(1)
 
 
 if __name__ == "__main__":

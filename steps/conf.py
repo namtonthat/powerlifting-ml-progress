@@ -111,6 +111,14 @@ def dots_tier_ordinal(score: float) -> int:
 # Data quality tolerance
 TOTAL_CONSISTENCY_TOLERANCE_KG = 2.5
 
+# Per-head best-known R² thresholds. Update after each successful training run.
+# A new run that drops >0.02 below these values trips the regression guard.
+PRIOR_BEST_R2 = {
+    "pct_change_total": 0.0,  # update to v11's actual R² after first successful v11 run
+    "pct_change_dots": 0.0,  # first v11 run is baseline for this head
+}
+REGRESSION_GUARD_TOLERANCE = 0.02
+
 
 # Functions
 def camel_to_snake(camel_str):
