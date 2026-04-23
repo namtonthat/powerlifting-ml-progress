@@ -14,15 +14,10 @@ import pytest
 
 
 @pytest.mark.manual
-@pytest.mark.parametrize(
-    ("sex", "bw", "total", "expected_dots"),
-    [
-        # Fill with actual values from raw parquet + liftercalc.com reference.
-        # Example placeholder row (replace with real data before running):
-        # ("M", 83.0, 700.0, 471.5),
-    ],
-)
-def test_dots_source_matches_liftercalc_reference(sex, bw, total, expected_dots):
-    # Compare the specific row in raw parquet to expected_dots within tolerance.
-    # Implementation reads conf.raw_s3_http, filters to the row, asserts match.
-    pytest.skip("Populate parametrize table with real (sex, bw, total, expected) values first.")
+def test_dots_source_matches_liftercalc_reference():
+    """Populate with real (sex, bw, total, expected_dots) tuples from liftercalc.com.
+
+    Once populated, parametrize this test over those tuples and assert the
+    upstream `dots` column in the raw parquet agrees within 1.0 DOTS.
+    """
+    pytest.skip("Populate with real (sex, bw, total, expected_dots) values from liftercalc.com first.")
