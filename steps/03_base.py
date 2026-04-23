@@ -440,6 +440,32 @@ def add_age_lifecycle_features(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
+def add_first_comp_features(df: pl.DataFrame) -> pl.DataFrame:
+    """Broadcast each lifter's first-comp snapshot as constant columns.
+
+    These are 'birth certificate' features — they never change for a given
+    lifter, encoding starting strength and age.
+
+    Precondition: input sorted by (primary_key, date); `approx_age` column
+    already present (produced by add_age_lifecycle_features) if first_comp_age
+    is needed.
+    """
+    cols_to_add = {
+        "first_comp_dots": pl.col("dots").first().over("primary_key"),
+        "_first_comp_total": pl.col("total").first().over("primary_key"),
+        "_first_comp_bw": pl.col("bodyweight").first().over("primary_key"),
+    }
+    if "approx_age" in df.columns:
+        cols_to_add["first_comp_age"] = pl.col("approx_age").first().over("primary_key")
+
+    df = df.with_columns(**cols_to_add)
+    df = df.with_columns(
+        (pl.col("_first_comp_total") / pl.col("_first_comp_bw")).alias("first_comp_total_per_bw"),
+    )
+    return df.drop(["_first_comp_total", "_first_comp_bw"])
+
+
+@conf.debug
 def add_prev_absolute_change(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         (pl.col("previous_total") - pl.col("previous_total").shift(1).over("primary_key")).alias("prev_total_change_kg"),
