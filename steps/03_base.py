@@ -553,6 +553,48 @@ def add_dots_growth_trend(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
+def add_early_growth_rate(df: pl.DataFrame) -> pl.DataFrame:
+    """(dots at 3rd comp - dots at 1st comp) / years between them.
+
+    Broadcast as constant from cumulative_comps == 4 onward. Null for comps 1-3.
+    Critical: uses dots *at* comp 3, so must be unavailable until comp 4 to avoid
+    leaking into the comp-3 target prediction.
+
+    Guards: null when years_between <= 0 (same-day comp 1 and comp 3, which
+    technically shouldn't happen after MIN_DAYS_BETWEEN_COMPS filter but is
+    defensive).
+
+    Precondition: input sorted by (primary_key, date).
+    """
+    df = df.with_columns(pl.col("cumulative_comps").alias("_cc"))
+
+    df = df.with_columns(
+        pl.when(pl.col("_cc") == 1).then(pl.col("date")).otherwise(None).max().over("primary_key").alias("_c1_date"),
+        pl.when(pl.col("_cc") == 1).then(pl.col("dots")).otherwise(None).max().over("primary_key").alias("_c1_dots"),
+        pl.when(pl.col("_cc") == 3).then(pl.col("date")).otherwise(None).max().over("primary_key").alias("_c3_date"),
+        pl.when(pl.col("_cc") == 3).then(pl.col("dots")).otherwise(None).max().over("primary_key").alias("_c3_dots"),
+    )
+
+    df = df.with_columns(
+        ((pl.col("_c3_date") - pl.col("_c1_date")).dt.total_days() / conf.DAYS_IN_YEAR).alias("_years_between"),
+    )
+
+    raw_rate = (
+        pl.when(pl.col("_years_between") > 0)
+        .then(
+            (pl.col("_c3_dots") - pl.col("_c1_dots")) / pl.col("_years_between"),
+        )
+        .otherwise(None)
+    )
+
+    df = df.with_columns(
+        pl.when(pl.col("_cc") >= 4).then(raw_rate).otherwise(None).alias("early_growth_rate_dots_per_year"),
+    )
+
+    return df.drop(["_cc", "_c1_date", "_c1_dots", "_c3_date", "_c3_dots", "_years_between"])
+
+
+@conf.debug
 def add_prev_absolute_change(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         (pl.col("previous_total") - pl.col("previous_total").shift(1).over("primary_key")).alias("prev_total_change_kg"),

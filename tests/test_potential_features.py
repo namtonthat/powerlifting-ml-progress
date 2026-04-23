@@ -119,3 +119,54 @@ def test_dots_growth_trend_null_until_comp_3(base_module, synthetic_3_lifter_5_c
     assert l1["dots_growth_trend"][0] is None
     assert l1["dots_growth_trend"][1] is None
     assert l1["dots_growth_trend"][2] is not None
+
+
+def test_early_growth_rate_null_before_comp_4(base_module, synthetic_3_lifter_5_comp):
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"]).with_columns(
+        pl.cum_count("primary_key").over("primary_key").alias("cumulative_comps"),
+        ((pl.col("date") - pl.col("date").shift(1)).dt.total_days() / 365.25).over("primary_key").alias("time_since_last_comp_years"),
+    )
+    out = base_module.add_early_growth_rate(df).sort(["primary_key", "date"])
+
+    l1 = out.filter(pl.col("primary_key") == "L1").sort("date")
+    # Comps 1-3 must be null (uses comps 1..3 data, so available from comp 4 onward)
+    assert l1["early_growth_rate_dots_per_year"][0] is None
+    assert l1["early_growth_rate_dots_per_year"][1] is None
+    assert l1["early_growth_rate_dots_per_year"][2] is None
+
+
+def test_early_growth_rate_uses_no_current_comp_dots(base_module, synthetic_3_lifter_5_comp):
+    """Feature at comp 4 must depend only on comps 1..3 dots, not comp 4's."""
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"]).with_columns(
+        pl.cum_count("primary_key").over("primary_key").alias("cumulative_comps"),
+        ((pl.col("date") - pl.col("date").shift(1)).dt.total_days() / 365.25).over("primary_key").alias("time_since_last_comp_years"),
+    )
+    out1 = base_module.add_early_growth_rate(df).sort(["primary_key", "date"])
+    v1 = out1.filter(pl.col("primary_key") == "L1").sort("date")["early_growth_rate_dots_per_year"][3]
+
+    # Mutate comp 4's dots (should NOT change feature at comp 4)
+    df2 = df.with_columns(
+        pl.when((pl.col("primary_key") == "L1") & (pl.col("cumulative_comps") == 4)).then(999.0).otherwise(pl.col("dots")).alias("dots"),
+    )
+    out2 = base_module.add_early_growth_rate(df2).sort(["primary_key", "date"])
+    v2 = out2.filter(pl.col("primary_key") == "L1").sort("date")["early_growth_rate_dots_per_year"][3]
+
+    assert v1 == v2, "early_growth_rate must not depend on current comp's dots"
+
+
+def test_early_growth_rate_null_when_years_between_zero(base_module):
+    """Guard: if comp 1 and comp 3 fall on the same date (years_between == 0),
+    the feature must be null, not ±inf (divide-by-zero protection)."""
+    from datetime import date
+
+    df = pl.DataFrame(
+        [
+            {"primary_key": "X", "date": date(2024, 1, 1), "dots": 300.0, "cumulative_comps": 1},
+            {"primary_key": "X", "date": date(2024, 1, 1), "dots": 310.0, "cumulative_comps": 2},
+            {"primary_key": "X", "date": date(2024, 1, 1), "dots": 320.0, "cumulative_comps": 3},
+            {"primary_key": "X", "date": date(2024, 2, 1), "dots": 330.0, "cumulative_comps": 4},
+        ]
+    )
+    out = base_module.add_early_growth_rate(df)
+    # Comp 4's value should be null (years_between == 0 between comp 1 and comp 3)
+    assert out["early_growth_rate_dots_per_year"][3] is None
