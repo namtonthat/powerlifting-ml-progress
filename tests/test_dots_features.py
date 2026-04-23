@@ -32,3 +32,22 @@ def test_add_previous_dots_no_leakage_across_lifters(base_module, synthetic_3_li
     # First row of each lifter must have null previous_dots
     firsts = out.group_by("primary_key").first()
     assert firsts["previous_dots"].null_count() == firsts.height
+
+
+def test_pct_change_dots_is_null_when_previous_is_zero(base_module):
+    df = pl.DataFrame(
+        [
+            {"primary_key": "X", "dots": 300.0, "previous_dots": 0.0},
+            {"primary_key": "X", "dots": 300.0, "previous_dots": 200.0},
+        ]
+    )
+    out = base_module.add_pct_change_dots(df)
+    assert out["pct_change_dots"][0] is None
+    assert out["pct_change_dots"][1] == pytest.approx(50.0)
+
+
+def test_min_days_between_comps_constant_is_30():
+    """Sanity: the guard threshold lives in conf.MIN_DAYS_BETWEEN_COMPS."""
+    import conf
+
+    assert conf.MIN_DAYS_BETWEEN_COMPS == 30

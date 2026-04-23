@@ -525,6 +525,12 @@ if __name__ == "__main__":
         .pipe(add_percentile_rank)
         .pipe(add_previous_powerlifting_records)
         .pipe(add_previous_wilks)
+        .pipe(add_previous_dots)
+        .pipe(add_dots_progress)
+        .pipe(add_pct_change_dots)
+        .pipe(add_rolling_avg_dots)
+        .pipe(add_prev_rolling_avg_dots)
+        .pipe(add_dots_personal_best)
         .pipe(add_personal_best_features)
         .pipe(add_prev_lift_ratios)
         .pipe(add_prev_rolling_averages)
@@ -541,12 +547,13 @@ if __name__ == "__main__":
     )
 
     # Guard: null out unreliable progress rates from back-to-back meets
-    progress_cols = ["squat_progress", "bench_progress", "deadlift_progress", "total_progress", "wilks_progress", "pct_change_total"]
+    progress_cols = ["squat_progress", "bench_progress", "deadlift_progress", "total_progress", "wilks_progress", "dots_progress", "pct_change_total", "pct_change_dots"]
     df = df.with_columns(pl.when(pl.col("time_since_last_comp_days") < conf.MIN_DAYS_BETWEEN_COMPS).then(None).otherwise(pl.col(c)).alias(c) for c in progress_cols)
 
     # Features that depend on guarded progress values
     df = df.pipe(add_prev_progress_rate)
     df = df.pipe(add_prev_pct_change)
+    df = df.pipe(add_prev_pct_change_dots)
 
     common_io.io_write_from_local_to_s3(
         df,
