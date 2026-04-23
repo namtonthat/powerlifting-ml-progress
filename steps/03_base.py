@@ -168,6 +168,58 @@ def add_previous_wilks(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
+def add_previous_dots(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col("dots").shift(1).over("primary_key").alias("previous_dots"),
+    )
+
+
+@conf.debug
+def add_dots_progress(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        ((pl.col("dots") - pl.col("previous_dots")) / pl.col("time_since_last_comp_years")).alias("dots_progress"),
+    )
+
+
+@conf.debug
+def add_pct_change_dots(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.when(pl.col("previous_dots") > 0).then((pl.col("dots") - pl.col("previous_dots")) / pl.col("previous_dots") * 100).otherwise(None).alias("pct_change_dots"),
+    )
+
+
+@conf.debug
+def add_prev_pct_change_dots(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col("pct_change_dots").shift(1).over("primary_key").alias("prev_pct_change_dots"),
+    )
+
+
+@conf.debug
+def add_rolling_avg_dots(df: pl.DataFrame, window: int = 3) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col("dots").rolling_mean(window_size=window, min_samples=window).over("primary_key").alias(f"rolling_avg_dots_{window}"),
+    )
+
+
+@conf.debug
+def add_prev_rolling_avg_dots(df: pl.DataFrame, window: int = 3) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col(f"rolling_avg_dots_{window}").shift(1).over("primary_key").alias(f"prev_rolling_avg_dots_{window}"),
+    )
+
+
+@conf.debug
+def add_dots_personal_best(df: pl.DataFrame) -> pl.DataFrame:
+    return df.with_columns(
+        pl.col("previous_dots").cum_max().over("primary_key").alias("prev_dots_personal_best"),
+    ).with_columns(
+        (pl.col("previous_dots") / pl.col("prev_dots_personal_best")).alias("prev_dots_vs_pb"),
+        (pl.col("prev_dots_personal_best") - pl.col("previous_dots")).alias("prev_distance_from_pb_dots"),
+    )
+
+
+@conf.debug
 def add_bodyweight_change(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns((pl.col("bodyweight") - pl.col("bodyweight").shift(1)).over("primary_key").alias("bodyweight_change"))
 
