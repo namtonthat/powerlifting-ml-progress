@@ -13,3 +13,6 @@ mlruns/*
 
 # terraform
 */.terraform/*
+
+# git worktrees
+.worktrees/
