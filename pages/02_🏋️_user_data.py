@@ -85,6 +85,21 @@ wilks_chart = (
 
 st.altair_chart(wilks_chart, use_container_width=True)
 
+dots_df = user_df.select(pl.col(["Date", "Name", "Dots"])).to_pandas()
+
+dots_chart = (
+    alt.Chart(dots_df)
+    .mark_line(point=True)
+    .encode(
+        x="Date:T",
+        y="Dots:Q",
+        color=alt.Color("Name:N", legend=alt.Legend(title="Lifter")),
+    )
+    .properties(width=1200, height=800)
+)
+
+st.altair_chart(dots_chart, use_container_width=True)
+
 with st.expander("Show breakdown"):
     st.write(wilks_df)
 

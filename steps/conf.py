@@ -31,7 +31,7 @@ reference_tables_local_folder_name = "reference-tables"
 env_file_path = ".env/project.env"
 
 # OpenPowerlifting original columns (CamelCase, used by Streamlit user data page)
-op_cols = ["Name", "Date", "Event", "Wilks", "Best3SquatKg", "Best3BenchKg", "Best3DeadliftKg"]
+op_cols = ["Name", "Date", "Event", "Wilks", "Dots", "Best3SquatKg", "Best3BenchKg", "Best3DeadliftKg"]
 
 # This is the name of the minio bucket created
 # TODO: Add sync script
