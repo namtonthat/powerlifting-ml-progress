@@ -78,6 +78,13 @@ IPF_WEIGHT_CLASSES = {
     "F": [47, 52, 57, 63, 69, 76, 84, float("inf")],
 }
 
+# DOTS formula — canonical reference: OpenPowerlifting opl-csv crates/coefficients/src/dots.rs
+# Konertz (2019). Valid bodyweight ranges (Konertz): M 40-210 kg, F 40-150 kg.
+DOTS_VALID_BW_RANGE = {"M": (40.0, 210.0), "F": (40.0, 150.0)}
+
+# Data quality tolerance
+TOTAL_CONSISTENCY_TOLERANCE_KG = 2.5
+
 
 # Functions
 def camel_to_snake(camel_str):
