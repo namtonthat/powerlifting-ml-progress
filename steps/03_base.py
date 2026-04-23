@@ -594,6 +594,41 @@ def add_early_growth_rate(df: pl.DataFrame) -> pl.DataFrame:
     return df.drop(["_cc", "_c1_date", "_c1_dots", "_c3_date", "_c3_dots", "_years_between"])
 
 
+def _score_to_ordinal(score_col: pl.Expr) -> pl.Expr:
+    """Translate a DOTS score column into its ordinal tier (0-4).
+
+    Uses conf.DOTS_TIERS with half-open intervals.
+    """
+    expr = pl.when(score_col < 200.0).then(0)
+    expr = expr.when(score_col < 300.0).then(1)
+    expr = expr.when(score_col < 400.0).then(2)
+    expr = expr.when(score_col < 500.0).then(3)
+    return expr.when(score_col >= 500.0).then(4).otherwise(None)
+
+
+@conf.debug
+def add_tier_features(df: pl.DataFrame) -> pl.DataFrame:
+    """DOTS-tier ordinals derived from first_comp_dots and previous_dots.
+
+    Four features:
+    - starting_tier: tier at first comp (constant per lifter, 0-4)
+    - prev_tier: tier at comp k-1 (null at comp 1)
+    - max_tier_so_far: max prev_tier across comps 1..k-1
+    - tiers_climbed_so_far: max_tier_so_far - starting_tier (>= 0)
+    """
+    df = df.with_columns(
+        _score_to_ordinal(pl.col("first_comp_dots")).alias("starting_tier"),
+        _score_to_ordinal(pl.col("previous_dots")).alias("prev_tier"),
+    )
+    df = df.with_columns(
+        pl.col("prev_tier").cum_max().over("primary_key").alias("max_tier_so_far"),
+    )
+    df = df.with_columns(
+        (pl.col("max_tier_so_far") - pl.col("starting_tier")).alias("tiers_climbed_so_far"),
+    )
+    return df
+
+
 @conf.debug
 def add_prev_absolute_change(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(

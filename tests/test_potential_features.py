@@ -170,3 +170,40 @@ def test_early_growth_rate_null_when_years_between_zero(base_module):
     out = base_module.add_early_growth_rate(df)
     # Comp 4's value should be null (years_between == 0 between comp 1 and comp 3)
     assert out["early_growth_rate_dots_per_year"][3] is None
+
+
+def test_starting_tier_matches_first_comp_dots(base_module, synthetic_3_lifter_5_comp):
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
+    df = base_module.add_previous_dots(df)
+    df = base_module.add_age_lifecycle_features(df)
+    df = base_module.add_first_comp_features(df)
+    out = base_module.add_tier_features(df).sort(["primary_key", "date"])
+
+    l1 = out.filter(pl.col("primary_key") == "L1").sort("date")
+    # L1 first_comp_dots = 200.0 → Intermediate (half-open at 200) → ordinal 1
+    assert l1["starting_tier"][0] == 1
+
+
+def test_prev_tier_uses_previous_dots(base_module, synthetic_3_lifter_5_comp):
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
+    df = base_module.add_previous_dots(df)
+    df = base_module.add_age_lifecycle_features(df)
+    df = base_module.add_first_comp_features(df)
+    out = base_module.add_tier_features(df).sort(["primary_key", "date"])
+
+    l1 = out.filter(pl.col("primary_key") == "L1").sort("date")
+    # comp 1 previous_dots is null → prev_tier null
+    assert l1["prev_tier"][0] is None
+    # comp 2 previous_dots = 200.0 → Intermediate → 1
+    assert l1["prev_tier"][1] == 1
+
+
+def test_tiers_climbed_so_far_non_negative(base_module, synthetic_3_lifter_5_comp):
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
+    df = base_module.add_previous_dots(df)
+    df = base_module.add_age_lifecycle_features(df)
+    df = base_module.add_first_comp_features(df)
+    out = base_module.add_tier_features(df).sort(["primary_key", "date"])
+    vals = out["tiers_climbed_so_far"].drop_nulls().to_list()
+    for v in vals:
+        assert v >= 0
