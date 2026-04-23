@@ -1,5 +1,6 @@
 """Tests for data-cleaning filters added in v9."""
 
+import polars as pl
 import pytest
 
 
@@ -39,3 +40,29 @@ def test_filter_bombouts_drops_rows_with_negative_lift(raw_module, bombout_rows)
 def test_filter_bombouts_keeps_clean_rows(raw_module, bombout_rows):
     result = raw_module.filter_bombouts(bombout_rows)
     assert "clean" in result["name"].to_list()
+
+
+def test_filter_total_consistency_keeps_within_tolerance(raw_module):
+    df = pl.DataFrame(
+        [
+            # total matches sbd exactly
+            {"name": "exact", "squat": 200.0, "bench": 100.0, "deadlift": 300.0, "total": 600.0},
+            # total off by 2.0 kg — within 2.5 kg tolerance
+            {"name": "within_tol", "squat": 200.0, "bench": 100.0, "deadlift": 300.0, "total": 598.0},
+        ]
+    )
+    result = raw_module.filter_total_consistency(df)
+    assert set(result["name"].to_list()) == {"exact", "within_tol"}
+
+
+def test_filter_total_consistency_drops_outside_tolerance(raw_module):
+    df = pl.DataFrame(
+        [
+            # total off by 10 kg — outside tolerance
+            {"name": "way_off", "squat": 200.0, "bench": 100.0, "deadlift": 300.0, "total": 590.0},
+            {"name": "exact", "squat": 200.0, "bench": 100.0, "deadlift": 300.0, "total": 600.0},
+        ]
+    )
+    result = raw_module.filter_total_consistency(df)
+    assert "way_off" not in result["name"].to_list()
+    assert "exact" in result["name"].to_list()

@@ -24,6 +24,19 @@ def filter_bombouts(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
+def filter_total_consistency(df: pl.DataFrame) -> pl.DataFrame:
+    """Drop rows where |squat + bench + deadlift - total| > tolerance.
+
+    Catches data-entry errors. Tolerance: conf.TOTAL_CONSISTENCY_TOLERANCE_KG (2.5 kg).
+    """
+    n_before = len(df)
+    sbd_sum = pl.col("squat") + pl.col("bench") + pl.col("deadlift")
+    out = df.filter((sbd_sum - pl.col("total")).abs() <= conf.TOTAL_CONSISTENCY_TOLERANCE_KG)
+    logging.info("filter_total_consistency dropped %d rows (%.2f%%)", n_before - len(out), 100 * (n_before - len(out)) / max(n_before, 1))
+    return out
+
+
+@conf.debug
 def type_cast(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         pl.col("date").str.strptime(pl.Date, "%Y-%m-%d").alias("date"),
@@ -136,6 +149,7 @@ if __name__ == "__main__":
         .pipe(add_primary_key)
         .pipe(filter_for_unique_primary_key)
         .pipe(filter_bombouts)
+        .pipe(filter_total_consistency)
     )
 
     # Origin country requires a self-join, breaks the chain
