@@ -11,6 +11,19 @@ def filter_non_numeric_place(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
+def filter_bombouts(df: pl.DataFrame) -> pl.DataFrame:
+    """Drop rows where any of squat/bench/deadlift <= 0.
+
+    These are SBD events where the lifter failed all attempts on at least one lift;
+    the total is recorded but the progress signal is garbage.
+    """
+    n_before = len(df)
+    out = df.filter((pl.col("squat") > 0) & (pl.col("bench") > 0) & (pl.col("deadlift") > 0))
+    logging.info("filter_bombouts dropped %d rows (%.2f%%)", n_before - len(out), 100 * (n_before - len(out)) / max(n_before, 1))
+    return out
+
+
+@conf.debug
 def type_cast(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         pl.col("date").str.strptime(pl.Date, "%Y-%m-%d").alias("date"),
@@ -122,6 +135,7 @@ if __name__ == "__main__":
         .pipe(add_birth_year)
         .pipe(add_primary_key)
         .pipe(filter_for_unique_primary_key)
+        .pipe(filter_bombouts)
     )
 
     # Origin country requires a self-join, breaks the chain
