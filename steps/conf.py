@@ -82,6 +82,32 @@ IPF_WEIGHT_CLASSES = {
 # Konertz (2019). Valid bodyweight ranges (Konertz): M 40-210 kg, F 40-150 kg.
 DOTS_VALID_BW_RANGE = {"M": (40.0, 210.0), "F": (40.0, 150.0)}
 
+# DOTS classification tiers (community convention; sex-agnostic)
+# Half-open intervals: tier contains its lower bound, not its upper.
+DOTS_TIERS = {
+    "Beginner": (0.0, 200.0),
+    "Intermediate": (200.0, 300.0),
+    "Advanced": (300.0, 400.0),
+    "Elite": (400.0, 500.0),
+    "World Class": (500.0, float("inf")),
+}
+DOTS_TIER_ORDER = ["Beginner", "Intermediate", "Advanced", "Elite", "World Class"]
+
+
+def dots_tier_for_score(score: float) -> str:
+    """Return the community-convention tier name for a given DOTS score."""
+    for tier_name in DOTS_TIER_ORDER:
+        lo, hi = DOTS_TIERS[tier_name]
+        if lo <= score < hi:
+            return tier_name
+    return DOTS_TIER_ORDER[-1]  # score above all upper bounds → top tier
+
+
+def dots_tier_ordinal(score: float) -> int:
+    """Return the 0-indexed tier ordinal (Beginner=0, World Class=4)."""
+    return DOTS_TIER_ORDER.index(dots_tier_for_score(score))
+
+
 # Data quality tolerance
 TOTAL_CONSISTENCY_TOLERANCE_KG = 2.5
 
