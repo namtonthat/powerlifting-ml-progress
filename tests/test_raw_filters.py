@@ -101,3 +101,14 @@ def test_filter_bw_validity_drops_female_over_150(raw_module):
     result = raw_module.filter_bw_validity(df)
     assert "f_ok" in result["name"].to_list()
     assert "f_over" not in result["name"].to_list()
+
+
+def test_raw_filters_preserve_dots_column(raw_module):
+    """Regression test — dots column must survive every v9 filter."""
+    df = pl.DataFrame(
+        [
+            {"name": "x", "sex": "M", "bodyweight": 80.0, "squat": 200.0, "bench": 100.0, "deadlift": 250.0, "total": 550.0, "dots": 300.0},
+        ]
+    )
+    out = df.pipe(raw_module.filter_bombouts).pipe(raw_module.filter_total_consistency).pipe(raw_module.filter_bw_validity)
+    assert "dots" in out.columns

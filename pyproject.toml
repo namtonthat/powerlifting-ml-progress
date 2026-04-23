@@ -28,6 +28,9 @@ dev = [
 [tool.pytest.ini_options]
 pythonpath = ["steps"]
 testpaths = ["tests"]
+markers = [
+  "manual: tests intended to be run manually (not in CI)",
+]
 
 [tool.pyright]
 extraPaths = ["steps"]

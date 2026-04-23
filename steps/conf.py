@@ -174,6 +174,7 @@ _required_landing_column_names = [
     "Best3DeadliftKg",
     "TotalKg",
     "Wilks",
+    "Dots",
     "Tested",
     "Federation",
     "MeetName",
