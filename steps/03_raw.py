@@ -37,6 +37,23 @@ def filter_total_consistency(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
+def filter_bw_validity(df: pl.DataFrame) -> pl.DataFrame:
+    """Drop rows with bodyweight outside Konertz's DOTS validity range.
+
+    M: 40-210 kg (inclusive), F: 40-150 kg (inclusive).
+    DOTS is mathematically undefined outside these ranges.
+    """
+    m_low, m_high = conf.DOTS_VALID_BW_RANGE["M"]
+    f_low, f_high = conf.DOTS_VALID_BW_RANGE["F"]
+    n_before = len(df)
+    out = df.filter(
+        ((pl.col("sex") == "M") & (pl.col("bodyweight") >= m_low) & (pl.col("bodyweight") <= m_high)) | ((pl.col("sex") == "F") & (pl.col("bodyweight") >= f_low) & (pl.col("bodyweight") <= f_high))
+    )
+    logging.info("filter_bw_validity dropped %d rows (%.2f%%)", n_before - len(out), 100 * (n_before - len(out)) / max(n_before, 1))
+    return out
+
+
+@conf.debug
 def type_cast(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         pl.col("date").str.strptime(pl.Date, "%Y-%m-%d").alias("date"),
@@ -150,6 +167,7 @@ if __name__ == "__main__":
         .pipe(filter_for_unique_primary_key)
         .pipe(filter_bombouts)
         .pipe(filter_total_consistency)
+        .pipe(filter_bw_validity)
     )
 
     # Origin country requires a self-join, breaks the chain
