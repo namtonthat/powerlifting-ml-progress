@@ -479,6 +479,36 @@ def add_first_comp_percentile(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
+def add_rolling_career_features(df: pl.DataFrame) -> pl.DataFrame:
+    """Career-so-far features: max DOTS, best growth rate.
+
+    Both use inputs that are already shifted (`previous_dots`) or explicitly
+    scoped inside the `over()` partition so the current comp is strictly
+    excluded.
+
+    Precondition: input sorted by (primary_key, date).
+    """
+    # previous_dots is already shift(1) → cum_max.over(pk) gives max of comps 1..k-1.
+    df = df.with_columns(
+        pl.col("previous_dots").cum_max().over("primary_key").alias("max_dots_so_far"),
+    )
+
+    # For best_growth_rate_so_far, shift and cum_max must BOTH be scoped to primary_key
+    # to avoid leaking across lifter boundaries. Since we can't chain window operations
+    # in Polars, we do this in two steps: first shift within partition, then cum_max.
+    if "pct_change_dots" in df.columns:
+        df = df.with_columns(
+            pl.col("pct_change_dots").shift(1).over("primary_key").alias("_shifted_pct_change"),
+        )
+        df = df.with_columns(
+            pl.col("_shifted_pct_change").cum_max().over("primary_key").alias("best_growth_rate_so_far"),
+        )
+        df = df.drop("_shifted_pct_change")
+
+    return df
+
+
+@conf.debug
 def add_prev_absolute_change(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         (pl.col("previous_total") - pl.col("previous_total").shift(1).over("primary_key")).alias("prev_total_change_kg"),

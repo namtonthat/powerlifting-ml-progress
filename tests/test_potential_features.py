@@ -53,3 +53,45 @@ def test_first_comp_percentile_in_range(base_module, synthetic_3_lifter_5_comp):
     vals = out["first_comp_percentile_vs_sex_wc"].drop_nulls().to_list()
     for v in vals:
         assert 0 <= v <= 100
+
+
+def test_max_dots_so_far_uses_only_prior_comps(base_module, synthetic_3_lifter_5_comp):
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
+    df = base_module.add_previous_dots(df)
+    out = base_module.add_rolling_career_features(df).sort(["primary_key", "date"])
+
+    l1 = out.filter(pl.col("primary_key") == "L1").sort("date")
+    # comp 1: no prior → null
+    assert l1["max_dots_so_far"][0] is None
+    # comp 2: prior = {200} → 200
+    assert l1["max_dots_so_far"][1] == pytest.approx(200.0)
+    # comp 5: prior = {200, 215, 230, 245} → 245
+    assert l1["max_dots_so_far"][4] == pytest.approx(245.0)
+
+
+def test_best_growth_rate_so_far_null_until_comp_3(base_module, synthetic_3_lifter_5_comp):
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
+    df = base_module.add_previous_dots(df)
+    df = base_module.add_pct_change_dots(df)
+    out = base_module.add_rolling_career_features(df).sort(["primary_key", "date"])
+
+    l1 = out.filter(pl.col("primary_key") == "L1").sort("date")
+    assert l1["best_growth_rate_so_far"][0] is None
+    assert l1["best_growth_rate_so_far"][1] is None
+    # comp 3: prior pct_change_dots values = {null, ~7.5} → max=7.5
+    assert l1["best_growth_rate_so_far"][2] is not None
+
+
+def test_best_growth_rate_so_far_does_not_leak_across_lifters(base_module, synthetic_3_lifter_5_comp):
+    """Critical: shift(1) and cum_max must both be scoped to primary_key.
+
+    If either op leaks across lifters, L3's (Elite, big growth) values would
+    pollute L1's (Beginner, small growth) comp-2 feature value.
+    """
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
+    df = base_module.add_previous_dots(df)
+    df = base_module.add_pct_change_dots(df)
+    out = base_module.add_rolling_career_features(df).sort(["primary_key", "date"])
+
+    l1 = out.filter(pl.col("primary_key") == "L1").sort("date")
+    assert l1["best_growth_rate_so_far"][1] is None, "Shift leaked across lifter boundary"
