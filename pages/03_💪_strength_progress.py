@@ -35,6 +35,11 @@ def load_by_sex_wc_exp() -> pl.DataFrame:
         return pl.read_parquet(conf.describe_by_sex_wc_exp_local)
 
 
+@st.cache_data
+def load_model_predictions():
+    return pl.read_parquet(conf.model_predictions_v11_s3_http).to_pandas()
+
+
 wc_df = load_by_weight_class()
 exp_df = load_by_experience()
 swc_exp_df = load_by_sex_wc_exp()
@@ -156,6 +161,24 @@ exp_chart = (
 )
 
 st.altair_chart(exp_chart, use_container_width=True)
+
+# Model predictions
+st.markdown("---")
+st.subheader("Model predictions")
+
+try:
+    preds_df = load_model_predictions()
+    head = st.radio(
+        "Prediction head",
+        options=["kg-based (pct_change_total)", "DOTS-based (pct_change_dots)"],
+        horizontal=True,
+    )
+    pred_col = "pred_pct_change_total" if head.startswith("kg") else "pred_pct_change_dots"
+
+    st.write(f"Using column: `{pred_col}`")
+    st.dataframe(preds_df[["primary_key", "date", pred_col, "starting_tier"]].head(100))
+except Exception as e:
+    st.warning(f"Model predictions not yet available (run v11 training pipeline first): {e}")
 
 # Methodology
 with st.expander("Methodology"):
