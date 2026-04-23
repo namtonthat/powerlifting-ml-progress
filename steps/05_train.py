@@ -201,7 +201,7 @@ def plot_residuals(model, dvalid, valid_y, save_path=None):
 
 if __name__ == "__main__":
     RANDOM_SEED = 7
-    FEATURE_SET_VERSION = 9
+    FEATURE_SET_VERSION = 10
     TARGET = "pct_change_total"
     columns_to_exclude = ["name", "date", "primary_key", TARGET]
 
@@ -294,6 +294,28 @@ if __name__ == "__main__":
         "prev_dots_vs_pb",
         "prev_distance_from_pb_dots",
         "prev_rolling_avg_dots_3",
+        # v10: first-comp birth certificate
+        "first_comp_dots",
+        "first_comp_total_per_bw",
+        "first_comp_age",
+        "first_comp_percentile_vs_sex_wc",
+        # v10: rolling career-so-far
+        "max_dots_so_far",
+        "best_growth_rate_so_far",
+        "dots_growth_trend",
+        "early_growth_rate_dots_per_year",
+        "comps_above_intermediate_so_far",
+        "comps_above_advanced_so_far",
+        "comps_above_elite_so_far",
+        "comps_above_world_class_so_far",
+        # v10: tier labels
+        "starting_tier",
+        "prev_tier",
+        "max_tier_so_far",
+        "tiers_climbed_so_far",
+        # v10: potential x context
+        "starting_tier_x_years_competing",
+        "max_tier_x_time_gap",
         TARGET,
     ]
 
@@ -500,6 +522,19 @@ if __name__ == "__main__":
             mlflow.log_metric(f"rmse_wc_{int(wc_val)}", seg_rmse)
             mlflow.log_metric(f"r2_wc_{int(wc_val)}", seg_r2)
             logging.info("  wc=%s (n=%d): RMSE=%.4f R²=%.4f", wc_val, mask.sum(), seg_rmse, seg_r2)
+
+        # Per-starting-tier slice evaluation (v10+)
+        logging.info("-" * 60)
+        logging.info("PER-STARTING-TIER RMSE:")
+        for tier_ord in range(5):
+            mask = X_test["starting_tier"] == tier_ord
+            if mask.sum() >= 50:
+                seg_rmse = math.sqrt(mean_squared_error(y_test[mask], test_preds[mask]))
+                seg_r2 = r2_score(y_test[mask], test_preds[mask])
+                tier_name = conf.DOTS_TIER_ORDER[tier_ord]
+                mlflow.log_metric(f"rmse_starting_tier_{tier_name.replace(' ', '_')}", seg_rmse)
+                mlflow.log_metric(f"r2_starting_tier_{tier_name.replace(' ', '_')}", seg_r2)
+                logging.info("  starting_tier=%s (n=%d): RMSE=%.4f R²=%.4f", tier_name, mask.sum(), seg_rmse, seg_r2)
 
         logging.info("=" * 60)
 
