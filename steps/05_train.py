@@ -7,6 +7,7 @@ import math
 import os
 from datetime import datetime
 
+import common_io
 import conf
 import matplotlib.pyplot as plt
 import mlflow
@@ -157,7 +158,7 @@ def plot_residuals(model, dvalid, valid_y, save_path=None):
     return fig
 
 
-def train_for_target(target_col: str, feature_set_version: int, base_df: pl.DataFrame) -> None:
+def train_for_target(target_col: str, feature_set_version: int, base_df: pl.DataFrame) -> pl.DataFrame:
     """Train an XGBoost model for a single target column.
 
     Parameters
@@ -169,6 +170,12 @@ def train_for_target(target_col: str, feature_set_version: int, base_df: pl.Data
     base_df:
         Pre-loaded base DataFrame (caller owns this; pass a clone per target so each
         head can apply its own filtering/winsorization independently).
+
+    Returns
+    -------
+    pl.DataFrame
+        Test-set predictions with columns ``primary_key``, ``date``, ``starting_tier``,
+        and ``pred`` (the raw XGBoost predictions for this target).
     """
     columns_to_exclude = ["name", "date", "primary_key", target_col]
 
@@ -310,6 +317,9 @@ def train_for_target(target_col: str, feature_set_version: int, base_df: pl.Data
     logging.info("Temporal split — train: %d, val: %d, test: %d", len(train_df), len(val_df), len(test_df))
     logging.info("Train cutoff: %s, Val cutoff: %s", train_cutoff, val_cutoff)
 
+    # Capture test-set metadata from polars DataFrame (before pandas conversion)
+    test_meta_df = test_df.select(["primary_key", "date", "starting_tier"])
+
     # Prepare features
     def prepare_Xy(df):
         X = df.select(pl.exclude(columns_to_exclude)).to_pandas()
@@ -413,6 +423,7 @@ def train_for_target(target_col: str, feature_set_version: int, base_df: pl.Data
 
         # Compute metrics on held-out test set
         test_preds = model.predict(dtest)
+        preds_df = test_meta_df.with_columns(pl.Series("pred", test_preds))
         test_mse = mean_squared_error(y_test, test_preds)
         test_rmse = math.sqrt(test_mse)
         test_mae = mean_absolute_error(y_test, test_preds)
@@ -579,11 +590,40 @@ def train_for_target(target_col: str, feature_set_version: int, base_df: pl.Data
             mlflow.set_tag("regression_guard", "TRIPPED")
             raise SystemExit(1)
 
+    return preds_df
+
 
 if __name__ == "__main__":
     base_df = pl.read_parquet(conf.base_local_file_path)
+    head_preds = {}
     for target_col in ["pct_change_total", "pct_change_dots"]:
         logging.info("=" * 70)
         logging.info("TRAINING HEAD: %s", target_col)
         logging.info("=" * 70)
-        train_for_target(target_col, feature_set_version=11, base_df=base_df.clone())
+        preds_df = train_for_target(target_col, feature_set_version=11, base_df=base_df.clone())
+        head_preds[target_col] = preds_df
+
+    # Outer-join on (primary_key, date) — rows unique to one head get null for the other.
+    # Each head filters out rows where its own target is null, and those null rows can
+    # differ between heads (e.g., pct_change_dots null when previous_dots null, but
+    # pct_change_total valid).
+    kg = head_preds["pct_change_total"].rename({"pred": "pred_pct_change_total"})
+    dots = head_preds["pct_change_dots"].rename({"pred": "pred_pct_change_dots"}).select(["primary_key", "date", "pred_pct_change_dots"])
+    combined = kg.join(dots, on=["primary_key", "date"], how="outer")
+
+    # Log row-count divergence as data-quality checkpoint
+    n_kg_only = combined.filter(pl.col("pred_pct_change_dots").is_null()).height
+    n_dots_only = combined.filter(pl.col("pred_pct_change_total").is_null()).height
+    n_both = combined.filter(pl.col("pred_pct_change_total").is_not_null() & pl.col("pred_pct_change_dots").is_not_null()).height
+    logging.info(
+        "Predictions overlap — kg-only: %d, dots-only: %d, both: %d",
+        n_kg_only,
+        n_dots_only,
+        n_both,
+    )
+
+    common_io.io_write_from_local_to_s3(
+        combined,
+        conf.model_predictions_v11_local,
+        conf.model_predictions_v11_s3_key,
+    )

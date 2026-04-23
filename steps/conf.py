@@ -290,3 +290,8 @@ analysis_archetypes_s3_http = create_output_file_path(OutputPathType.BASE, FileL
 analysis_archetype_centroids_local = create_output_file_path(OutputPathType.BASE, FileLocation.LOCAL, file_name="analysis_archetype_centroids.parquet")
 analysis_archetype_centroids_s3_key = create_output_file_path(OutputPathType.BASE, FileLocation.S3, file_name="analysis_archetype_centroids.parquet")
 analysis_archetype_centroids_s3_http = create_output_file_path(OutputPathType.BASE, FileLocation.S3, as_http=True, file_name="analysis_archetype_centroids.parquet")
+
+# Model predictions (v11 dual-head)
+model_predictions_v11_local = create_output_file_path(OutputPathType.BASE, FileLocation.LOCAL, file_name="model_predictions_v11.parquet")
+model_predictions_v11_s3_key = create_output_file_path(OutputPathType.BASE, FileLocation.S3, file_name="model_predictions_v11.parquet")
+model_predictions_v11_s3_http = create_output_file_path(OutputPathType.BASE, FileLocation.S3, as_http=True, file_name="model_predictions_v11.parquet")

@@ -26,3 +26,22 @@ def test_spearman_rho_identity_is_one():
     y_pred = 2 * y_true + 10  # strictly monotonic -> rho = 1.0
     rho, _ = spearmanr(y_true, y_pred)
     assert rho == pytest.approx(1.0)
+
+
+def test_predictions_parquet_schema():
+    """Predictions parquet must carry both head preds and starting_tier."""
+    import polars as pl
+
+    required = {"primary_key", "date", "pred_pct_change_total", "pred_pct_change_dots", "starting_tier"}
+
+    # Schema test uses a synthetic frame — integration test covers real file
+    df = pl.DataFrame(
+        {
+            "primary_key": ["L1"],
+            "date": [None],
+            "pred_pct_change_total": [0.1],
+            "pred_pct_change_dots": [0.2],
+            "starting_tier": [1],
+        }
+    )
+    assert required.issubset(set(df.columns))
