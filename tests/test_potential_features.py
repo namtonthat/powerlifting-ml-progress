@@ -44,3 +44,12 @@ def test_first_comp_age_constant_per_lifter(base_module, synthetic_3_lifter_5_co
     out = base_module.add_first_comp_features(df)
     l1 = out.filter(pl.col("primary_key") == "L1").sort("date")
     assert (l1["first_comp_age"] == l1["first_comp_age"][0]).all()
+
+
+def test_first_comp_percentile_in_range(base_module, synthetic_3_lifter_5_comp):
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
+    df = df.with_columns(pl.lit("83").alias("ipf_weight_class"))
+    out = base_module.add_first_comp_features(df).pipe(base_module.add_first_comp_percentile)
+    vals = out["first_comp_percentile_vs_sex_wc"].drop_nulls().to_list()
+    for v in vals:
+        assert 0 <= v <= 100

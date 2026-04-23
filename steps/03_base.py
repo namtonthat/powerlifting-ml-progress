@@ -466,6 +466,19 @@ def add_first_comp_features(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
+def add_first_comp_percentile(df: pl.DataFrame) -> pl.DataFrame:
+    """Percentile of first_comp_dots within each (sex, ipf_weight_class) cohort.
+
+    Note: uses the full dataset distribution (matches existing
+    `prev_total_percentile_rank` convention). For stricter temporal purity,
+    switch to an expanding-by-date percentile — deferred as future work.
+    """
+    return df.with_columns(
+        (pl.col("first_comp_dots").rank("average").over("sex", "ipf_weight_class") / pl.col("first_comp_dots").count().over("sex", "ipf_weight_class") * 100).alias("first_comp_percentile_vs_sex_wc"),
+    )
+
+
+@conf.debug
 def add_prev_absolute_change(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         (pl.col("previous_total") - pl.col("previous_total").shift(1).over("primary_key")).alias("prev_total_change_kg"),
