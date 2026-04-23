@@ -95,3 +95,27 @@ def test_best_growth_rate_so_far_does_not_leak_across_lifters(base_module, synth
 
     l1 = out.filter(pl.col("primary_key") == "L1").sort("date")
     assert l1["best_growth_rate_so_far"][1] is None, "Shift leaked across lifter boundary"
+
+
+def test_dots_growth_trend_positive_for_improver(base_module, synthetic_3_lifter_5_comp):
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
+    df = base_module.add_previous_dots(df)
+    out = base_module.add_dots_growth_trend(df).sort(["primary_key", "date"])
+
+    l1 = out.filter(pl.col("primary_key") == "L1").sort("date")
+    # L1 is an improver: prior dots {200, 215, 230, 245} → positive slope
+    # At comp 5 we have 4 prior points → non-null slope
+    assert l1["dots_growth_trend"][4] is not None
+    assert l1["dots_growth_trend"][4] > 0
+
+
+def test_dots_growth_trend_null_until_comp_3(base_module, synthetic_3_lifter_5_comp):
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
+    df = base_module.add_previous_dots(df)
+    out = base_module.add_dots_growth_trend(df).sort(["primary_key", "date"])
+
+    l1 = out.filter(pl.col("primary_key") == "L1").sort("date")
+    # Need >= 2 prior points for a slope → null at comps 1 and 2
+    assert l1["dots_growth_trend"][0] is None
+    assert l1["dots_growth_trend"][1] is None
+    assert l1["dots_growth_trend"][2] is not None

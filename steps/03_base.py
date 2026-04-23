@@ -509,6 +509,50 @@ def add_rolling_career_features(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
+def add_dots_growth_trend(df: pl.DataFrame) -> pl.DataFrame:
+    """Linear-regression slope of previous_dots vs. days-since-lifter's-first-comp.
+
+    Uses all prior (non-null previous_dots) points for each lifter. Null until
+    at least 2 prior points exist (comp 3 onward).
+
+    Precondition: input sorted by (primary_key, date).
+    """
+    # Stage 1: materialise days-from-first-comp as an honest column.
+    df = df.with_columns(
+        (pl.col("date") - pl.col("date").first().over("primary_key")).dt.total_days().alias("_days_from_first"),
+    )
+
+    # Stage 2: masked x/y, counts, and expanding sums — one call, all scoped to primary_key.
+    df = df.with_columns(
+        pl.when(pl.col("previous_dots").is_not_null()).then(pl.col("_days_from_first")).otherwise(None).alias("_x_masked"),
+        pl.when(pl.col("previous_dots").is_not_null()).then(pl.col("previous_dots")).otherwise(None).alias("_y_masked"),
+    )
+    df = df.with_columns(
+        pl.col("previous_dots").is_not_null().cast(pl.Int64).cum_sum().over("primary_key").alias("_n"),
+        pl.col("_x_masked").cum_sum().over("primary_key").alias("_x_sum"),
+        pl.col("_y_masked").cum_sum().over("primary_key").alias("_y_sum"),
+        (pl.col("_x_masked") * pl.col("_y_masked")).cum_sum().over("primary_key").alias("_xy_sum"),
+        (pl.col("_x_masked") * pl.col("_x_masked")).cum_sum().over("primary_key").alias("_xx_sum"),
+    )
+
+    # Stage 3: compute means → cov/var → slope, with the n>=2 AND var>0 gate.
+    df = df.with_columns(
+        (pl.col("_x_sum") / pl.col("_n")).alias("_x_mean"),
+        (pl.col("_y_sum") / pl.col("_n")).alias("_y_mean"),
+    )
+    df = df.with_columns(
+        (pl.col("_xy_sum") - pl.col("_n") * pl.col("_x_mean") * pl.col("_y_mean")).alias("_cov"),
+        (pl.col("_xx_sum") - pl.col("_n") * pl.col("_x_mean") * pl.col("_x_mean")).alias("_var"),
+    )
+    df = df.with_columns(
+        pl.when((pl.col("_n") >= 2) & (pl.col("_var") > 0)).then(pl.col("_cov") / pl.col("_var")).otherwise(None).alias("dots_growth_trend"),
+    )
+
+    # Drop scratch columns
+    return df.drop(["_days_from_first", "_x_masked", "_y_masked", "_n", "_x_sum", "_y_sum", "_xy_sum", "_xx_sum", "_x_mean", "_y_mean", "_cov", "_var"])
+
+
+@conf.debug
 def add_prev_absolute_change(df: pl.DataFrame) -> pl.DataFrame:
     return df.with_columns(
         (pl.col("previous_total") - pl.col("previous_total").shift(1).over("primary_key")).alias("prev_total_change_kg"),
