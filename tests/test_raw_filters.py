@@ -103,6 +103,23 @@ def test_filter_bw_validity_drops_female_over_150(raw_module):
     assert "f_over" not in result["name"].to_list()
 
 
+def test_filter_bw_validity_keeps_mx_regardless_of_bodyweight(raw_module):
+    """Non-M/F sex values (e.g., Mx) must survive the filter.
+
+    Downstream `05_train.py` maps Mx→0 and expects these rows to exist.
+    """
+    df = pl.DataFrame(
+        [
+            {"name": "mx_light", "sex": "Mx", "bodyweight": 35.0, "squat": 100.0, "bench": 100.0, "deadlift": 100.0, "total": 300.0},
+            {"name": "mx_heavy", "sex": "Mx", "bodyweight": 250.0, "squat": 100.0, "bench": 100.0, "deadlift": 100.0, "total": 300.0},
+            {"name": "mx_mid", "sex": "Mx", "bodyweight": 80.0, "squat": 100.0, "bench": 100.0, "deadlift": 100.0, "total": 300.0},
+        ]
+    )
+    result = raw_module.filter_bw_validity(df)
+    # All 3 Mx rows should survive — we don't validate bodyweight for non-M/F sex.
+    assert set(result["name"].to_list()) == {"mx_light", "mx_heavy", "mx_mid"}
+
+
 def test_raw_filters_preserve_dots_column(raw_module):
     """Regression test — dots column must survive every v9 filter."""
     df = pl.DataFrame(

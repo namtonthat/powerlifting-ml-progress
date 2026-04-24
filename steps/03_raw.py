@@ -38,17 +38,24 @@ def filter_total_consistency(df: pl.DataFrame) -> pl.DataFrame:
 
 @conf.debug
 def filter_bw_validity(df: pl.DataFrame) -> pl.DataFrame:
-    """Drop rows with bodyweight outside Konertz's DOTS validity range.
+    """Drop rows where sex is M or F AND bodyweight falls outside Konertz's DOTS
+    validity range for that sex.
 
-    M: 40-210 kg (inclusive), F: 40-150 kg (inclusive).
-    DOTS is mathematically undefined outside these ranges.
+    Konertz-valid ranges: M 40-210 kg, F 40-150 kg (inclusive).
+    DOTS is mathematically undefined outside these ranges for M/F.
+
+    Rows with other sex values (Mx, null) are kept — DOTS isn't defined for them
+    either, but downstream code handles them (e.g., `05_train.py` maps Mx→0),
+    so dropping here would silently remove rows the pipeline expects to keep.
     """
     m_low, m_high = conf.DOTS_VALID_BW_RANGE["M"]
     f_low, f_high = conf.DOTS_VALID_BW_RANGE["F"]
     n_before = len(df)
-    out = df.filter(
-        ((pl.col("sex") == "M") & (pl.col("bodyweight") >= m_low) & (pl.col("bodyweight") <= m_high)) | ((pl.col("sex") == "F") & (pl.col("bodyweight") >= f_low) & (pl.col("bodyweight") <= f_high))
+    # Drop condition: explicitly invalid for M or F. Otherwise keep.
+    invalid = ((pl.col("sex") == "M") & ((pl.col("bodyweight") < m_low) | (pl.col("bodyweight") > m_high))) | (
+        (pl.col("sex") == "F") & ((pl.col("bodyweight") < f_low) | (pl.col("bodyweight") > f_high))
     )
+    out = df.filter(~invalid)
     logging.info("filter_bw_validity dropped %d rows (%.2f%%)", n_before - len(out), 100 * (n_before - len(out)) / max(n_before, 1))
     return out
 
