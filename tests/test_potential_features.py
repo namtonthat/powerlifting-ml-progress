@@ -58,6 +58,7 @@ def test_first_comp_percentile_in_range(base_module, synthetic_3_lifter_5_comp):
 def test_max_dots_so_far_uses_only_prior_comps(base_module, synthetic_3_lifter_5_comp):
     df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
     df = base_module.add_previous_dots(df)
+    df = base_module.add_pct_change_dots(df)  # precondition for add_rolling_career_features
     out = base_module.add_rolling_career_features(df).sort(["primary_key", "date"])
 
     l1 = out.filter(pl.col("primary_key") == "L1").sort("date")
@@ -80,6 +81,16 @@ def test_best_growth_rate_so_far_null_until_comp_3(base_module, synthetic_3_lift
     assert l1["best_growth_rate_so_far"][1] is None
     # comp 3: prior pct_change_dots values = {null, ~7.5} → max=7.5
     assert l1["best_growth_rate_so_far"][2] is not None
+
+
+def test_add_rolling_career_features_raises_on_missing_precondition(base_module, synthetic_3_lifter_5_comp):
+    """Calling without previous_dots or pct_change_dots must raise, not silently
+    drop best_growth_rate_so_far."""
+    df = synthetic_3_lifter_5_comp.sort(["primary_key", "date"])
+    # Only add previous_dots, omit pct_change_dots
+    df = base_module.add_previous_dots(df)
+    with pytest.raises(ValueError, match="pct_change_dots"):
+        base_module.add_rolling_career_features(df)
 
 
 def test_best_growth_rate_so_far_does_not_leak_across_lifters(base_module, synthetic_3_lifter_5_comp):

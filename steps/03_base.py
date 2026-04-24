@@ -498,8 +498,23 @@ def add_rolling_career_features(df: pl.DataFrame) -> pl.DataFrame:
     scoped inside the `over()` partition so the current comp is strictly
     excluded.
 
-    Precondition: input sorted by (primary_key, date).
+    Preconditions:
+      - Input sorted by (primary_key, date).
+      - `previous_dots` column present (call add_previous_dots first).
+      - `pct_change_dots` column present (call add_pct_change_dots first).
+
+    Both columns are hard preconditions: the function always produces both
+    `max_dots_so_far` and `best_growth_rate_so_far`, so both inputs must be
+    available. Raising here catches pipeline-reordering bugs immediately rather
+    than silently dropping an output column.
     """
+    required = {"previous_dots", "pct_change_dots"}
+    missing = required - set(df.columns)
+    if missing:
+        raise ValueError(
+            f"add_rolling_career_features missing required columns: {sorted(missing)}. Call add_previous_dots and add_pct_change_dots before this function.",
+        )
+
     # previous_dots is already shift(1) → cum_max.over(pk) gives max of comps 1..k-1.
     df = df.with_columns(
         pl.col("previous_dots").cum_max().over("primary_key").alias("max_dots_so_far"),
@@ -508,16 +523,13 @@ def add_rolling_career_features(df: pl.DataFrame) -> pl.DataFrame:
     # For best_growth_rate_so_far, shift and cum_max must BOTH be scoped to primary_key
     # to avoid leaking across lifter boundaries. Since we can't chain window operations
     # in Polars, we do this in two steps: first shift within partition, then cum_max.
-    if "pct_change_dots" in df.columns:
-        df = df.with_columns(
-            pl.col("pct_change_dots").shift(1).over("primary_key").alias("_shifted_pct_change"),
-        )
-        df = df.with_columns(
-            pl.col("_shifted_pct_change").cum_max().over("primary_key").alias("best_growth_rate_so_far"),
-        )
-        df = df.drop("_shifted_pct_change")
-
-    return df
+    df = df.with_columns(
+        pl.col("pct_change_dots").shift(1).over("primary_key").alias("_shifted_pct_change"),
+    )
+    df = df.with_columns(
+        pl.col("_shifted_pct_change").cum_max().over("primary_key").alias("best_growth_rate_so_far"),
+    )
+    return df.drop("_shifted_pct_change")
 
 
 @conf.debug
