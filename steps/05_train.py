@@ -609,7 +609,7 @@ if __name__ == "__main__":
     # pct_change_total valid).
     kg = head_preds["pct_change_total"].rename({"pred": "pred_pct_change_total"})
     dots = head_preds["pct_change_dots"].rename({"pred": "pred_pct_change_dots"}).select(["primary_key", "date", "pred_pct_change_dots"])
-    combined = kg.join(dots, on=["primary_key", "date"], how="outer")
+    combined = kg.join(dots, on=["primary_key", "date"], how="full", coalesce=True)
 
     # Log row-count divergence as data-quality checkpoint
     n_kg_only = combined.filter(pl.col("pred_pct_change_dots").is_null()).height
