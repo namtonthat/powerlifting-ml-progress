@@ -1,5 +1,6 @@
 """Shared pytest fixtures for synthetic lifter/comp data."""
 
+import importlib.util
 from datetime import date
 
 import polars as pl
@@ -84,3 +85,25 @@ def bombout_rows() -> pl.DataFrame:
             {"name": "clean", "squat": 150.0, "bench": 100.0, "deadlift": 200.0, "total": 450.0},
         ]
     )
+
+
+def _load_module_by_file(name: str, path: str):
+    """Load a module by file path (needed for leading-digit filenames like 03_raw.py)."""
+    spec = importlib.util.spec_from_file_location(name, path)
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+@pytest.fixture(scope="session")
+def raw_module():
+    """Load steps/03_raw.py by file path (leading-digit filename)."""
+    return _load_module_by_file("raw_module", "steps/03_raw.py")
+
+
+@pytest.fixture(scope="session")
+def base_module():
+    """Load steps/03_base.py by file path (leading-digit filename)."""
+    return _load_module_by_file("base_module", "steps/03_base.py")

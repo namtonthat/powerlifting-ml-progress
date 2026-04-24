@@ -1,20 +1,6 @@
 """Tests for data-cleaning filters added in v9."""
 
 import polars as pl
-import pytest
-
-
-@pytest.fixture
-def raw_module():
-    # The raw script is named with a leading digit — load it by file
-    import importlib.util
-
-    spec = importlib.util.spec_from_file_location("raw_module", "steps/03_raw.py")
-    assert spec is not None
-    assert spec.loader is not None
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 def test_filter_bombouts_drops_rows_with_zero_squat(raw_module, bombout_rows):

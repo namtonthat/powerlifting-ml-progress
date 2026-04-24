@@ -1,19 +1,7 @@
 """Tests for v10 innate-potential features (Groups A/B/C/D)."""
 
-import importlib.util
-
 import polars as pl
 import pytest
-
-
-@pytest.fixture(scope="module")
-def base_module():
-    spec = importlib.util.spec_from_file_location("base_module", "steps/03_base.py")
-    assert spec is not None
-    assert spec.loader is not None
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 def test_first_comp_dots_constant_per_lifter(base_module, synthetic_3_lifter_5_comp):

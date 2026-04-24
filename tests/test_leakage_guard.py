@@ -4,20 +4,8 @@ For every `previous_*` / `prev_*` feature, asserts value at comp k equals value
 of the source column at comp k-1 for same primary_key.
 """
 
-import importlib.util
-
 import polars as pl
 import pytest
-
-
-@pytest.fixture(scope="module")
-def base_module():
-    spec = importlib.util.spec_from_file_location("base_module", "steps/03_base.py")
-    assert spec is not None
-    assert spec.loader is not None
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 @pytest.mark.parametrize(

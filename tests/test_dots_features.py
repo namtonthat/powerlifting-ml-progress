@@ -1,19 +1,7 @@
 """Tests for DOTS-parallel base-layer features added in v9."""
 
-import importlib.util
-
 import polars as pl
 import pytest
-
-
-@pytest.fixture
-def base_module():
-    spec = importlib.util.spec_from_file_location("base_module", "steps/03_base.py")
-    assert spec is not None
-    assert spec.loader is not None
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
 
 
 def test_add_previous_dots_shifts_by_one(base_module, synthetic_3_lifter_5_comp):
