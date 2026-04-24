@@ -12,14 +12,28 @@ def filter_non_numeric_place(df: pl.DataFrame) -> pl.DataFrame:
 
 @conf.debug
 def filter_bombouts(df: pl.DataFrame) -> pl.DataFrame:
-    """Drop rows where any of squat/bench/deadlift <= 0.
+    """Drop rows where any of squat/bench/deadlift <= 0 or null.
 
-    These are SBD events where the lifter failed all attempts on at least one lift;
-    the total is recorded but the progress signal is garbage.
+    These cover two cases:
+      1. Real bomb-outs: SBD events where the lifter failed all attempts on at
+         least one lift; the total is recorded but the progress signal is garbage.
+      2. Non-SBD events (bench-only, push-pull, etc.) where the other lifts are
+         null. Those would be dropped by the SBD filter in 03_base.py anyway,
+         so catching them here collapses two filters into one.
+
+    `.fill_null(False)` makes the null handling explicit — without it, the
+    null-compared predicate silently drops the row via Polars' null filter
+    semantics, which masks what we're actually dropping.
     """
     n_before = len(df)
-    out = df.filter((pl.col("squat") > 0) & (pl.col("bench") > 0) & (pl.col("deadlift") > 0))
-    logging.info("filter_bombouts dropped %d rows (%.2f%%)", n_before - len(out), 100 * (n_before - len(out)) / max(n_before, 1))
+    out = df.filter(
+        (pl.col("squat") > 0).fill_null(value=False) & (pl.col("bench") > 0).fill_null(value=False) & (pl.col("deadlift") > 0).fill_null(value=False),
+    )
+    logging.info(
+        "filter_bombouts dropped %d rows (%.2f%%) — includes real bomb-outs and non-SBD rows with null lifts",
+        n_before - len(out),
+        100 * (n_before - len(out)) / max(n_before, 1),
+    )
     return out
 
 

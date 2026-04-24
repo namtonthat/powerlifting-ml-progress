@@ -156,7 +156,14 @@ def test_early_growth_rate_uses_no_current_comp_dots(base_module, synthetic_3_li
 
 def test_early_growth_rate_null_when_years_between_zero(base_module):
     """Guard: if comp 1 and comp 3 fall on the same date (years_between == 0),
-    the feature must be null, not ±inf (divide-by-zero protection)."""
+    the feature must be null, not ±inf (divide-by-zero protection).
+
+    Defensive — in practice upstream's MIN_DAYS_BETWEEN_COMPS=30 null-guard in
+    `03_base.py` prevents comps within 30 days from producing progress features,
+    so identical-date comp 1 and comp 3 shouldn't reach this function in a real
+    pipeline run. Kept as a pure unit test of the divide-by-zero guard so the
+    function is robust if upstream filtering changes.
+    """
     from datetime import date
 
     df = pl.DataFrame(

@@ -113,9 +113,13 @@ TOTAL_CONSISTENCY_TOLERANCE_KG = 2.5
 
 # Per-head best-known R² thresholds. Update after each successful training run.
 # A new run that drops >0.02 below these values trips the regression guard.
+#
+# TODO(post-v11): lock these to the observed test R² for each head after the
+# first successful v11 run (plan Task 11.2). Until then, both values are 0.0
+# and the guard at 05_train.py:~586 is a no-op (skipped when prior <= 0).
 PRIOR_BEST_R2 = {
-    "pct_change_total": 0.0,  # update to v11's actual R² after first successful v11 run
-    "pct_change_dots": 0.0,  # first v11 run is baseline for this head
+    "pct_change_total": 0.0,  # TODO(post-v11): replace with observed v11 kg-head R²
+    "pct_change_dots": 0.0,  # TODO(post-v11): replace with observed v11 dots-head R²
 }
 REGRESSION_GUARD_TOLERANCE = 0.02
 

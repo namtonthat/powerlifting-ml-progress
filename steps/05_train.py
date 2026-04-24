@@ -2,10 +2,12 @@
 Machine Learning Training
 """
 
+import json
 import logging
 import math
 import os
 from datetime import datetime
+from pathlib import Path
 
 import common_io
 import conf
@@ -492,9 +494,6 @@ def train_for_target(target_col: str, feature_set_version: int, base_df: pl.Data
             mlflow.set_tag("top_5_features", top_5_features)
 
             # Feature-importance delta across versions (spec: fail loudly on rank shifts)
-            import json
-            from pathlib import Path
-
             snapshot_path = Path(conf.top_features_snapshot_local)
             current_top_15 = [f[0] for f in sorted_features[:15]]
 

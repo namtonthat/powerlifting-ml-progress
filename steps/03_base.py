@@ -469,9 +469,21 @@ def add_first_comp_features(df: pl.DataFrame) -> pl.DataFrame:
 def add_first_comp_percentile(df: pl.DataFrame) -> pl.DataFrame:
     """Percentile of first_comp_dots within each (sex, ipf_weight_class) cohort.
 
-    Note: uses the full dataset distribution (matches existing
-    `prev_total_percentile_rank` convention). For stricter temporal purity,
-    switch to an expanding-by-date percentile — deferred as future work.
+    ⚠ TEMPORAL LEAK: this feature uses the full dataset distribution, not one
+    expanding over time. A training row's percentile depends on future lifters'
+    first-comp DOTS (if their first comp hasn't happened yet at the training
+    row's date, they still contribute to the cohort's rank ordering).
+
+    This matches the existing `prev_total_percentile_rank` convention in this
+    module (which has the same trade-off), so v10 doesn't regress project
+    standards. But when reporting v10 R² lifts, the journey doc MUST disclose
+    this — part of the v10 → v11 delta may be attributable to this feature
+    seeing ordering signal from the future, not to the potential-features
+    hypothesis itself.
+
+    To close the leak: compute an expanding-by-date percentile scoped to each
+    lifter's first-comp date. Deferred as future work — pricing out the
+    complexity vs. the prev_total_percentile_rank precedent.
     """
     return df.with_columns(
         (pl.col("first_comp_dots").rank("average").over("sex", "ipf_weight_class") / pl.col("first_comp_dots").count().over("sex", "ipf_weight_class") * 100).alias("first_comp_percentile_vs_sex_wc"),
