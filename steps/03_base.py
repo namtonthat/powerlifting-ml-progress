@@ -31,6 +31,83 @@ def filter_for_raw_events(df: pl.DataFrame) -> pl.DataFrame:
 
 
 @conf.debug
+def filter_bombouts(df: pl.DataFrame) -> pl.DataFrame:
+    """Drop rows where any of squat/bench/deadlift <= 0 or null.
+
+    These cover two cases:
+      1. Real bomb-outs: SBD events where the lifter failed all attempts on at
+         least one lift; the total is recorded but the progress signal is garbage.
+      2. Non-SBD events (bench-only, push-pull, etc.) where the other lifts are
+         null. Those would be dropped by the SBD filter anyway, so catching them
+         here collapses two filters into one.
+
+    Operates on snake_case column names (squat/bench/deadlift) — must run
+    AFTER the base layer's column rename in the __main__ pipeline.
+
+    `.fill_null(value=False)` makes the null handling explicit — without it, the
+    null-compared predicate silently drops the row via Polars' null filter
+    semantics, which masks what we're actually dropping.
+    """
+    n_before = len(df)
+    out = df.filter(
+        (pl.col("squat") > 0).fill_null(value=False) & (pl.col("bench") > 0).fill_null(value=False) & (pl.col("deadlift") > 0).fill_null(value=False),
+    )
+    logging.info(
+        "filter_bombouts dropped %d rows (%.2f%%) — includes real bomb-outs and non-SBD rows with null lifts",
+        n_before - len(out),
+        100 * (n_before - len(out)) / max(n_before, 1),
+    )
+    return out
+
+
+@conf.debug
+def filter_total_consistency(df: pl.DataFrame) -> pl.DataFrame:
+    """Drop rows where |squat + bench + deadlift - total| > tolerance.
+
+    Catches data-entry errors. Tolerance: conf.TOTAL_CONSISTENCY_TOLERANCE_KG (2.5 kg).
+    Operates on snake_case column names — must run after the base layer rename.
+    """
+    n_before = len(df)
+    sbd_sum = pl.col("squat") + pl.col("bench") + pl.col("deadlift")
+    out = df.filter((sbd_sum - pl.col("total")).abs() <= conf.TOTAL_CONSISTENCY_TOLERANCE_KG)
+    logging.info(
+        "filter_total_consistency dropped %d rows (%.2f%%)",
+        n_before - len(out),
+        100 * (n_before - len(out)) / max(n_before, 1),
+    )
+    return out
+
+
+@conf.debug
+def filter_bw_validity(df: pl.DataFrame) -> pl.DataFrame:
+    """Drop rows where sex is M or F AND bodyweight falls outside Konertz's DOTS
+    validity range for that sex.
+
+    Konertz-valid ranges: M 40-210 kg, F 40-150 kg (inclusive).
+    DOTS is mathematically undefined outside these ranges for M/F.
+
+    Rows with other sex values (Mx, null) are kept — DOTS isn't defined for them
+    either, but downstream code handles them (e.g., `05_train.py` maps Mx→0),
+    so dropping here would silently remove rows the pipeline expects to keep.
+
+    Operates on snake_case column names — must run after the base layer rename.
+    """
+    m_low, m_high = conf.DOTS_VALID_BW_RANGE["M"]
+    f_low, f_high = conf.DOTS_VALID_BW_RANGE["F"]
+    n_before = len(df)
+    invalid = ((pl.col("sex") == "M") & ((pl.col("bodyweight") < m_low) | (pl.col("bodyweight") > m_high))) | (
+        (pl.col("sex") == "F") & ((pl.col("bodyweight") < f_low) | (pl.col("bodyweight") > f_high))
+    )
+    out = df.filter(~invalid)
+    logging.info(
+        "filter_bw_validity dropped %d rows (%.2f%%)",
+        n_before - len(out),
+        100 * (n_before - len(out)) / max(n_before, 1),
+    )
+    return out
+
+
+@conf.debug
 def add_time_since_last_comp(df: pl.DataFrame) -> pl.DataFrame:
     time_since_last_comp_df = df.with_columns(((pl.col("date") - pl.col("date").shift(1)).over("primary_key")).alias("time_since_last_comp")).with_columns(
         pl.col("time_since_last_comp").dt.total_days().alias("time_since_last_comp_days"),
@@ -743,6 +820,9 @@ if __name__ == "__main__":
         .pipe(clean_federation_columns)
         .pipe(order_by_primary_key_and_date)
         .pipe(filter_for_raw_events)
+        .pipe(filter_bombouts)
+        .pipe(filter_total_consistency)
+        .pipe(filter_bw_validity)
         .pipe(remove_duplicate_names)
         .pipe(filter_minimum_competitions)
         .pipe(add_time_since_last_comp)
