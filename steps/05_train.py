@@ -209,11 +209,14 @@ def train_for_target(target_col: str, feature_set_version: int, base_df: pl.Data
         "65-69": 67.0,
         "70-74": 72.0,
         "75-79": 77.0,
+        "80-84": 82.0,
+        "85-89": 87.0,
         "80-999": 85.0,
+        "90-999": 92.0,
     }
     base_df = base_df.with_columns(
-        pl.col("sex").replace_strict({"M": 1, "F": 0, "Mx": 0}, return_dtype=pl.Int32).alias("sex_encoded"),
-        pl.col("age_class").replace_strict(AGE_CLASS_MAP, return_dtype=pl.Float64).alias("age_class_encoded"),
+        pl.col("sex").replace_strict({"M": 1, "F": 0, "Mx": 0}, default=0, return_dtype=pl.Int32).alias("sex_encoded"),
+        pl.col("age_class").replace_strict(AGE_CLASS_MAP, default=29.0, return_dtype=pl.Float64).alias("age_class_encoded"),
         pl.col("ipf_weight_class").str.replace(r"\+", "").str.replace("unknown", "0").cast(pl.Float64).alias("ipf_wc_numeric"),
         pl.col("is_origin_country").cast(pl.Int32).alias("is_origin_country_int"),
     )
