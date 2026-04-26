@@ -113,7 +113,7 @@ if __name__ == "__main__":
     logging.info(f"Source: {conf.landing_s3_http}")
 
     df = (
-        pl.read_parquet(source=conf.landing_s3_http)
+        pl.read_parquet(source=conf.landing_local_file_path)
         .pipe(filter_non_numeric_place)
         .pipe(type_cast)
         .pipe(to_lowercase)
@@ -128,6 +128,9 @@ if __name__ == "__main__":
     lifter_country_df = create_origin_country_df(df)
     raw_df = add_origin_country(df, lifter_country_df)
     test_counts(raw_df, df)
+
+    # Schema alignment: base layer expects `year_of_birth` (per conf.additional_raw_columns).
+    raw_df = raw_df.rename({"birth_year": "year_of_birth"})
 
     common_io.io_write_from_local_to_s3(
         raw_df,
