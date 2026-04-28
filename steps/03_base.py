@@ -814,7 +814,7 @@ def add_prev_pct_change(df: pl.DataFrame) -> pl.DataFrame:
 
 if __name__ == "__main__":
     df = (
-        pl.read_parquet(source=conf.raw_s3_http)
+        pl.read_parquet(source=conf.raw_local_file_path)
         .select(conf.base_columns)
         .rename(conf.base_renamed_columns)
         .pipe(clean_federation_columns)
