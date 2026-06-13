@@ -90,7 +90,7 @@ def filter_minimum_competitions(df: pl.DataFrame, min_comps: int = conf.MIN_COMP
 def remove_duplicate_names(df: pl.DataFrame) -> pl.DataFrame:
     """Detect cases where the same lowercase name maps to multiple primary keys
     with similar birth years (within 3 years). Keep the primary key with the most records."""
-    lifter_info = df.select("primary_key", "name", "year_of_birth").unique(subset=["primary_key"])
+    lifter_info = df.select("primary_key", "name", "birth_year").unique(subset=["primary_key"])
     lifter_info = lifter_info.with_columns(pl.col("name").str.to_lowercase().alias("name_lower"))
 
     # Count records per primary_key
@@ -99,7 +99,7 @@ def remove_duplicate_names(df: pl.DataFrame) -> pl.DataFrame:
 
     # Self-join on lowercase name to find potential duplicates
     dupes = lifter_info.join(lifter_info, on="name_lower", suffix="_other").filter(
-        (pl.col("primary_key") != pl.col("primary_key_other")) & ((pl.col("year_of_birth") - pl.col("year_of_birth_other")).abs() <= 3)
+        (pl.col("primary_key") != pl.col("primary_key_other")) & ((pl.col("birth_year") - pl.col("birth_year_other")).abs() <= 3)
     )
 
     if len(dupes) == 0:
@@ -376,7 +376,7 @@ def add_rolling_variability(df: pl.DataFrame) -> pl.DataFrame:
 def add_age_lifecycle_features(df: pl.DataFrame) -> pl.DataFrame:
     return (
         df.with_columns(
-            (pl.col("date").dt.year() - pl.col("year_of_birth")).alias("approx_age"),
+            (pl.col("date").dt.year() - pl.col("birth_year")).alias("approx_age"),
         )
         .with_columns(
             (pl.col("approx_age") - conf.PEAK_POWERLIFTING_AGE).alias("years_from_peak_age"),

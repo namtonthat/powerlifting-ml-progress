@@ -186,7 +186,7 @@ renamed_landing_column_names = {
 
 # TODO: Remove this from the raw layer as it is not best practice
 # raw columns created from transformations
-additional_raw_columns = ["origin_country", "primary_key", "year_of_birth"]
+additional_raw_columns = ["origin_country", "primary_key", "birth_year"]
 
 # Base layer
 _base_column_names = _required_landing_column_names + additional_raw_columns
