@@ -17,6 +17,7 @@ import polars as pl
 import seaborn as sns
 import xgboost as xgb
 from dotenv import load_dotenv
+from optuna_integration.xgboost import XGBoostPruningCallback
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 # MLFlow configurations
@@ -106,7 +107,7 @@ def objective(trial):
 
         n_rounds = trial.suggest_int("num_boost_round", 200, 2000, step=100)
 
-        pruning_callback = optuna.integration.XGBoostPruningCallback(trial, "validation-rmse")
+        pruning_callback = XGBoostPruningCallback(trial, "validation-rmse")
         bst = xgb.train(params, dtrain, num_boost_round=n_rounds, evals=[(dval, "validation")], early_stopping_rounds=50, callbacks=[pruning_callback], verbose_eval=False)
         preds = bst.predict(dval)
         error = mean_squared_error(y_val, preds)
@@ -479,7 +480,7 @@ if __name__ == "__main__":
             artifact_path = "model"
             mlflow.xgboost.log_model(
                 xgb_model=model,
-                artifact_path=artifact_path,
+                name=artifact_path,
                 input_example=X_train.iloc[[0]],
                 model_format="ubj",
                 metadata={"model_data_version": FEATURE_SET_VERSION},
