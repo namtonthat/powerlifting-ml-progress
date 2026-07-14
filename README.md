@@ -4,7 +4,7 @@
 [![python](https://img.shields.io/badge/Python-3.13-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![extract-transform-load](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/extract-transform-load.yml/badge.svg)](https://github.com/namtonthat/powerlifting-ml-progress/actions/workflows/extract-transform-load.yml)
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://powerlifting.streamlit.app)
-![Last Updated](https://img.shields.io/badge/Last%20Updated-2026--07--10-blue)
+![Last Updated](https://img.shields.io/badge/Last%20Updated-2026--07--14-blue)
 
 Analyzes [OpenPowerlifting](https://www.openpowerlifting.org/) data to estimate powerlifting progress over time using XGBoost. Includes an automated ETL pipeline, ML training with Optuna, MLflow tracking, and a [Streamlit dashboard](https://powerlifting.streamlit.app).
 
