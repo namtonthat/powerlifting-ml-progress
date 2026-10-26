@@ -20,7 +20,8 @@ from urllib3.util import Retry
 
 SESSION = requests.Session()
 SESSION.headers["User-Agent"] = "powerlifting-ml-progress meets (+https://github.com/namtonthat/powerlifting-ml-progress)"
-SESSION.mount("https://", HTTPAdapter(max_retries=Retry(total=3, backoff_factor=2, status_forcelist=(502, 503, 504))))
+# powerlifting.com sometimes 504s on a slow page until its cache warms, so back off for up to about 90s
+SESSION.mount("https://", HTTPAdapter(max_retries=Retry(total=5, backoff_factor=3, status_forcelist=(502, 503, 504))))
 # LiftingCast allows about 100 meet lookups, then 429s for a long while; pace it and stop at the first 429.
 LIFTINGCAST_PAUSE = 3
 liftingcast_blocked = False
