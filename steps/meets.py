@@ -13,6 +13,7 @@ from urllib.parse import urlparse
 import boto3
 import common_io
 import conf
+import country_converter as coco
 import polars as pl
 import requests
 from icalendar import Calendar, Event
@@ -27,13 +28,6 @@ SESSION.mount("https://", HTTPAdapter(max_retries=Retry(total=5, backoff_factor=
 LIFTINGCAST_PAUSE = 3
 liftingcast_blocked = False
 
-# ponytail: Russia/Belarus left out on purpose; add them here if wanted
-EUROPE = {
-    "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Republic", "Czechia", "Denmark", "Estonia", "Finland",
-    "France", "Georgia", "Germany", "Greece", "Hungary", "Iceland", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg",
-    "Malta", "Moldova", "Netherlands", "Norway", "Poland", "Portugal", "Romania", "Serbia", "Slovakia", "Slovenia", "Spain",
-    "Sweden", "Switzerland", "Ukraine", "United Kingdom",
-}  # fmt: skip
 NOT_OPEN = ("SOLD OUT", "CLOSED", "CANCELLED")
 # powerlifting.com's sport categories are patchy, so drop the other sports and non-meets instead
 NOT_A_MEET = re.compile(r"strongman|weightlifting|\bIWF\b|strongfirst|kettlebell|highland games|strict curl|clinic|certification|seminar|mock meet", re.IGNORECASE)
@@ -80,6 +74,7 @@ class Meet:
     lat: float | None = None
     lon: float | None = None
     state: str = ""
+    continent: str = ""
     testing: str = "Unknown"
     equipment: list[str] = field(default_factory=list)
     events: list[str] = field(default_factory=list)
@@ -89,7 +84,8 @@ FEEDS: dict[str, Callable[[Meet], bool]] = {
     "all": lambda _: True,
     "au": lambda m: m.country == "Australia",
     "us": lambda m: m.country in {"USA", "United States"},
-    "europe": lambda m: m.country in EUROPE,
+    # Russia and Belarus left out of the Europe feed on purpose
+    "europe": lambda m: m.continent == "Europe" and m.country not in {"Russia", "Belarus"},
     "mx": lambda m: m.country == "Mexico",
     # "N entered" is only a roster count, so it doesn't prove sign-ups are open
     "open": lambda m: bool(m.status) and m.status.startswith("OPEN"),
@@ -314,10 +310,18 @@ def feed_ics(name: str, meets: list[Meet]) -> bytes:
     return cal.to_ical()
 
 
+def assign_continents(meets: list[Meet]) -> None:
+    names = sorted({m.country for m in meets} - {""})
+    found = coco.convert(names=names, to="continent_7", not_found="Other")
+    # coco returns a bare string, not a list, for a single name
+    lookup = dict(zip(names, [found] if isinstance(found, str) else found, strict=True))
+    for m in meets:
+        m.continent = lookup.get(m.country, "Other")
+
+
 def to_frame(meets: list[Meet]) -> pl.DataFrame:
-    regions = ("au", "us", "europe", "mx")
     pulled_at = datetime.now(UTC)
-    return pl.DataFrame([asdict(m) | {"region": next((r for r in regions if FEEDS[r](m)), "other"), "pulled_at": pulled_at} for m in meets])
+    return pl.DataFrame([asdict(m) | {"pulled_at": pulled_at} for m in meets])
 
 
 def main() -> None:
@@ -327,6 +331,7 @@ def main() -> None:
         raise SystemExit(f"Only {len(meets)} meets pulled; not landing")
     for m in meets:
         m.status = status(m)
+    assign_continents(meets)
 
     common_io.io_write_from_local_to_s3(to_frame(meets), conf.meets_local, conf.meets_s3_key)
 

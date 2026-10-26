@@ -55,9 +55,14 @@ def test_feed_ics():
     assert event.decoded("dtend") == date(2027, 2, 1)
 
 
-def test_to_frame():
-    df = b.to_frame([meet(), meet(uid="femepo-1", country="Mexico", federation="FEMEPO")])
-    assert df["region"].to_list() == ["us", "mx"]
+def test_assign_continents():
+    meets = [meet(), meet(uid="femepo-1", country="Mexico"), meet(uid="x", country="Atlantis"), meet(uid="y", country="")]
+    b.assign_continents(meets)
+    assert [m.continent for m in meets] == ["North America", "North America", "Other", "Other"]
+    single = [meet(country="Australia")]
+    b.assign_continents(single)
+    assert single[0].continent == "Oceania"
+    assert b.to_frame(meets)["continent"].to_list() == ["North America", "North America", "Other", "Other"]
 
 
 def test_mx_state_in():
