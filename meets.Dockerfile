@@ -4,10 +4,10 @@ COPY --from=ghcr.io/astral-sh/uv:0.11 /uv /usr/local/bin/
 
 WORKDIR /app
 
-# The meets page needs only streamlit + polars; pin them to uv.lock without installing the ML stack
+# The meets page needs only streamlit, polars and the map component; pin them to uv.lock without installing the ML stack
 COPY pyproject.toml uv.lock ./
 RUN uv export --frozen --no-dev --no-emit-project --no-hashes -o constraints.txt \
-    && uv pip install --system --no-cache -c constraints.txt streamlit polars
+    && uv pip install --system --no-cache -c constraints.txt streamlit polars streamlit-folium
 
 COPY steps/conf.py steps/
 COPY ["pages/05_📅_meets.py", "pages/"]
