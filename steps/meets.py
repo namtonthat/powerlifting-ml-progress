@@ -1,10 +1,12 @@
 """Land upcoming powerlifting meets in S3 as parquet, plus subscribable .ics feeds."""
 
+import difflib
 import html
 import logging
 import re
 import time
 import unicodedata
+from collections import defaultdict
 from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, date, datetime, timedelta
@@ -69,7 +71,7 @@ class Meet:
     country: str
     link: str
     listing: str
-    added: date
+    added: date | None  # when the source first listed it; None if the source doesn't say
     status: str | None = None
     lat: float | None = None
     lon: float | None = None
@@ -198,6 +200,58 @@ def femepo() -> list[Meet]:
     return meets
 
 
+LMP_URL = "https://www.lmp-powerlifting.com/competencias"
+SPANISH_MONTHS = {m: i for i, m in enumerate(("enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"), 1)}
+
+
+def lmp_meet(e: dict) -> Meet:
+    """One Liga Mexicana de Powerlifting event; its feed gives a registration deadline but no listing date."""
+    d = e["fecha_evento"]
+    start = date(int(d["año"]), SPANISH_MONTHS[fold(d["mes"])], int(d["dia"]))
+    place = e.get("lugar") or {}
+    deadline = date.fromisoformat(e["fecha_limite"]) if e.get("fecha_limite") else None
+    status = None if deadline is None else f"OPEN · closes {deadline:%-d %b}" if deadline >= date.today() else "CLOSED"
+    testing, equipment, events = classify(e["titulo"], ["Liga Mexicana de Powerlifting"], [])
+    return Meet(
+        uid=f"lmp-{e['id']}",
+        name=e["titulo"].strip(),
+        start=start,
+        end=start,
+        federation="Liga Mexicana de Powerlifting",
+        location=(place.get("ciudad") or "").strip(),
+        state=(place.get("estado") or "").strip(),
+        country="Mexico",
+        link=LMP_URL,
+        listing=LMP_URL,
+        added=None,
+        status=status,
+        testing=testing,
+        equipment=equipment,
+        events=events,
+    )
+
+
+def lmp() -> list[Meet]:
+    meets = [lmp_meet(e) for e in get("https://www.lmp-powerlifting.com/api/eventos-activos").json()]
+    meets = [m for m in meets if m.start >= date.today()]
+    for m in meets:
+        m.lat, m.lon = geocode(", ".join(p for p in (m.location, m.state, "Mexico") if p), f"{m.state}, Mexico" if m.state else None)
+    return meets
+
+
+def merge(base: list[Meet], extra: list[Meet]) -> list[Meet]:
+    """Add meets from a secondary source unless the same meet (within a day, similar name) is already listed."""
+    names_by_day = defaultdict(list)
+    for m in base:
+        names_by_day[m.start].append(m.name.casefold())
+
+    def known(m: Meet) -> bool:
+        nearby = (n for offset in (-1, 0, 1) for n in names_by_day[m.start + timedelta(days=offset)])
+        return any(difflib.SequenceMatcher(None, m.name.casefold(), n).ratio() > 0.55 for n in nearby)
+
+    return base + [m for m in extra if not known(m)]
+
+
 def fold(text: str) -> str:
     return unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode().casefold()
 
@@ -208,7 +262,7 @@ def mx_state_in(title: str) -> str:
 
 
 def geocode(*queries: str | None) -> tuple[float | None, float | None]:
-    """First OpenStreetMap hit for the queries in order; FEMEPO lists street addresses only."""
+    """First OpenStreetMap hit in Mexico for the queries in order; the Mexican sources give addresses, not coordinates."""
     for query in filter(None, queries):
         time.sleep(1)  # Nominatim's usage policy: at most 1 request a second
         try:
@@ -304,7 +358,7 @@ def feed_ics(name: str, meets: list[Meet]) -> bytes:
         ]
         if m.listing != m.link:
             lines.append(f"Listing: {m.listing}")
-        lines.append(f"Added: {m.added}")
+        lines.append(f"Added: {m.added or 'not given'}")
         event.add("description", "\n".join(lines))
         cal.add_component(event)
     return cal.to_ical()
@@ -325,12 +379,13 @@ def to_frame(meets: list[Meet]) -> pl.DataFrame:
 
 
 def main() -> None:
-    meets = powerlifting_com() + femepo()
+    meets = merge(powerlifting_com() + femepo(), lmp())
     # An empty or truncated pull would wipe the dashboard and subscribed calendars; fail and keep the last landing instead.
     if len(meets) < 200:
         raise SystemExit(f"Only {len(meets)} meets pulled; not landing")
     for m in meets:
-        m.status = status(m)
+        # Keep a status the source already gave (LMP's deadline) unless the sign-up page says more
+        m.status = status(m) or m.status
     assign_continents(meets)
 
     common_io.io_write_from_local_to_s3(to_frame(meets), conf.meets_local, conf.meets_s3_key)

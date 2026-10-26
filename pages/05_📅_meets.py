@@ -97,7 +97,7 @@ if new_only:
 if search:
     text = pl.concat_str(["name", "location", "state", "country", "federation"], separator=" ").str.to_lowercase()
     view = view.filter(text.str.contains(search.lower(), literal=True))
-view = view.sort(["added", "start"], descending=[True, False]) if sort == "Recently listed" else view.sort("start")
+view = view.sort(["added", "start"], descending=[True, False], nulls_last=True) if sort == "Recently listed" else view.sort("start")
 
 # --- Main ---
 st.write("# Upcoming Meets")

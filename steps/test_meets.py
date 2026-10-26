@@ -88,3 +88,24 @@ def test_classify():
     assert b.classify("Gates of Hades", ["United States Powerlifting Coalition"], ["Multi Ply", "Raw Knee Sleeves"]) == ("Unknown", ["Multi-ply", "Raw"], [])
     assert b.classify("Bench for Boobs and Biceps", ["Revolution Powerlifting Syndicate"], ["Bench Press"]) == ("Unknown", [], ["Bench only"])
     assert b.classify("TORNEO DE PESO MUERTO", ["FEMEPO"], []) == ("Tested", [], ["Deadlift only"])
+
+
+def test_lmp_meet():
+    event = {
+        "id": "abc",
+        "titulo": "Copa 30 Caballeros ",
+        "fecha_limite": "2099-10-30",
+        "lugar": {"ciudad": "Cordoba", "estado": "Veracruz"},
+        "fecha_evento": {"dia": "14", "mes": "Noviembre", "año": "2099"},
+    }
+    m = b.lmp_meet(event)
+    assert (m.uid, m.name, m.start, m.location, m.state, m.country, m.added) == ("lmp-abc", "Copa 30 Caballeros", date(2099, 11, 14), "Cordoba", "Veracruz", "Mexico", None)
+    assert m.status == "OPEN · closes 30 Oct"
+    assert b.lmp_meet(event | {"fecha_limite": "2000-01-01"}).status == "CLOSED"
+
+
+def test_merge():
+    base = [meet(name="2026 USA Powerlifting Freak Fest", start=date(2026, 10, 31))]
+    dupe = meet(uid="lmp-1", name="USA Powerlifting Freak Fest 2026", start=date(2026, 11, 1))
+    new = meet(uid="lmp-2", name="Copa 30 Caballeros", start=date(2026, 10, 31))
+    assert [m.uid for m in b.merge(base, [dupe, new])] == ["plcom-1", "lmp-2"]
