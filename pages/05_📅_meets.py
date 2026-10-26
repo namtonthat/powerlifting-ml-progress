@@ -104,11 +104,12 @@ st.write("# Upcoming Meets")
 st.caption(f"Powerlifting meets from powerlifting.com and FEMEPO, with sign-up status where the meet's sign-up page shows it. Updated {all_meets['pulled_at'].max():%d %b %Y %H:%M} UTC.")
 
 metrics = st.container()
-list_col, map_col = st.columns([3, 2], gap="medium")
+# Map on top, list below; both rendered map-first so the list can use the map's bounds
+map_box, list_box = st.container(), st.container()
 
 # The map draws every meet that passes the sidebar filters; panning or zooming only narrows the list.
 # Its markers must not depend on the view, or each move would redraw the map and reset it.
-with map_col:
+with map_box:
     rows = (
         view.drop_nulls(["lat", "lon"])
         .with_columns(kind.alias("kind"), pl.col("start").dt.strftime("%a %-d %b %Y").alias("when"), pl.col("status").fill_null("Sign-up status not known").alias("spots"))
@@ -151,7 +152,7 @@ with map_col:
         lo, hi = (0.05, 0.95) if continents or countries or states else (0.0, 1.0)
         located = view.drop_nulls(["lat", "lon"])
         fmap.fit_bounds([[located["lat"].quantile(lo), located["lon"].quantile(lo)], [located["lat"].quantile(hi), located["lon"].quantile(hi)]])
-    map_state = st_folium(fmap, key="meets_map", height=650, use_container_width=True, returned_objects=["bounds"])
+    map_state = st_folium(fmap, key="meets_map", height=450, use_container_width=True, returned_objects=["bounds"])
 
 in_view = view
 bounds = (map_state or {}).get("bounds") or {}
@@ -170,7 +171,7 @@ with metrics:
     col2.metric("Open for sign-ups", f"{in_view.filter(is_open).height:,}")
     col3.metric("Listed this week", f"{in_view.filter(pl.col('added') >= new_cutoff).height:,}")
 
-with list_col:
+with list_box:
     if outside := view.height - in_view.height:
         st.caption(f"{outside:,} meets match the filters but are outside the map view or have no known location.")
     icon = kind.replace_strict({k: f"{v[0]} " for k, v in STATUS.items() if k != "unknown"}, default="")
