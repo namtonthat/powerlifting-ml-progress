@@ -17,6 +17,9 @@ jobs:
 
       - name: Install the latest version of `uv`
         uses: astral-sh/setup-uv@v5
+        with:
+          # scipy (via xgboost) has no wheels for newer Pythons, so uv would build it from source
+          python-version: "3.13"
 
       - name: Test
         run: uv run pytest -q steps/test_meets.py
