@@ -42,8 +42,8 @@ jobs:
 
       - name: Smoke test
         run: |
-          # Health alone passes even if the page crashes, so run the page once in bare mode too.
-          docker run --rm "$IMAGE:latest" python "pages/05_📅_meets.py"
+          # Health alone passes even if the page crashes, so render the page once with AppTest too.
+          docker run --rm "$IMAGE:latest" python -c "from streamlit.testing.v1 import AppTest; at = AppTest.from_file('pages/05_📅_meets.py', default_timeout=120).run(); assert not at.exception, at.exception"
           docker run -d --name smoke -p 8501:8501 "$IMAGE:latest"
           ok=0
           for i in $(seq 1 30); do
