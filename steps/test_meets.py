@@ -32,6 +32,7 @@ def test_jotform_status():
     assert b.jotform_status('<form class="jotform-form"><p>LIMITED TO 70 LIFTERS</p>') == "OPEN · cap 70"
     assert b.jotform_status("<title>Sorry, this competition is now full</title>") == "SOLD OUT"
     assert b.jotform_status("<title>Registration is closed for this event</title>") == "CLOSED"
+    assert b.jotform_status("<title>Error</title>") is None
 
 
 def test_liftingcast_status():
@@ -42,7 +43,7 @@ def test_feeds():
     assert b.FEEDS["us"](meet())
     assert not b.FEEDS["europe"](meet())
     assert b.FEEDS["open"](meet(status="OPEN · cap 70"))
-    assert b.FEEDS["open"](meet(status="12 entered"))
+    assert not b.FEEDS["open"](meet(status="12 entered"))
     assert not b.FEEDS["open"](meet(status="SOLD OUT"))
     assert not b.FEEDS["open"](meet())
 
@@ -57,3 +58,28 @@ def test_feed_ics():
 def test_to_frame():
     df = b.to_frame([meet(), meet(uid="femepo-1", country="Mexico", federation="FEMEPO")])
     assert df["region"].to_list() == ["us", "mx"]
+
+
+def test_mx_state_in():
+    assert b.mx_state_in("Selectivo Estatal SLP") == "San Luis Potosí"
+    assert b.mx_state_in("2do Torneo Estatal Selectivo de Querétaro") == "Querétaro"
+    assert b.mx_state_in("Estatal Selectivo y Novatos jalisco 2026") == "Jalisco"
+    assert b.mx_state_in("9no Campeonato Baja California Sur") == "Baja California Sur"
+    assert b.mx_state_in("La Revolución del Poder") == ""
+
+
+def test_classify():
+    uspa = ["United States Powerlifting Association"]
+    assert b.classify("USPA Tested and Open 2026 Connecticut State Championship", uspa, ["Classic Raw", "Full Power", "non tested", "Raw", "Single Ply", "Tested"]) == (
+        "Both",
+        ["Raw", "Single-ply", "Wraps"],
+        ["Full power"],
+    )
+    assert b.classify("2026 USA Powerlifting Capital Fright Classic", ["USA Powerlifting"], ["Bench Only", "Deadlift Only", "Raw with Wraps", "Push/Pull", "Equipped"]) == (
+        "Tested",
+        ["Equipped", "Wraps"],
+        ["Bench only", "Deadlift only", "Push/pull"],
+    )
+    assert b.classify("Gates of Hades", ["United States Powerlifting Coalition"], ["Multi Ply", "Raw Knee Sleeves"]) == ("Unknown", ["Multi-ply", "Raw"], [])
+    assert b.classify("Bench for Boobs and Biceps", ["Revolution Powerlifting Syndicate"], ["Bench Press"]) == ("Unknown", [], ["Bench only"])
+    assert b.classify("TORNEO DE PESO MUERTO", ["FEMEPO"], []) == ("Tested", [], ["Deadlift only"])

@@ -4,8 +4,9 @@ import html
 import logging
 import re
 import time
+import unicodedata
 from collections.abc import Callable
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import UTC, date, datetime, timedelta
 from urllib.parse import urlparse
 
@@ -38,6 +39,29 @@ NOT_OPEN = ("SOLD OUT", "CLOSED", "CANCELLED")
 NOT_A_MEET = re.compile(r"strongman|weightlifting|\bIWF\b|strongfirst|kettlebell|highland games|strict curl|clinic|certification|seminar|mock meet", re.IGNORECASE)
 # ...unless the meet name says it also runs the powerlifting lifts, e.g. "Bench Press-Deadlift-Strict Curl"
 LIFTS = re.compile(r"powerlift|bench|deadlift|squat", re.IGNORECASE)
+# FEMEPO leaves state blank on some meets but names it in the title, e.g. "Selectivo Estatal SLP"
+MX_STATES = {
+    **{s: s for s in (
+        "Aguascalientes", "Baja California Sur", "Baja California", "Campeche", "Chiapas", "Chihuahua", "Ciudad de México", "Coahuila",
+        "Colima", "Durango", "Estado de México", "Guanajuato", "Guerrero", "Hidalgo", "Jalisco", "Michoacán", "Morelos", "Nayarit",
+        "Nuevo León", "Oaxaca", "Puebla", "Querétaro", "Quintana Roo", "San Luis Potosí", "Sinaloa", "Sonora", "Tabasco", "Tamaulipas",
+        "Tlaxcala", "Veracruz", "Yucatán", "Zacatecas",
+    )},
+    "SLP": "San Luis Potosí", "CDMX": "Ciudad de México", "EDOMEX": "Estado de México",
+}  # fmt: skip
+
+# Drug-tested by federation rule (IPF and its listed affiliates, plus drug-free federations); others need meet-level evidence
+TESTED_FEDS = {
+    "USA Powerlifting", "Powerlifting America", "International Powerlifting Federation", "Australian Powerlifting Alliance", "FEMEPO",
+    "British Powerlifting", "Powerlifting Australia", "100% RAW Powerlifting Federation", "Natural Athlete Strength Association",
+    "NASA Powerlifting", "Amateur American Powerlifting Federation",
+}  # fmt: skip
+UNTESTED_FEDS = {"World Powerlifting Congress", "Southern Powerlifting Federation", "American Powerlifting Federation"}
+UNTESTED = re.compile(r"\bun-?tested\b|\bnon[- ]?tested\b|\btested (?:and|&) open\b|\bopen (?:and|&) tested\b", re.IGNORECASE)
+TESTED = re.compile(r"\btested\b", re.IGNORECASE)
+# First match per category wins, so "Raw with Wraps" is Wraps and not Raw
+EQUIPMENT = (("Wraps", r"wrap"), ("Single-ply", r"single[- ]?ply"), ("Multi-ply", r"multi[- ]?ply"), ("Equipped", r"^equip(ped|ment)$"), ("Raw", r"\braw\b|\bclassic\b|unequipped|equipment[- ]free|sleeves"))  # fmt: skip
+EVENTS = (("Push/pull", r"push.?pull"), ("Bench only", r"bench( press)? only|single lift bench"), ("Deadlift only", r"deadlift only|single lift deadlift"), ("Squat only", r"squat only"), ("Full power", r"full (power|meet|powerlifting)|3[- ]lift|classic powerlifting"))  # fmt: skip
 
 
 @dataclass
@@ -53,6 +77,12 @@ class Meet:
     listing: str
     added: date
     status: str | None = None
+    lat: float | None = None
+    lon: float | None = None
+    state: str = ""
+    testing: str = "Unknown"
+    equipment: list[str] = field(default_factory=list)
+    events: list[str] = field(default_factory=list)
 
 
 FEEDS: dict[str, Callable[[Meet], bool]] = {
@@ -61,8 +91,33 @@ FEEDS: dict[str, Callable[[Meet], bool]] = {
     "us": lambda m: m.country in {"USA", "United States"},
     "europe": lambda m: m.country in EUROPE,
     "mx": lambda m: m.country == "Mexico",
-    "open": lambda m: bool(m.status) and not m.status.startswith(NOT_OPEN),
+    # "N entered" is only a roster count, so it doesn't prove sign-ups are open
+    "open": lambda m: bool(m.status) and m.status.startswith("OPEN"),
 }
+
+
+def classify(name: str, organizers: list[str], categories: list[str]) -> tuple[str, list[str], list[str]]:
+    """Testing policy, equipment and events from federation defaults, category tags and the meet name."""
+    evidence = " | ".join([name, *categories])
+    untested = bool(UNTESTED.search(evidence)) or any(o in UNTESTED_FEDS for o in organizers)
+    tested = bool(TESTED.search(UNTESTED.sub("", evidence))) or any(o in TESTED_FEDS for o in organizers)
+    testing = "Both" if tested and untested else "Tested" if tested else "Untested" if untested else "Unknown"
+
+    equipment, events = set(), set()
+    for cat in categories:
+        if cat.casefold() == "classic raw" and "United States Powerlifting Association" in organizers:
+            equipment.add("Wraps")  # USPA's Classic Raw division allows knee wraps
+        elif hit := next((label for label, rx in EQUIPMENT if re.search(rx, cat, re.IGNORECASE)), None):
+            equipment.add(hit)
+    for text in [*categories, name]:
+        events.update(label for label, rx in EVENTS if re.search(rx, text, re.IGNORECASE))
+    # Single-lift meets often only say so in the name, e.g. "Bench for Boobs and Biceps" or "Torneo de Peso Muerto"
+    if not events and not re.search(r"powerlift|squat|full", name, re.IGNORECASE):
+        if re.search(r"bench|banca", name, re.IGNORECASE) and not re.search(r"deadlift|peso muerto", name, re.IGNORECASE):
+            events.add("Bench only")
+        elif re.search(r"deadlift|peso muerto", name, re.IGNORECASE) and not re.search(r"bench|banca", name, re.IGNORECASE):
+            events.add("Deadlift only")
+    return testing, sorted(equipment), sorted(events)
 
 
 def get(url: str, **kwargs) -> requests.Response:
@@ -84,7 +139,8 @@ def powerlifting_com() -> list[Meet]:
             if NOT_A_MEET.search(" ".join([name, *organizers])) and not LIFTS.search(name):
                 continue
             venue = e["venue"] if isinstance(e["venue"], dict) else {}
-            place = [venue.get(k) for k in ("venue", "city", "stateprovince", "country")]
+            place = [venue.get(k) for k in ("venue", "city")]
+            testing, equipment, events = classify(name, organizers, [html.unescape(c["name"]) for c in e["categories"]])
             meets.append(
                 Meet(
                     uid=f"plcom-{e['id']}",
@@ -93,10 +149,16 @@ def powerlifting_com() -> list[Meet]:
                     end=date.fromisoformat(e["end_date"][:10]),
                     federation=", ".join(o for o in organizers if not o.startswith("*")),
                     location=html.unescape(", ".join(p for p in place if p)),
+                    state=html.unescape(venue.get("stateprovince") or ""),
                     country=venue.get("country") or "",
                     link=e["website"] or e["url"],
                     listing=e["url"],
                     added=date.fromisoformat(e["date"][:10]),
+                    lat=float(venue["geo_lat"]) if venue.get("geo_lat") else None,
+                    lon=float(venue["geo_lng"]) if venue.get("geo_lng") else None,
+                    testing=testing,
+                    equipment=equipment,
+                    events=events,
                 )
             )
         if page >= data["total_pages"]:
@@ -109,10 +171,14 @@ def femepo() -> list[Meet]:
     url = "https://firestore.googleapis.com/v1/projects/femepo-web/databases/(default)/documents/events"
     meets = []
     for doc in get(url, params={"pageSize": 300}).json().get("documents", []):
-        f = {k: next(iter(v.values())) for k, v in doc["fields"].items()}
+        # Some records store the literal string "null" rather than a null value
+        f = {k: val for k, v in doc["fields"].items() if (val := next(iter(v.values()))) not in (None, "", "null")}
         start = datetime.strptime(f["startDate"][:10].replace("-", "/"), "%Y/%m/%d").date()
         if start < date.today():
             continue
+        state = f.get("state") or mx_state_in(f["title"])
+        lat, lon = geocode(f.get("address"), f"{state}, Mexico" if state else None)
+        testing, equipment, events = classify(f["title"], ["FEMEPO"], [])
         meets.append(
             Meet(
                 uid=f"femepo-{doc['name'].rsplit('/', 1)[1]}",
@@ -120,14 +186,43 @@ def femepo() -> list[Meet]:
                 start=start,
                 end=start,
                 federation="FEMEPO",
-                location=", ".join(p for p in (f.get("address"), f.get("state")) if p),
+                location=f.get("address", ""),
+                state=state,
                 country="Mexico",
                 link=f.get("url") or "https://femepo.com.mx/calendar.html",
                 listing="https://femepo.com.mx/calendar.html",
                 added=date.fromisoformat(doc["createTime"][:10]),
+                lat=lat,
+                lon=lon,
+                testing=testing,
+                equipment=equipment,
+                events=events,
             )
         )
     return meets
+
+
+def fold(text: str) -> str:
+    return unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode().casefold()
+
+
+def mx_state_in(title: str) -> str:
+    # Longest names first so "Baja California Sur" wins over "Baja California"
+    return next((state for name, state in sorted(MX_STATES.items(), key=lambda kv: -len(kv[0])) if re.search(rf"\b{fold(name)}\b", fold(title))), "")
+
+
+def geocode(*queries: str | None) -> tuple[float | None, float | None]:
+    """First OpenStreetMap hit for the queries in order; FEMEPO lists street addresses only."""
+    for query in filter(None, queries):
+        time.sleep(1)  # Nominatim's usage policy: at most 1 request a second
+        try:
+            hits = get("https://nominatim.openstreetmap.org/search", params={"q": query, "format": "json", "limit": 1, "countrycodes": "mx"}).json()
+        except requests.RequestException as err:
+            logging.warning(f"Geocoding failed for {query!r}: {err}")
+            continue
+        if hits:
+            return float(hits[0]["lat"]), float(hits[0]["lon"])
+    return None, None
 
 
 def flag(text: str) -> str | None:
@@ -150,11 +245,14 @@ def apa_status(page: str) -> str | None:
     return None
 
 
-def jotform_status(page: str) -> str:
-    # A closed form drops the form markup and puts the director's message in <title>.
+def jotform_status(page: str) -> str | None:
+    # A closed form drops the form markup and puts the director's message in <title>; anything else (an error page) proves nothing.
     if "jotform-form" not in page:
         title = re.search(r"<title>([^<]*)", page)
-        return "SOLD OUT" if title and re.search(r"sold out|\bfull\b", title[1], re.IGNORECASE) else "CLOSED"
+        message = title[1] if title else ""
+        if re.search(r"sold out|\bfull\b", message, re.IGNORECASE):
+            return "SOLD OUT"
+        return "CLOSED" if re.search(r"closed|no longer|unavailable", message, re.IGNORECASE) else None
     cap = re.search(r"LIMITED TO (\d+)", page, re.IGNORECASE)
     return f"OPEN · cap {cap[1]}" if cap else "OPEN"
 
@@ -198,9 +296,16 @@ def feed_ics(name: str, meets: list[Meet]) -> bytes:
         event.add("dtstart", m.start)
         event.add("dtend", m.end + timedelta(days=1))
         event.add("dtstamp", stamp)
-        event.add("location", m.location)
+        event.add("location", ", ".join(p for p in (m.location, m.state, m.country) if p))
         event.add("url", m.link)
-        lines = [f"Federation: {m.federation or 'unknown'}", f"Status: {m.status or 'unknown'}", f"Sign up / info: {m.link}"]
+        lines = [
+            f"Federation: {m.federation or 'unknown'}",
+            f"Testing: {m.testing}",
+            f"Equipment: {', '.join(m.equipment) or 'not listed'}",
+            f"Events: {', '.join(m.events) or 'not listed'}",
+            f"Status: {m.status or 'unknown'}",
+            f"Sign up / info: {m.link}",
+        ]
         if m.listing != m.link:
             lines.append(f"Listing: {m.listing}")
         lines.append(f"Added: {m.added}")
