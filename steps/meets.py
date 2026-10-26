@@ -111,12 +111,14 @@ def classify(name: str, organizers: list[str], categories: list[str]) -> tuple[s
             equipment.add(hit)
     for text in [*categories, name]:
         events.update(label for label, rx in EVENTS if re.search(rx, text, re.IGNORECASE))
-    # Single-lift meets often only say so in the name, e.g. "Bench for Boobs and Biceps" or "Torneo de Peso Muerto"
-    if not events and not re.search(r"powerlift|squat|full", name, re.IGNORECASE):
-        if re.search(r"bench|banca", name, re.IGNORECASE) and not re.search(r"deadlift|peso muerto", name, re.IGNORECASE):
-            events.add("Bench only")
-        elif re.search(r"deadlift|peso muerto", name, re.IGNORECASE) and not re.search(r"bench|banca", name, re.IGNORECASE):
-            events.add("Deadlift only")
+    # A powerlifting meet is squat-bench-deadlift unless its name bills it as a single-lift event,
+    # e.g. "Bench for Boobs and Biceps" or "Torneo de Peso Muerto"; bench-only and push/pull are usually extra divisions
+    bench, deadlift = (re.search(rx, name, re.IGNORECASE) for rx in (r"bench|banca", r"deadlift|peso muerto"))
+    single_lift = (bench or deadlift or re.search(r"push.?pull", name, re.IGNORECASE)) and not re.search(r"powerlift|squat|full|3[- ]lift", name, re.IGNORECASE)
+    if not single_lift:
+        events.add("Full power")
+    elif not events:
+        events.update(label for label, hit in (("Bench only", bench), ("Deadlift only", deadlift)) if hit)
     return testing, sorted(equipment), sorted(events)
 
 

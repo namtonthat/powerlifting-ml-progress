@@ -128,9 +128,9 @@ def test_classify():
     assert b.classify("2026 USA Powerlifting Capital Fright Classic", ["USA Powerlifting"], ["Bench Only", "Deadlift Only", "Raw with Wraps", "Push/Pull", "Equipped"]) == (
         "Tested",
         ["Equipped", "Wraps"],
-        ["Bench only", "Deadlift only", "Push/pull"],
+        ["Bench only", "Deadlift only", "Full power", "Push/pull"],
     )
-    assert b.classify("Gates of Hades", ["United States Powerlifting Coalition"], ["Multi Ply", "Raw Knee Sleeves"]) == ("Unknown", ["Multi-ply", "Raw"], [])
+    assert b.classify("Gates of Hades", ["United States Powerlifting Coalition"], ["Multi Ply", "Raw Knee Sleeves"]) == ("Unknown", ["Multi-ply", "Raw"], ["Full power"])
     assert b.classify("Bench for Boobs and Biceps", ["Revolution Powerlifting Syndicate"], ["Bench Press"]) == ("Unknown", [], ["Bench only"])
     assert b.classify("TORNEO DE PESO MUERTO", ["FEMEPO"], []) == ("Tested", [], ["Deadlift only"])
 
@@ -160,3 +160,10 @@ def test_merge_needs_same_country():
     base = [meet(name="2026 USA Powerlifting Beer City Classic", start=date(2026, 11, 15), country="USA")]
     saltillo = meet(uid="lmp-3", name="100% Strength powerlifting meet", start=date(2026, 11, 15), country="Mexico")
     assert [m.uid for m in b.merge(base, [saltillo])] == ["plcom-1", "lmp-3"]
+
+
+def test_events_default_to_full_power():
+    assert b.classify("Halloween Heavies", ["Australian Powerlifting League"], [])[2] == ["Full power"]
+    assert b.classify("11th Pan-American Regional Bench Press Championships", ["IPF"], ["Bench Press"])[2] == ["Bench only"]
+    assert b.classify("NZPF Open Classic Powerlifting & Benchpress National Championships", [], [])[2] == ["Full power"]
+    assert b.classify("Bench Press & Kronos Deadlift", [], [])[2] == ["Bench only", "Deadlift only"]
