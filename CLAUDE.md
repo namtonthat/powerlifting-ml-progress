@@ -22,6 +22,7 @@ uv run python steps/03_base.py      # Feature engineering + Elo ratings
 uv run python steps/04_analyses.py  # Advanced analytics (8 perspectives)
 uv run python steps/05_train.py     # XGBoost v4 training
 uv run python steps/00_clean.py     # Cleanup local data folders
+uv run python steps/meets.py        # Upcoming meets → landing/meets.parquet + meets-*.ics (daily via meets.yml)
 ```
 
 **MLflow/MinIO:**
