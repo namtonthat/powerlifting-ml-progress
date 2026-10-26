@@ -16,3 +16,6 @@ mlruns/*
 
 # git worktrees
 .worktrees/
+
+# personal AWS keys for local runs (see AGENTS.md)
+.env/aws.env
