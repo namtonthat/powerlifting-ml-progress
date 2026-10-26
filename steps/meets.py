@@ -67,7 +67,8 @@ FEEDS: dict[str, Callable[[Meet], bool]] = {
 
 def get(url: str, **kwargs) -> requests.Response:
     time.sleep(0.2)
-    response = SESSION.get(url, timeout=30, **kwargs)
+    # Uncached powerlifting.com pages take 10-30s+ to render
+    response = SESSION.get(url, timeout=120, **kwargs)
     response.raise_for_status()
     return response
 
