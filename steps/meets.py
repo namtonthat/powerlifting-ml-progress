@@ -240,13 +240,14 @@ def lmp() -> list[Meet]:
 
 
 def merge(base: list[Meet], extra: list[Meet]) -> list[Meet]:
-    """Add meets from a secondary source unless the same meet (within a day, similar name) is already listed."""
+    """Add meets from a secondary source unless the same meet (same country, within a day, similar name) is already listed."""
+    # Same country is required: generic names like "... powerlifting meet" look similar to unrelated meets elsewhere
     names_by_day = defaultdict(list)
     for m in base:
-        names_by_day[m.start].append(m.name.casefold())
+        names_by_day[m.country, m.start].append(m.name.casefold())
 
     def known(m: Meet) -> bool:
-        nearby = (n for offset in (-1, 0, 1) for n in names_by_day[m.start + timedelta(days=offset)])
+        nearby = (n for offset in (-1, 0, 1) for n in names_by_day[m.country, m.start + timedelta(days=offset)])
         return any(difflib.SequenceMatcher(None, m.name.casefold(), n).ratio() > 0.55 for n in nearby)
 
     return base + [m for m in extra if not known(m)]

@@ -109,3 +109,9 @@ def test_merge():
     dupe = meet(uid="lmp-1", name="USA Powerlifting Freak Fest 2026", start=date(2026, 11, 1))
     new = meet(uid="lmp-2", name="Copa 30 Caballeros", start=date(2026, 10, 31))
     assert [m.uid for m in b.merge(base, [dupe, new])] == ["plcom-1", "lmp-2"]
+
+
+def test_merge_needs_same_country():
+    base = [meet(name="2026 USA Powerlifting Beer City Classic", start=date(2026, 11, 15), country="USA")]
+    saltillo = meet(uid="lmp-3", name="100% Strength powerlifting meet", start=date(2026, 11, 15), country="Mexico")
+    assert [m.uid for m in b.merge(base, [saltillo])] == ["plcom-1", "lmp-3"]
