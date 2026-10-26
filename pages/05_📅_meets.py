@@ -101,7 +101,9 @@ view = view.sort(["added", "start"], descending=[True, False], nulls_last=True) 
 
 # --- Main ---
 st.write("# Upcoming Meets")
-st.caption(f"Powerlifting meets from powerlifting.com and FEMEPO, with sign-up status where the meet's sign-up page shows it. Updated {all_meets['pulled_at'].max():%d %b %Y %H:%M} UTC.")
+st.caption(
+    f"Powerlifting meets from `powerlifting.com`, FEMEPO and LMP (Mexico), with sign-up status where the meet's sign-up page shows it. Updated {all_meets['pulled_at'].max():%d %b %Y %H:%M} UTC."
+)
 
 metrics = st.container()
 # Map on top, list below; both rendered map-first so the list can use the map's bounds
@@ -175,13 +177,15 @@ with list_box:
     if outside := view.height - in_view.height:
         st.caption(f"{outside:,} meets match the filters but are outside the map view or have no known location.")
     icon = kind.replace_strict({k: f"{v[0]} " for k, v in STATUS.items() if k != "unknown"}, default="")
+    # Links come from third-party pages; render only http(s) ones, else the listing page
+    url = pl.when(pl.col("link").str.contains(r"(?i)^https?://")).then(pl.col("link")).otherwise(pl.col("listing"))
     table = in_view.select(
         pl.col("start").alias("Date"),
-        pl.col("name").alias("Meet"),
+        # LinkColumn can only show text taken from the URL, so the name rides along in a "#~" fragment
+        pl.concat_str([url, pl.lit("#~"), pl.col("name")]).alias("Meet"),
         (icon + pl.col("status").fill_null("")).alias("Spots"),
-        # Links come from third-party pages; render only http(s) ones, else the listing page.
-        pl.when(pl.col("link").str.contains(r"(?i)^https?://")).then(pl.col("link")).otherwise(pl.col("listing")).alias("Link"),
-        pl.col("testing").replace("Unknown", "").alias("Testing"),
+        # Blank where the listing doesn't say; "No" would wrongly mark those meets untested
+        pl.col("testing").replace_strict({"Tested": "Yes", "Both": "Yes", "Untested": "No"}, default="").alias("Tested"),
         pl.col("equipment").list.join(", ").alias("Equipment"),
         pl.col("events").list.join(", ").alias("Events"),
         pl.col("location").alias("Location"),
@@ -197,10 +201,9 @@ with list_box:
         height=min(650, 35 * (table.height + 1) + 3),
         column_config={
             "Date": st.column_config.DateColumn(format="ddd D MMM YYYY", width=125),
-            "Meet": st.column_config.TextColumn(width=300),
+            "Meet": st.column_config.LinkColumn(display_text=r".*#~(.*)$", width=320, help="Opens the meet's sign-up or info page"),
             "Spots": st.column_config.TextColumn(width=130, help="Entry cap or entries so far, where the sign-up page shows them"),
-            "Link": st.column_config.LinkColumn(display_text="Sign up ↗", width=85),
-            "Testing": st.column_config.TextColumn(width=80),
+            "Tested": st.column_config.TextColumn(width=70, help="Yes if the meet runs drug-tested divisions; blank if the listing doesn't say"),
             "Equipment": st.column_config.TextColumn(width=150),
             "Events": st.column_config.TextColumn(width=170),
             "Location": st.column_config.TextColumn(width=200),

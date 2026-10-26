@@ -55,14 +55,59 @@ def test_feed_ics():
     assert event.decoded("dtend") == date(2027, 2, 1)
 
 
-def test_assign_continents():
-    meets = [meet(), meet(uid="femepo-1", country="Mexico"), meet(uid="x", country="Atlantis"), meet(uid="y", country="")]
-    b.assign_continents(meets)
-    assert [m.continent for m in meets] == ["North America", "North America", "Other", "Other"]
+def test_normalise_places():
+    meets = [
+        meet(),
+        meet(uid="a", country="Mexico"),
+        meet(uid="b", country="Atlantis"),
+        meet(uid="c", country=""),
+        meet(uid="d", country="Australia", state="NSW"),
+        meet(uid="e", country="Turkiye", state="Istanbul"),
+        meet(uid="f", state="Lousiana"),
+        meet(uid="g", state="District Of Columbia"),
+        meet(uid="h", country="Mexico", state="Estado de México"),
+    ]
+    b.normalise_places(meets)
+    assert [(m.country, m.state, m.continent) for m in meets] == [
+        ("United States", "", "North America"),
+        ("Mexico", "", "North America"),
+        ("Atlantis", "", "Other"),
+        ("", "", "Other"),
+        ("Australia", "New South Wales", "Oceania"),
+        ("Türkiye", "İstanbul", "Asia"),
+        ("United States", "Louisiana", "North America"),
+        ("United States", "District of Columbia", "North America"),
+        ("Mexico", "Estado de México", "North America"),
+    ]
     single = [meet(country="Australia")]
-    b.assign_continents(single)
+    b.normalise_places(single)
     assert single[0].continent == "Oceania"
-    assert b.to_frame(meets)["continent"].to_list() == ["North America", "North America", "Other", "Other"]
+    assert b.to_frame(meets)["continent"].to_list()[:2] == ["North America", "North America"]
+
+
+def test_dedupe():
+    def at(uid, name, federation="X"):
+        return meet(uid=uid, name=name, federation=federation, location="Olympus Athletic Club, Jacksonville", start=date(2026, 10, 31))
+
+    pairs_same = [
+        ("Gates of Hades", "USPC Gates of Hades"),
+        ("Nine Lives Classic Waitlist", "Nine Lives Classic"),
+        ("5th Annual Jim Phillips Memorial Classic", "2027 Jim Phillips Memorial Classic"),
+        ("2026 USA Powerlifting Long Island Winter Showdwon III", "2026 USA Powerlifting Long Island Winter Showdown III"),
+        ("Powerlifting United: THE Meet", "THE Meet"),
+    ]
+    pairs_distinct = [
+        ("AaSK Open - Classic", "AaSK Open - Equipped"),
+        ("Open Force Comtoise #2", "Open Force Comtoise #2 DC/BP 2026"),
+        ("2027 USA Powerlifting Raw Nationals", "2027 USA Powerlifting Youth Nationals"),
+        ("Showdown Amateur", "USPC Showdown Pro/AM"),
+    ]
+    for one, two in pairs_same:
+        assert len(b.dedupe([at("1", one), at("2", two)])) == 1, (one, two)
+    for one, two in pairs_distinct:
+        assert len(b.dedupe([at("1", one), at("2", two)])) == 2, (one, two)
+    # The copy with a federation wins
+    assert [m.uid for m in b.dedupe([at("1", "Nine Lives Classic Waitlist", ""), at("2", "Nine Lives Classic")])] == ["2"]
 
 
 def test_mx_state_in():

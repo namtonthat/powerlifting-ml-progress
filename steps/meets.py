@@ -10,6 +10,7 @@ from collections import defaultdict
 from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, date, datetime, timedelta
+from functools import cache
 from urllib.parse import urlparse
 
 import boto3
@@ -17,6 +18,7 @@ import common_io
 import conf
 import country_converter as coco
 import polars as pl
+import pycountry
 import requests
 from icalendar import Calendar, Event
 from requests.adapters import HTTPAdapter
@@ -139,6 +141,9 @@ def powerlifting_com() -> list[Meet]:
             venue = e["venue"] if isinstance(e["venue"], dict) else {}
             place = [venue.get(k) for k in ("venue", "city")]
             testing, equipment, events = classify(name, organizers, [html.unescape(c["name"]) for c in e["categories"]])
+            website = e["website"] or ""
+            # Some sign-up URLs come title-cased ("Https://…/Fileadmin/…"), which breaks case-sensitive paths; use the listing page instead
+            link = website if website and not website.startswith("Https://") else e["url"]
             meets.append(
                 Meet(
                     uid=f"plcom-{e['id']}",
@@ -149,7 +154,7 @@ def powerlifting_com() -> list[Meet]:
                     location=html.unescape(", ".join(p for p in place if p)),
                     state=html.unescape(venue.get("stateprovince") or ""),
                     country=venue.get("country") or "",
-                    link=e["website"] or e["url"],
+                    link=link,
                     listing=e["url"],
                     added=date.fromisoformat(e["date"][:10]),
                     lat=float(venue["geo_lat"]) if venue.get("geo_lat") else None,
@@ -365,13 +370,59 @@ def feed_ics(name: str, meets: list[Meet]) -> bytes:
     return cal.to_ical()
 
 
-def assign_continents(meets: list[Meet]) -> None:
+@cache
+def subdivision_names(country_code: str) -> dict[str, str]:
+    return {s.name.casefold(): s.name for s in pycountry.subdivisions.get(country_code=country_code) or []}
+
+
+def normalise_places(meets: list[Meet]) -> None:
+    """One spelling per country ("USA", "Türkiye" variants); official state names for codes ("NSW") and near-misses ("Lousiana"); continents."""
     names = sorted({m.country for m in meets} - {""})
-    found = coco.convert(names=names, to="continent_7", not_found="Other")
-    # coco returns a bare string, not a list, for a single name
-    lookup = dict(zip(names, [found] if isinstance(found, str) else found, strict=True))
+
+    def lookup(to: str, not_found: str | None) -> dict[str, str]:
+        found = coco.convert(names=names, to=to, not_found=not_found)
+        # coco returns a bare string, not a list, for a single name
+        return dict(zip(names, [found] if isinstance(found, str) else found, strict=True))
+
+    short, iso2, continent = lookup("name_short", None), lookup("ISO2", None), lookup("continent_7", "Other")
     for m in meets:
-        m.continent = lookup.get(m.country, "Other")
+        code = iso2.get(m.country, "")
+        if re.fullmatch(r"[A-Z]{2,3}", m.state) and (sub := pycountry.subdivisions.get(code=f"{code}-{m.state}")):
+            m.state = sub.name
+        elif m.state and (hit := difflib.get_close_matches(m.state.casefold(), subdivision_names(code), n=1, cutoff=0.85)):
+            m.state = subdivision_names(code)[hit[0]]
+        m.continent = continent.get(m.country, "Other")
+        m.country = short.get(m.country, m.country)
+
+
+# Prefixes and filler that differ between repeat listings of one meet, e.g. "Gates of Hades" vs "USPC Gates of Hades 2026"
+NAME_NOISE = re.compile(r"\b(uspc|plu|apl|usapl|uspa|capo|usa powerlifting|powerlifting united|power ?lifting america|(19|20)\d\d|\d+(st|nd|rd|th)|annual|the|waitlist)\b")
+# Words that make same-day meets at one venue separate events, e.g. "Classic" vs "Equipped" or "DC/BP" vs "FA/PL"
+EVENT_WORDS = {"classic", "equipped", "raw", "bench", "deadlift", "squat", "press", "powerlifting", "dc", "bp", "fa", "pl", "youth", "novice", "school", "junior", "masters", "pro", "am", "amateur"}  # fmt: skip
+
+
+def same_meet(a: Meet, b: Meet) -> bool:
+    x, y = (set(re.findall(r"[a-z0-9]+", NAME_NOISE.sub(" ", fold(m.name)))) for m in (a, b))
+    if x and y and (x <= y or y <= x):
+        return not (x ^ y) & EVENT_WORDS
+    return difflib.SequenceMatcher(None, fold(a.name), fold(b.name)).ratio() > 0.95  # typos like "Showdwon"
+
+
+def dedupe(meets: list[Meet]) -> list[Meet]:
+    """Drop repeat listings of one meet (same country, date and venue), keeping the copy with the most detail."""
+    groups = defaultdict(list)
+    for m in meets:
+        if m.location:
+            groups[m.country, m.start, fold(m.location)].append(m)
+    dropped = set()
+    for group in groups.values():
+        kept = []
+        for m in sorted(group, key=lambda m: (m.status is None, not m.federation)):
+            if any(same_meet(m, k) for k in kept):
+                dropped.add(m.uid)
+            else:
+                kept.append(m)
+    return [m for m in meets if m.uid not in dropped]
 
 
 def to_frame(meets: list[Meet]) -> pl.DataFrame:
@@ -387,7 +438,8 @@ def main() -> None:
     for m in meets:
         # Keep a status the source already gave (LMP's deadline) unless the sign-up page says more
         m.status = status(m) or m.status
-    assign_continents(meets)
+    meets = dedupe(meets)
+    normalise_places(meets)
 
     common_io.io_write_from_local_to_s3(to_frame(meets), conf.meets_local, conf.meets_s3_key)
 
