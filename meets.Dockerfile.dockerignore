@@ -1,0 +1,5 @@
+*
+!pyproject.toml
+!uv.lock
+!steps/conf.py
+!pages/05_📅_meets.py
