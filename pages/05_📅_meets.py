@@ -1,6 +1,7 @@
 import sys
 from datetime import date, timedelta
 from pathlib import Path
+from urllib.request import urlopen
 
 import polars as pl
 import streamlit as st
@@ -18,7 +19,8 @@ NOT_OPEN = ("SOLD OUT", "CLOSED", "CANCELLED")
 @st.cache_data(ttl="1h")
 def load_meets() -> pl.DataFrame:
     try:
-        return pl.read_parquet(conf.meets_s3_http)
+        # Plain HTTPS: polars turns S3 URLs into S3 API calls that fail without AWS credentials, even on this public bucket
+        return pl.read_parquet(urlopen(conf.meets_s3_http, timeout=30).read())
     except Exception:
         return pl.read_parquet(conf.meets_local)
 
