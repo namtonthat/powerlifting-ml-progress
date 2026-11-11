@@ -1,7 +1,5 @@
 name: extract-transform-load
 
-env:
-  PYTHON_VERSION: "3.13.0"
 on:
   schedule:
     # Cron schedule every Tuesday and Friday at 14:15 UTC (random time to avoid overloading the Github action servers)
@@ -28,13 +26,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up `python`
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
       - name: Install the latest version of `uv`
         uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.13"
 
       - name: Extract
         run: uv run python steps/01_extract.py
